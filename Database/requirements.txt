@@ -1,0 +1,17 @@
+# ===== Generales
+gunicorn
+python-dotenv
+bcrypt
+
+# ===== Flask
+Flask-JWT-Extended
+Flask
+Flask-Cors
+Flask-RESTful
+
+# ===== Mongo
+pymongo
+dnspython
+
+# ===== Postgres
+psycopg2-binary

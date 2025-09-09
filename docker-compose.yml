@@ -1,0 +1,54 @@
+services:
+  # =============== API Principal ===============
+  database_visualization:
+    build:
+      context: ./Database
+    container_name: database_visualization
+    ports:
+      - "10000:10000"
+    env_file:
+      - .env
+    depends_on:
+      - mongo_visualization
+      - postgres_visualization
+    networks:
+      - visualization_net
+
+  # =============== MongoDB ===============
+  mongo_visualization:
+    image: mongo:6.0
+    container_name: mongo_visualization
+    expose:
+      - "27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - visualization_net
+
+  # =============== PostgreSQL ===============
+  postgres_visualization:
+    image: postgres:15
+    container_name: postgres_visualization
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Database/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - visualization_net
+
+networks:
+  visualization_net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  postgres_data:
