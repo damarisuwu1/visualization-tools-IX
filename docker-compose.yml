@@ -4,10 +4,10 @@ services:
     build:
       context: ./APIDB
     container_name: apidb_visualization
-    ports:
-      - "10000:10000"
+    # ports:
+    #   - "501:501"
     expose:
-      - "10000"
+      - "501"
     env_file:
       - .env
     depends_on:
@@ -15,6 +15,7 @@ services:
       - postgres_visualization
     networks:
       - visualization_net
+      - proxy_net
 
   # =============== MongoDB ===============
   mongo_visualization:
@@ -50,6 +51,8 @@ services:
 networks:
   visualization_net:
     driver: bridge
+  proxy_net:
+    external: true
 
 volumes:
   mongo_data:
