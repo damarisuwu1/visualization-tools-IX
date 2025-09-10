@@ -5,7 +5,7 @@ from config import CONNECTION_MONGO
 mongo_client = MongoClient(CONNECTION_MONGO)
 
 # Seleccionar base de datos
-db = mongo_client["mi_base_de_datos"]
+db = mongo_client["VMI_model"]
 
 # Seleccionar colección
 usuarios = db["usuarios"]
