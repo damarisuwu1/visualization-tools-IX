@@ -54,3 +54,7 @@ if __name__ == '__main__':
 
     payload = client.generate_data(fields = users_schema, format_ = "csv")
     print(payload)
+    payload_1 = client.generate_data(fields = content_schema, format_ = "json")
+    print(payload_1)
+    payload_2 = client.generate_data(fields = viewing_sessions_schema, format_ = "csv")
+    print(payload_2)
