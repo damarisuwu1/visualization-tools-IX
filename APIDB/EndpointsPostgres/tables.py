@@ -3,10 +3,32 @@ from flask_restful import Resource
 from flask import current_app, request
 from contextlib import closing
 import json
+from datetime import datetime
 
 class PostgresTables(Resource):
     def __init__(self):
         self.get_connection = current_app.config["get_postgres_connection"]
+
+    def _serialize_value(self, value):
+        """Convierte valores no serializables a formatos compatibles con JSON"""
+        if isinstance(value, datetime):
+            return value.isoformat()
+        elif isinstance(value, (dict, list)):
+            return value  # Ya se manejará con json.dumps
+        else:
+            return value
+
+    def _serialize_row(self, row, columns):
+        """Convierte una fila de la base de datos a un diccionario serializable"""
+        row_dict = {}
+        for i, value in enumerate(row):
+            serialized_value = self._serialize_value(value)
+            # Manejar tipos especiales
+            if isinstance(serialized_value, (dict, list)):
+                row_dict[columns[i]] = json.dumps(serialized_value)
+            else:
+                row_dict[columns[i]] = serialized_value
+        return row_dict
 
     def get(self):
         try:
@@ -62,17 +84,10 @@ class PostgresTables(Resource):
                     columns = [desc[0] for desc in cursor.description]
                     rows = cursor.fetchall()
                     
-                    # Convertir a diccionarios
+                    # Convertir a diccionarios serializables
                     results = []
                     for row in rows:
-                        row_dict = {}
-                        for i, value in enumerate(row):
-                            # Manejar tipos especiales
-                            if isinstance(value, (dict, list)):
-                                row_dict[columns[i]] = json.dumps(value)
-                            else:
-                                row_dict[columns[i]] = value
-                        results.append(row_dict)
+                        results.append(self._serialize_row(row, columns))
 
             return {
                 "status": "fetched",
@@ -107,37 +122,97 @@ class PostgresTables(Resource):
                     "info": "Valida que se encuentre 'data' como objeto en el payload"
                 }, 400
             
-            # ===== Construir query INSERT
-            columns = list(data.keys())
-            values = list(data.values())
-            placeholders = ", ".join(["%s"] * len(values))
-            
-            insert_query = f"""
-                INSERT INTO {table_name} ({", ".join(columns)}) 
-                VALUES ({placeholders}) 
-                RETURNING *
-            """
-            
-            # ===== Ejecutar consulta
             with closing(self.get_connection()) as conn:
                 with conn.cursor() as cursor:
+                    # ===== Verificar si la tabla existe
+                    cursor.execute("""
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables 
+                            WHERE table_schema = 'public' 
+                            AND table_name = %s
+                        );
+                    """, (table_name,))
+                    table_exists = cursor.fetchone()[0]
+                    
+                    # ===== Si la tabla no existe, crearla
+                    if not table_exists:
+                        # Determinar tipos de datos para cada columna
+                        column_definitions = []
+                        for key, value in data.items():
+                            if isinstance(value, bool):
+                                column_type = "BOOLEAN"
+                            elif isinstance(value, int):
+                                column_type = "INTEGER"
+                            elif isinstance(value, float):
+                                column_type = "REAL"
+                            elif isinstance(value, (dict, list)):
+                                column_type = "JSONB"
+                            else:
+                                column_type = "TEXT"
+                            
+                            column_definitions.append(f"{key} {column_type}")
+                        
+                        # Crear la tabla con un ID serial como clave primaria
+                        create_table_query = f"""
+                            CREATE TABLE {table_name} (
+                                id SERIAL PRIMARY KEY,
+                                {', '.join(column_definitions)},
+                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            );
+                        """
+                        cursor.execute(create_table_query)
+                        
+                        # Crear trigger para actualizar updated_at automáticamente
+                        cursor.execute(f"""
+                            CREATE OR REPLACE FUNCTION update_updated_at_column()
+                            RETURNS TRIGGER AS $$
+                            BEGIN
+                                NEW.updated_at = CURRENT_TIMESTAMP;
+                                RETURN NEW;
+                            END;
+                            $$ language 'plpgsql';
+                        """)
+                        
+                        cursor.execute(f"""
+                            CREATE TRIGGER update_{table_name}_updated_at
+                                BEFORE UPDATE ON {table_name}
+                                FOR EACH ROW
+                                EXECUTE FUNCTION update_updated_at_column();
+                        """)
+                    
+                    # ===== Construir query INSERT
+                    columns = list(data.keys())
+                    values = list(data.values())
+                    placeholders = ", ".join(["%s"] * len(values))
+                    
+                    insert_query = f"""
+                        INSERT INTO {table_name} ({", ".join(columns)}) 
+                        VALUES ({placeholders}) 
+                        RETURNING *
+                    """
+                    
+                    # ===== Ejecutar inserción
                     cursor.execute(insert_query, values)
                     inserted_row = cursor.fetchone()
                     column_names = [desc[0] for desc in cursor.description]
                     
-                    # Convertir a diccionario
+                    # Convertir a diccionario serializable
                     result_dict = {}
                     if inserted_row:
                         for i, value in enumerate(inserted_row):
-                            result_dict[column_names[i]] = value
-                    
+                            result_dict[column_names[i]] = self._serialize_value(value)
+                
                 conn.commit()
             
+            action = "created_table_and_inserted" if not table_exists else "inserted"
+            
             return {
-                "status": "created",
+                "status": "success",
                 "database": "postgresql",
                 "table": table_name,
-                "info": f"Registro insertado en la tabla '{table_name}'",
+                "action": action,
+                "info": f"Tabla '{table_name}' {'creada e ' if not table_exists else ''}registro insertado",
                 "data": result_dict
             }, 201
         
