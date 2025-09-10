@@ -18,5 +18,23 @@ To use this script, you must install the Python `requests` library. You can do t
 
 ```bash
 pip install requests
-
+```
 An API key from Mockaroo is also required, which must be configured as an environment variable called MOCKAROO_API_KEY or in a configuration file.
+
+How to Use
+Set up the API Key: Make sure your Mockaroo API key is available as an environment variable.
+
+```bash
+
+export MOCKAROO_API_KEY="your_api_key_here"
+```
+Define the Schema: In the script, define the schema of the data you want to generate as a list of dictionaries, following the Mockaroo API structure.
+
+Call the Generator: Create an instance of the MockData class with your API key and use the generate_data() method to generate the data.
+
+fields: A list of dictionaries that define the data schema.
+
+count: The number of records to be generated.
+
+format_: The desired output format ("json" or "csv").
+
