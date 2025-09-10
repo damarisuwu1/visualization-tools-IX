@@ -1,3 +1,4 @@
+import json
 from pymongo import MongoClient
 from config import CONNECTION_MONGO
 
@@ -5,15 +6,16 @@ from config import CONNECTION_MONGO
 mongo_client = MongoClient(CONNECTION_MONGO)
 
 # Seleccionar base de datos
-db = mongo_client["mi_base_de_datos"]
+db = mongo_client["VMI_model"]
 
 # Seleccionar colección
 usuarios = db["usuarios"]
 
-# Insertar un documento
-nuevo_usuario = {"nombre": "Alan", "edad": 26, "pais": "México"}
-usuarios.insert_one(nuevo_usuario)
+# Leer archivo JSON
+with open("usuarios.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
 
-# Leer documentos
-for usuario in usuarios.find():
-    print(usuario)
+# Insertar varios documentos
+usuarios.insert_many(data)
+
+print("Usuarios insertados correctamente.")
