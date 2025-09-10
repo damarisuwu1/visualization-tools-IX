@@ -12,8 +12,16 @@ from contextlib import closing
 load_dotenv()
 
 # ===== Configuración de conexiones
-# MongoDB
-mongo_client = MongoClient(os.getenv("MONGO_URL"))
+# MongoDB - Conexión autenticada con el usuario de la base de datos
+def get_mongo_client():
+    return MongoClient(
+        os.getenv("MONGO_URL"),
+        username=os.getenv("MONGO_USER"),  # Usa MONGO_USER en lugar de MONGO_ROOT_USER
+        password=os.getenv("MONGO_PASSWORD"),  # Usa MONGO_PASSWORD en lugar de MONGO_ROOT_PASSWORD
+        authSource=os.getenv("MONGO_DB")
+    )
+
+mongo_client = get_mongo_client()
 mongo_db = mongo_client[str(os.getenv('MONGO_DB'))]
 
 # PostgreSQL
@@ -36,13 +44,13 @@ CORS(app)
 api = Api(app, prefix='/api-db')
 
 # ===== Importar endpoints
-from .EndpointsMongo.collections import MongoCollections
-from .EndpointsPostgres.tables import PostgresTables
+from EndpointsMongo.collections import MongoCollections
+from EndpointsPostgres.tables import PostgresTables
 
-class HealthCheck(Resource):
+class Info(Resource):
     def get(self):
         try:
-            # Test MongoDB
+            # Test MongoDB - Obtener colecciones
             mongo_collections = mongo_db.list_collection_names()
             mongo_status = "connected"
         except Exception as e:
@@ -50,15 +58,27 @@ class HealthCheck(Resource):
             mongo_collections = []
 
         try:
-            # Test PostgreSQL
+            # Test PostgreSQL - Obtener tablas
             with closing(get_postgres_connection()) as conn:
                 with conn.cursor() as cursor:
+                    # Obtener información de la base de datos
                     cursor.execute("SELECT version();")
                     postgres_version = cursor.fetchone()[0]
+                    
+                    # Obtener lista de tablas
+                    cursor.execute("""
+                        SELECT table_name 
+                        FROM information_schema.tables 
+                        WHERE table_schema = 'public'
+                        ORDER BY table_name;
+                    """)
+                    postgres_tables = [row[0] for row in cursor.fetchall()]
+                    
                     postgres_status = "connected"
         except Exception as e:
             postgres_status = f"error: {str(e)}"
             postgres_version = None
+            postgres_tables = []
 
         return {
             "status": "healthy",
@@ -66,20 +86,20 @@ class HealthCheck(Resource):
             "databases": {
                 "mongodb": {
                     "status": mongo_status,
-                    "collections": mongo_collections
+                    "collections": mongo_collections,
+                    "collection_count": len(mongo_collections)
                 },
                 "postgresql": {
                     "status": postgres_status,
-                    "version": postgres_version
+                    "version": postgres_version,
+                    "tables": postgres_tables,
+                    "table_count": len(postgres_tables)
                 }
             }
         }, 200
 
 # ===== Registrar endpoints
-api.add_resource(HealthCheck, '/health')
+api.add_resource(Info, '/info')
 api.add_resource(MongoCollections, '/mongo')
 api.add_resource(PostgresTables, '/postgres')
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=10000)
 

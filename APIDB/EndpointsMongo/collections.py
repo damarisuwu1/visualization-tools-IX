@@ -68,7 +68,6 @@ class MongoCollections(Resource):
 
             return {
                 "status": "fetched",
-                "database": "mongodb", 
                 "collection": collection_name,
                 "count": len(documents),
                 "data": documents
@@ -105,7 +104,7 @@ class MongoCollections(Resource):
             # ===== Confirmación
             return {
                 "status": "created",
-                "database": "mongodb",
+                
                 "collection": collection_name,
                 "info": f"Documento insertado en la colección '{collection_name}'",
                 "inserted_id": str(result.inserted_id)
@@ -160,7 +159,7 @@ class MongoCollections(Resource):
             # ===== Confirmación
             return {
                 "status": "updated", 
-                "database": "mongodb",
+                
                 "collection": collection_name,
                 "info": f"Se actualizó el documento con id {doc_id}",
                 "matched_count": result.matched_count,
@@ -195,7 +194,7 @@ class MongoCollections(Resource):
                 result = collection.delete_many({})
                 return {
                     "status": "deleted_all",
-                    "database": "mongodb",
+                    
                     "collection": collection_name,
                     "info": f"Se eliminaron {result.deleted_count} documentos"
                 }, 200
@@ -212,7 +211,7 @@ class MongoCollections(Resource):
             # ===== Confirmación de eliminación individual
             return {
                 "status": "deleted",
-                "database": "mongodb",
+                
                 "collection": collection_name,
                 "info": f"Se eliminó el documento con id {doc_id}"
             }, 200

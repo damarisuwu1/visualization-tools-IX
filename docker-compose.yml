@@ -1,11 +1,13 @@
 services:
   # =============== API Principal ===============
-  database_visualization:
+  apidb_visualization:
     build:
-      context: ./Database
-    container_name: database_visualization
+      context: ./APIDB
+    container_name: apidb_visualization
     ports:
       - "10000:10000"
+    expose:
+      - "10000"
     env_file:
       - .env
     depends_on:
@@ -24,8 +26,9 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_DB}
+    # Agrega un script de inicialización para crear el usuario de la base de datos
     volumes:
-      - mongo_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - visualization_net
 
@@ -39,16 +42,9 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./Database/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - visualization_net
 
 networks:
   visualization_net:
     driver: bridge
-
-volumes:
-  mongo_data:
-  postgres_data:
