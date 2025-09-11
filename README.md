@@ -19,9 +19,9 @@ Repositorio para subir todos los codigos de Pedrozo
 | URL_API |
 
 ## Autor(es)
-* [Alan Valbuena](https://github.com/)
+* [Alan Valbuena](https://github.com/AlanVAal)
 * [Ariel Buenfil](https://github.com/areo-17)
-* [Damaris Dzul](https://github.com/)
+* [Damaris Dzul](https://github.com/damarisuwu1)
 * [Diego Monroy](https://github.com/monroyminerodiego)
 * [Paulina Chiquete](https://github.com/)
-* [Sergio Barrera](https://github.com/)
+* [Sergio Barrera](https://github.com/S3RG10-B4RR3R4)
