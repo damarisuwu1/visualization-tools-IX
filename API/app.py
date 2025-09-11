@@ -12,19 +12,16 @@ from contextlib import closing
 load_dotenv()
 
 # ===== Configuración de conexiones
-# MongoDB - Conexión autenticada con el usuario de la base de datos
 def get_mongo_client():
     return MongoClient(
         os.getenv("MONGO_URL"),
-        username=os.getenv("MONGO_USER"),  # Usa MONGO_USER en lugar de MONGO_ROOT_USER
-        password=os.getenv("MONGO_PASSWORD"),  # Usa MONGO_PASSWORD en lugar de MONGO_ROOT_PASSWORD
+        username=os.getenv("MONGO_USER"),
+        password=os.getenv("MONGO_PASSWORD"),
         authSource=os.getenv("MONGO_DB")
     )
-
 mongo_client = get_mongo_client()
 mongo_db = mongo_client[str(os.getenv('MONGO_DB'))]
 
-# PostgreSQL
 def get_postgres_connection():
     return psycopg2.connect(
         host=os.getenv('POSTGRES_HOST'),
@@ -44,8 +41,8 @@ CORS(app)
 api = Api(app, prefix='/api-db')
 
 # ===== Importar endpoints
-from EndpointsMongo.collections import MongoCollections
-from EndpointsPostgres.tables import PostgresTables
+from Endpoints.collections import MongoCollections
+from Endpoints.tables import PostgresTables
 
 class Info(Resource):
     def get(self):
@@ -99,7 +96,7 @@ class Info(Resource):
         }, 200
 
 # ===== Registrar endpoints
-api.add_resource(Info, '/info')
+api.add_resource(Info,             '/info')
 api.add_resource(MongoCollections, '/mongo')
-api.add_resource(PostgresTables, '/postgres')
+api.add_resource(PostgresTables,   '/postgres')
 

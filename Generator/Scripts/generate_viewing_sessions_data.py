@@ -1,7 +1,6 @@
 import os, json, random, requests, platform
 from datetime import datetime, timedelta
 from typing import Dict
-from dotenv import load_dotenv; load_dotenv()
 
 class ViewingSessionGenerator:
     def __init__(self):
@@ -100,24 +99,25 @@ class ViewingSessionGenerator:
     
     def send_record(self, payload: Dict) -> bool:
         """Send single record to API"""
-        try:
-            response = requests.post(
-                self.endpoint,
-                json=payload,
-                headers={"Content-Type": "application/json"},
-                timeout=10
-            )
+        # try:
+        #     response = requests.post(
+        #         self.endpoint,
+        #         json=payload,
+        #         headers={"Content-Type": "application/json"},
+        #         timeout=10
+        #     )
             
-            if response.status_code == 201:
-                print(f"✅ Record sent successfully: {payload['data']['session_id']}")
-                return True
-            else:
-                print(f"❌ Failed to send record: {response.status_code} - {response.text}")
-                return False
+        #     if response.status_code == 201:
+        #         print(f"✅ Record sent successfully: {payload['data']['session_id']}")
+        #         return True
+        #     else:
+        #         print(f"❌ Failed to send record: {response.status_code} - {response.text}")
+        #         return False
                 
-        except requests.RequestException as e:
-            print(f"❌ Network error sending record: {str(e)}")
-            return False
+        # except requests.RequestException as e:
+        #     print(f"❌ Network error sending record: {str(e)}")
+        #     return False
+        print('Envio simulado...')
     
     def generate_and_send_data(self, num_records: int = 100, batch_delay: float = 0.1) -> Dict:
         """Generate and send multiple records"""

@@ -3,6 +3,21 @@ Repositorio para subir todos los codigos de Pedrozo
 
 ## Variables de Entorno
 
+| Nombre |
+| --- |
+| MONGO_URL |
+| MONGO_DB |
+| MONGO_ROOT_USER |
+| MONGO_ROOT_PASSWORD |
+| MONGO_USER |
+| MONGO_PASSWORD |
+| POSTGRES_HOST |
+| POSTGRES_PORT |
+| POSTGRES_DB |
+| POSTGRES_USER |
+| POSTGRES_PASSWORD |
+| URL_API |
+
 ## Autor(es)
 * [Alan Valbuena](https://github.com/)
 * [Ariel Buenfil](https://github.com/)
