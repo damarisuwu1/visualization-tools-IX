@@ -1,0 +1,23 @@
+name: Deploy via API
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        run: |
+          echo "🚀 Desplegando contenedor xpertia"
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          
+          curl -X GET \
+            -H "Content-Type: application/json" \
+            --max-time 300 \
+            "https://www.xpert-ia.com.mx/api/vps/reiniciar/contenedores?id=visualization"
+          
+          echo ""
+          echo "✅ Petición enviada exitosamente"
