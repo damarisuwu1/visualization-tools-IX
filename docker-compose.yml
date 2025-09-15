@@ -1,32 +1,11 @@
 services:
   # =============== Servicios Públicos ===============
-  gen_visualization:
-    build:
-      context: ./Generator
-    container_name: gen_visualization
-    env_file:
-      - .env
-
-  web_visualization:
-    build:
-      context: ./Web
-    container_name: web_visualization
-    # ports:
-    #   - "501:501"
-    expose:
-      - "501"
-    env_file:
-      - .env
-    networks:
-      - visualization_net
-      - proxy_net
-  
   apidb_visualization:
     build:
       context: ./API
     container_name: apidb_visualization
-    # ports:
-    #   - "503:503"
+    ports:
+      - "503:503"
     expose:
       - "503"
     env_file:
@@ -36,9 +15,36 @@ services:
       - postgres_visualization
     networks:
       - visualization_net
-      - proxy_net
+      # - proxy_net
+      
+  web_visualization:
+    build:
+      context: ./Web
+    container_name: web_visualization
+    ports:
+      - "501:501"
+    expose:
+      - "501"
+    env_file:
+      - .env
+    depends_on:
+      - apidb_visualization
+    networks:
+      - visualization_net
+      # - proxy_net
+  
+  
 
   # =============== Servicios Privados ===============
+  gen_visualization:
+    build:
+      context: ./Generator
+    container_name: gen_visualization
+    depends_on:
+      - apidb_visualization
+    env_file:
+      - .env
+
   mongo_visualization:
     image: mongo:6.0
     container_name: mongo_visualization
@@ -71,8 +77,8 @@ services:
 networks:
   visualization_net:
     driver: bridge
-  proxy_net:
-    external: true
+  # proxy_net:
+  #   external: true
 
 volumes:
   mongo_data:
