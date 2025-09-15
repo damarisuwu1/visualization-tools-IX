@@ -1,13 +1,13 @@
 services:
-  # =============== API Principal ===============
+  # =============== Servicios Públicos ===============
   apidb_visualization:
     build:
-      context: ./APIDB
+      context: ./API
     container_name: apidb_visualization
-    # ports:
-    #   - "501:501"
+    ports:
+      - "503:503"
     expose:
-      - "501"
+      - "503"
     env_file:
       - .env
     depends_on:
@@ -15,9 +15,36 @@ services:
       - postgres_visualization
     networks:
       - visualization_net
-      - proxy_net
+      # - proxy_net
+      
+  web_visualization:
+    build:
+      context: ./Web
+    container_name: web_visualization
+    ports:
+      - "501:501"
+    expose:
+      - "501"
+    env_file:
+      - .env
+    depends_on:
+      - apidb_visualization
+    networks:
+      - visualization_net
+      # - proxy_net
+  
+  
 
-  # =============== MongoDB ===============
+  # =============== Servicios Privados ===============
+  gen_visualization:
+    build:
+      context: ./Generator
+    container_name: gen_visualization
+    depends_on:
+      - apidb_visualization
+    env_file:
+      - .env
+
   mongo_visualization:
     image: mongo:6.0
     container_name: mongo_visualization
@@ -33,7 +60,6 @@ services:
     networks:
       - visualization_net
 
-  # =============== PostgreSQL ===============
   postgres_visualization:
     image: postgres:15
     container_name: postgres_visualization
@@ -51,8 +77,8 @@ services:
 networks:
   visualization_net:
     driver: bridge
-  proxy_net:
-    external: true
+  # proxy_net:
+  #   external: true
 
 volumes:
   mongo_data:
