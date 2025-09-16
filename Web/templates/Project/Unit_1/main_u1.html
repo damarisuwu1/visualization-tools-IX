@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Unidad 1 - Visualization Tools IX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Project/Unit_1/main_u1.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="back-button">
+                    <a href="{{ url_for('home') }}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al inicio
+                    </a>
+                </div>
+                <h1 class="main-title">
+                    <i class="fas fa-code"></i>
+                    Proyecto Unidad 1
+                </h1>
+                <p class="subtitle">Fundamentos de Visualización</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="construction-container">
+                <div class="construction-icon">
+                    <i class="fas fa-hard-hat"></i>
+                </div>
+                <h2 class="construction-title">En Construcción</h2>
+                <p class="construction-text">
+                    Este proyecto está siendo desarrollado actualmente.
+                    <br>
+                    Pronto estará disponible con contenido sobre fundamentos de visualización.
+                </p>
+                <div class="construction-details">
+                    <div class="detail-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Análisis de datos básicos</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-palette"></i>
+                        <span>Principios de diseño visual</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tools"></i>
+                        <span>Herramientas fundamentales</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/Project/Unit_1/main_u1.js') }}"></script>
+</body>
+</html>

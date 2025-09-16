@@ -72,11 +72,11 @@ function createUnitCard(unit, index) {
             <p class="unit-description">${unit.description}</p>
         </div>
         <div class="unit-buttons">
-            <button class="btn btn-project" onclick="openModal('proyecto', ${unit.number})">
+            <button class="btn btn-project" onclick="navigateToProject(${unit.number})">
                 <i class="fas fa-code"></i>
                 Proyecto Unidad ${unit.number}
             </button>
-            <button class="btn btn-portfolio" onclick="openModal('portafolio', ${unit.number})">
+            <button class="btn btn-portfolio" onclick="navigateToPortfolio(${unit.number})">
                 <i class="fas fa-folder"></i>
                 Portafolio Unidad ${unit.number}
             </button>
@@ -86,7 +86,17 @@ function createUnitCard(unit, index) {
     return card;
 }
 
-// Abrir modal
+// Navegar a proyecto
+function navigateToProject(unitNumber) {
+    window.location.href = `/project/unit${unitNumber}`;
+}
+
+// Navegar a portafolio
+function navigateToPortfolio(unitNumber) {
+    window.location.href = `/portfolio/unit${unitNumber}`;
+}
+
+// Función legacy para abrir modal (por si quieres mantenerla)
 function openModal(type, unitNumber) {
     const unit = unitsData.find(u => u.number === unitNumber);
     
@@ -107,6 +117,10 @@ function openModal(type, unitNumber) {
             </ul>
             <br>
             <p><strong>Estado:</strong> <span style="color: var(--accent-color);">Disponible</span></p>
+            <br>
+            <button onclick="navigateToProject(${unitNumber})" style="padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Ir al Proyecto
+            </button>
         `;
     } else {
         modalContent.innerHTML = `
@@ -123,6 +137,10 @@ function openModal(type, unitNumber) {
             </ul>
             <br>
             <p><strong>Estado:</strong> <span style="color: var(--primary-color);">En progreso</span></p>
+            <br>
+            <button onclick="navigateToPortfolio(${unitNumber})" style="padding: 10px 20px; background: var(--secondary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Ver Portafolio
+            </button>
         `;
     }
     
