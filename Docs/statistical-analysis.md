@@ -27,6 +27,7 @@ A critical first task was to assess the quality of the raw data. The following k
 
 This section summarizes the main statistical findings.
 
+
 #### **3.1 Central Tendency and Dispersion**
 
 * The **average age** of users is **41.5 years**, with a standard deviation of 13.9, indicating a diverse age range.
