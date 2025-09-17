@@ -49,3 +49,38 @@ Visualizations were used to confirm and present the findings, making the data mo
 * **Bar Charts**: These visualizations confirmed the dominance of the **Basic** subscription type, the strong market presence in **Mexico**, and the preference for **Smart TV** as a viewing device.
 
 ---
+
+### **Interpretation of Descriptive Statistics**
+
+This section provides a detailed interpretation of the calculated central tendency and dispersion measures for the key numerical variables.
+
+---
+
+#### **Age**
+* **Central Tendency**: The **mean** (41.54) and **median** (42.0) are very similar. This suggests that the age distribution is fairly symmetrical, confirming the visual findings from the histogram.
+* **Dispersion**: The **standard deviation** of nearly 14 years shows a moderate spread in the data. This indicates a variety of user ages, from young adults to older viewers, rather than a single concentrated demographic.
+
+---
+
+#### **Watch Duration (minutes)**
+* **Central Tendency**: The **mean** (78.91) and **median** (79.0) are very close, indicating a balanced distribution. However, the **mode** is significantly higher at 167.0 minutes. This suggests that while average sessions are around 79 minutes, there's a specific, common peak for very long sessions, likely for feature-length movies or extended content.
+* **Dispersion**: The **range** of 178 minutes (from 2 to 180) and a **standard deviation** of 45 minutes show that there is significant variability in how long users watch.
+
+---
+
+#### **Completion Percentage**
+* **Central Tendency**: There is a notable difference between the **mean** (78.38%) and the **median** (84.50%). This suggests the distribution is left-skewed, meaning a large number of lower-completion-rate sessions are pulling the average down. The median, being higher, provides a more accurate picture of a typical user's engagement.
+* **Dispersion**: The **range** of 90% (from 10% to 100%) and a **standard deviation** of 21.46% confirm a wide variation in how much content users complete.
+
+---
+
+#### **Total Watch Time (hours)**
+* **Central Tendency**: The **mean** (352.37) is noticeably higher than the **median** (324.10). This indicates that the distribution is right-skewed, with a long tail of data points.
+* **Dispersion**: The large **standard deviation** of 232.19 hours confirms a high degree of variability. This finding, along with the skewed distribution, points to the existence of a small group of **"super-users"** who have accumulated a very high number of viewing hours and are pulling the average up, while the majority of users watch less.
+
+### Outlier Detection and Handling
+An analysis was conducted using box plots to identify potential outliers in key numerical variables.
+
+* Watch Duration (minutes): The box plot for watch_duration_minutes showed no significant outliers. This indicates that while session durations vary widely, they all fall within an expected range of user behavior, from short clips to full-length movies.
+* Total Watch Time (hours): The box plot for total_watch_time_hours clearly identified a small number of outliers. These data points represent users who have an exceptionally high number of total viewing hours, significantly more than the majority of the user base.
+* Decision: We will keep these outliers in the dataset. They are not considered data entry errors or inconsistencies. Instead, they represent a small but highly valuable segment of "super-users" who are extremely engaged with the platform. Removing them would lead to a skewed and incomplete understanding of the platform's most active users, a critical segment for business strategy.
