@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - apidb_visualization
+      - api_visualization
     networks:
       - visualization_net
       # - proxy_net
@@ -41,7 +41,7 @@ services:
       context: ./Generator
     container_name: gen_visualization
     depends_on:
-      - apidb_visualization
+      - api_visualization
     env_file:
       - .env
 
