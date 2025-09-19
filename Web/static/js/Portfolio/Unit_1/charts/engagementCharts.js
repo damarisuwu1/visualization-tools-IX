@@ -46,22 +46,51 @@ const EngagementCharts = {
 
     // Crear la sección completa
     createSection: function() {
+        console.log('Creando sección de engagement...');
         const section = TabManager.createSection(this.sectionConfig);
-        TabManager.initializeTabs(this.sectionConfig.id, this.tabConfigs);
+        
+        // Agregar la sección al dashboard antes de inicializar tabs
+        const container = document.getElementById('dashboard-sections');
+        if (container) {
+            container.appendChild(section);
+            console.log('Sección agregada al dashboard');
+        } else {
+            console.error('Contenedor dashboard-sections no encontrado');
+        }
+        
+        // Inicializar tabs después de que la sección esté en el DOM
+        setTimeout(() => {
+            TabManager.initializeTabs(this.sectionConfig.id, this.tabConfigs);
+            console.log('Tabs inicializados');
+            
+            // Inicializar gráficas después de que los tabs estén listos
+            setTimeout(() => {
+                this.initializeCharts();
+                console.log('Gráficas inicializadas');
+            }, 100);
+        }, 50);
+        
         return section;
     },
 
     // Inicializar todas las gráficas
     initializeCharts: function() {
-        this.createCompletionChart();
-        this.createAbandonmentChart();
-        this.createSubscriptionChart();
+        try {
+            this.createCompletionChart();
+            this.createAbandonmentChart();
+            this.createSubscriptionChart();
+        } catch (error) {
+            console.error('Error inicializando gráficas:', error);
+        }
     },
 
     // Gráfica 1: Completion Rate por Edad
     createCompletionChart: function() {
         const ctx = document.getElementById('engagementChart1');
-        if (!ctx) return;
+        if (!ctx) {
+            console.error('Canvas engagementChart1 no encontrado');
+            return;
+        }
 
         new Chart(ctx, {
             type: 'bar',
@@ -69,7 +98,11 @@ const EngagementCharts = {
                 labels: this.data.completionByAge.labels,
                 datasets: [ChartConfig.createDataset(
                     '% Promedio de Finalización',
-                    this.data.completionByAge.values
+                    this.data.completionByAge.values,
+                    {
+                        backgroundColor: ChartConfig.colors.primary,
+                        borderColor: ChartConfig.colors.primaryBorder
+                    }
                 )]
             },
             options: {
@@ -92,7 +125,10 @@ const EngagementCharts = {
     // Gráfica 2: Abandono por País
     createAbandonmentChart: function() {
         const ctx = document.getElementById('engagementChart2');
-        if (!ctx) return;
+        if (!ctx) {
+            console.error('Canvas engagementChart2 no encontrado');
+            return;
+        }
 
         new Chart(ctx, {
             type: 'doughnut',
@@ -111,7 +147,10 @@ const EngagementCharts = {
     // Gráfica 3: Engagement por Suscripción
     createSubscriptionChart: function() {
         const ctx = document.getElementById('engagementChart3');
-        if (!ctx) return;
+        if (!ctx) {
+            console.error('Canvas engagementChart3 no encontrado');
+            return;
+        }
 
         new Chart(ctx, {
             type: 'line',
@@ -121,8 +160,8 @@ const EngagementCharts = {
                     'Tiempo Promedio de Sesión (min)',
                     this.data.engagementBySubscription.values,
                     {
-                        backgroundColor: ChartConfig.colors.secondary,
-                        borderColor: ChartConfig.colors.secondaryBorder,
+                        backgroundColor: ChartConfig.colors.secondaryRGBA,
+                        borderColor: ChartConfig.colors.secondary,
                         tension: 0.4,
                         fill: true
                     }
@@ -132,3 +171,6 @@ const EngagementCharts = {
         });
     }
 };
+
+// Hacer disponible globalmente
+window.EngagementCharts = EngagementCharts;

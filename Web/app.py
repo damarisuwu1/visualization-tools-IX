@@ -50,6 +50,7 @@ if __name__ == '__main__':
     print("Accede a estas URLs en tu navegador:")
     print("• Página principal: http://127.0.0.1:501/")
     print("• Proyecto Unidad 1: http://127.0.0.1:501/project/unit1")
+    print("• Portafolio Unidad 1: http://127.0.0.1:501/portfolio/unit1")
     print("• Otras rutas disponibles:")
     print("  - /project/unit[1-6] (proyectos)")
     print("  - /portfolio/unit[1-6] (portafolios)")

@@ -1,33 +1,36 @@
 // js/utils/tabManager.js - Gestor de pestañas y navegación
 
 const TabManager = {
-    // Función principal para cambiar tabs
-    showTab: function(section, tabId) {
+    // Función principal para cambiar tabs (corregida)
+    showTab: function(sectionId, tabId, buttonElement) {
         // Ocultar todos los tabs de esa sección
-        const tabs = document.querySelectorAll(`[id^="${section}-tab"]`);
+        const tabs = document.querySelectorAll(`[id^="${sectionId}-tab"]`);
         tabs.forEach(tab => {
             if (tab) tab.classList.remove('active');
         });
         
         // Mostrar el tab seleccionado
-        const selectedTab = document.getElementById(`${section}-${tabId}`);
+        const selectedTab = document.getElementById(`${sectionId}-${tabId}`);
         if (selectedTab) {
             selectedTab.classList.add('active');
         }
         
-        // Actualizar botones - buscar el botón que activó el evento
-        const parentSection = event.target.closest('.analysis-section');
+        // Actualizar botones - usar el elemento pasado como parámetro
+        const parentSection = buttonElement.closest('.analysis-section');
         if (parentSection) {
             const buttons = parentSection.querySelectorAll('.nav-tab');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            buttonElement.classList.add('active');
         }
     },
 
-    // Inicializar tabs para una sección
+    // Inicializar tabs para una sección (corregida)
     initializeTabs: function(sectionId, tabConfigs) {
         const section = document.getElementById(sectionId);
-        if (!section) return;
+        if (!section) {
+            console.error(`Sección no encontrada: ${sectionId}`);
+            return;
+        }
 
         // Crear estructura de tabs
         const tabsContainer = document.createElement('div');
@@ -41,7 +44,13 @@ const TabManager = {
             const tabButton = document.createElement('button');
             tabButton.className = `nav-tab ${index === 0 ? 'active' : ''}`;
             tabButton.textContent = config.title;
-            tabButton.onclick = () => this.showTab(sectionId, `tab${index + 1}`);
+            
+            // Corregir el onclick para pasar el elemento como parámetro
+            tabButton.onclick = (event) => {
+                event.preventDefault();
+                this.showTab(sectionId, `tab${index + 1}`, tabButton);
+            };
+            
             tabsContainer.appendChild(tabButton);
 
             // Crear contenido del tab
@@ -54,6 +63,8 @@ const TabManager = {
             
             const canvas = document.createElement('canvas');
             canvas.id = config.canvasId;
+            canvas.width = 400;
+            canvas.height = 300;
             chartContainer.appendChild(canvas);
             
             const description = document.createElement('div');
@@ -97,3 +108,6 @@ const TabManager = {
         return section;
     }
 };
+
+// Hacer disponible globalmente
+window.TabManager = TabManager;
