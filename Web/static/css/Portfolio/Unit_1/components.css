@@ -1,0 +1,84 @@
+/* styles/components.css - Estilos de componentes */
+
+.analysis-section {
+    margin: 30px;
+    padding: 25px;
+    border: 1px solid #e1e5e9;
+    border-radius: 10px;
+    background: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.analysis-title {
+    color: #2a5298;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 8px;
+}
+
+.columns-needed {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2196f3;
+}
+
+.columns-title {
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+}
+
+.csv-columns {
+    margin: 5px 0;
+}
+
+.csv1 {
+    color: #c62828;
+    font-weight: 500;
+}
+
+.csv2 {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.nav-tabs {
+    display: flex;
+    background: #f1f3f4;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+}
+
+.nav-tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: #f1f3f4;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-tab.active {
+    background: white;
+    color: #2a5298;
+}
+
+.nav-tab:hover {
+    background: #e8eaf6;
+}
+
+.tab-content {
+    display: none;
+    background: white;
+    padding: 20px;
+    border-radius: 0 0 8px 8px;
+    min-height: 500px;
+}
+
+.tab-content.active {
+    display: block;
+}

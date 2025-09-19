@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Datos de Streaming - Modular</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- CSS Modular -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/charts.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Análisis de Datos de Streaming</h1>
+            <p>Dashboard Modular de Análisis</p>
+        </div>
+
+        <!-- Contenedor para cargar secciones dinámicamente -->
+        <div id="dashboard-sections"></div>
+    </div>
+
+    <!-- Scripts Modulares -->
+    <!-- <script src="js/utils/chartConfig.js"></script>
+    <script src="js/utils/tabManager.js"></script>
+    <script src="js/charts/engagementCharts.js"></script>
+    <script src="js/charts/segmentationChart.js"></script>
+    <script src="js/charts/temporalChart.js"></script>
+    <script src="js/charts/technicalChart.js"></script>
+    <script src="js/charts/valueChart.js"></script>
+    <script src="js/main.js"></script> -->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script> 
+    <!-- Primero las utilidades --> 
+    <script src="js/utils/chartConfig.js"></script> 
+    <script src="js/utils/tabManager.js"></script> 
+    <!-- Luego los módulos de gráficas --> 
+    <script src="js/charts/engagementCharts.js"></script> 
+    <script src="js/charts/segmentationChart.js"></script> 
+    <script src="js/charts/temporalChart.js"></script> 
+    <script src="js/charts/technicalChart.js"></script> 
+    <script src="js/charts/valueChart.js"></script> 
+    <!-- Finalmente el orquestador --> 
+     <script src="js/main.js"></script>
+</body>
+</html>
