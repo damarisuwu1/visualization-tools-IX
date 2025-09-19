@@ -4,20 +4,33 @@
     position: relative;
     height: 300px;
     margin: 20px 0;
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
 }
 
 .chart-description {
-    background: #fff3e0;
-    padding: 12px;
-    border-radius: 6px;
-    font-style: italic;
-    color: #e65100;
-    margin-top: 10px;
-    border-left: 3px solid #ff9800;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
+    padding: 16px;
+    border-radius: 12px;
+    color: #1e40af;
+    margin-top: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 /* Estilos específicos para diferentes tipos de gráficas */
@@ -34,11 +47,14 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #666;
+    color: #6b7280;
+    font-weight: 500;
 }
 
 .chart-error {
-    background: #ffebee;
-    border-left: 3px solid #f44336;
-    color: #c62828;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(252, 165, 165, 0.1) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
