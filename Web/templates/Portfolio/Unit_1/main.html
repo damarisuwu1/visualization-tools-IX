@@ -8,10 +8,10 @@
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
-    <!-- CSS Modular -->
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/components.css">
-    <link rel="stylesheet" href="styles/charts.css">
+    <!-- CSS Modular - Rutas corregidas desde templates/Portfolio/Unit_1/ hacia static/css/Portfolio/Unit_1/ -->
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/main.css">
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/components.css">
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/charts.css">
 </head>
 <body>
     <div class="container">
@@ -24,28 +24,22 @@
         <div id="dashboard-sections"></div>
     </div>
 
-    <!-- Scripts Modulares -->
-    <!-- <script src="js/utils/chartConfig.js"></script>
-    <script src="js/utils/tabManager.js"></script>
-    <script src="js/charts/engagementCharts.js"></script>
-    <script src="js/charts/segmentationChart.js"></script>
-    <script src="js/charts/temporalChart.js"></script>
-    <script src="js/charts/technicalChart.js"></script>
-    <script src="js/charts/valueChart.js"></script>
-    <script src="js/main.js"></script> -->
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script> 
-    <!-- Primero las utilidades --> 
-    <script src="js/utils/chartConfig.js"></script> 
-    <script src="js/utils/tabManager.js"></script> 
-    <!-- Luego los módulos de gráficas --> 
-    <script src="js/charts/engagementCharts.js"></script> 
-    <script src="js/charts/segmentationChart.js"></script> 
-    <script src="js/charts/temporalChart.js"></script> 
-    <script src="js/charts/technicalChart.js"></script> 
-    <script src="js/charts/valueChart.js"></script> 
-    <!-- Finalmente el orquestador --> 
-     <script src="js/main.js"></script>
+    <!-- Scripts Modulares con rutas corregidas desde templates/Portfolio/Unit_1/ hacia static/js/Portfolio/Unit_1/ -->
+    <!-- Primero las utilidades -->
+    <script src="../../../static/js/Portfolio/Unit_1/utils/chartConfig.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/utils/tabManager.js"></script>
+    
+    <!-- Configuración del dashboard -->
+    <script src="../../../static/js/Portfolio/Unit_1/config/dashboardConfig.js"></script>
+    
+    <!-- Módulos de gráficas -->
+    <script src="../../../static/js/Portfolio/Unit_1/charts/engagementCharts.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/segmentationChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/technicalChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/temporalChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/valueChart.js"></script>
+    
+    <!-- Finalmente el orquestador -->
+    <script src="../../../static/js/Portfolio/Unit_1/main.js"></script>
 </body>
 </html>
