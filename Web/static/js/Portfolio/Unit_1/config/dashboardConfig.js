@@ -29,8 +29,26 @@ const DashboardConfig = {
         dollar: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
             <path d="M17 5H9.5A3.5 3.5 0 0 0 9.5 12H14.5A3.5 3.5 0 0 1 14.5 19H6" stroke="currentColor" stroke-width="2"/>
+        </svg>`,
+        // Iconos para el tema toggle
+        sun: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+        </svg>`,
+        moon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
         </svg>`
     },
+
+    // Estado actual del tema
+    currentTheme: 'default',
 
     // Configuración de las secciones en orden de aparición
     sections: [
@@ -234,5 +252,100 @@ const DashboardConfig = {
         }
 
         return { valid: true };
+    },
+
+    // ================================
+    // MÉTODOS PARA EL TEMA TOGGLE
+    // ================================
+
+    // Obtener el tema actual
+    getCurrentTheme: function() {
+        return this.themes[this.currentTheme];
+    },
+
+    // Alternar entre temas
+    toggleTheme: function() {
+        this.currentTheme = this.currentTheme === 'default' ? 'dark' : 'default';
+        this.applyTheme();
+        this.saveThemePreference();
+        return this.currentTheme;
+    },
+
+    // Aplicar tema al DOM
+    applyTheme: function() {
+        const theme = this.getCurrentTheme();
+        const root = document.documentElement;
+        
+        // Aplicar variables CSS personalizadas
+        root.style.setProperty('--theme-primary', theme.primaryColor);
+        root.style.setProperty('--theme-secondary', theme.secondaryColor);
+        root.style.setProperty('--theme-accent', theme.accentColor);
+        root.style.setProperty('--theme-bg', theme.backgroundColor);
+        root.style.setProperty('--theme-surface', theme.surfaceColor);
+        root.style.setProperty('--theme-text-primary', theme.textPrimary);
+        root.style.setProperty('--theme-text-secondary', theme.textSecondary);
+        root.style.setProperty('--theme-border', theme.borderColor);
+        root.style.setProperty('--theme-shadow', theme.shadowColor);
+        
+        // Agregar/remover clase para el tema
+        document.body.classList.toggle('dark-theme', this.currentTheme === 'dark');
+        
+        // Actualizar el botón
+        this.updateThemeButton();
+    },
+
+    // Actualizar el botón de tema
+    updateThemeButton: function() {
+        const themeButton = document.getElementById('theme-toggle-btn');
+        if (themeButton) {
+            const icon = this.currentTheme === 'default' ? this.icons.moon : this.icons.sun;
+            const text = this.currentTheme === 'default' ? 'Modo Oscuro' : 'Modo Claro';
+            themeButton.innerHTML = `${icon} ${text}`;
+        }
+    },
+
+    // Generar HTML del botón de tema
+    getThemeToggleButton: function() {
+        const icon = this.currentTheme === 'default' ? this.icons.moon : this.icons.sun;
+        const text = this.currentTheme === 'default' ? 'Modo Oscuro' : 'Modo Claro';
+        
+        return `
+            <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="DashboardConfig.toggleTheme()">
+                ${icon} ${text}
+            </button>
+        `;
+    },
+
+    // Guardar preferencia de tema
+    saveThemePreference: function() {
+        try {
+            localStorage.setItem('dashboard-theme', this.currentTheme);
+        } catch (e) {
+            // Fallback si localStorage no está disponible
+            console.warn('No se pudo guardar la preferencia de tema');
+        }
+    },
+
+    // Cargar preferencia de tema
+    loadThemePreference: function() {
+        try {
+            const savedTheme = localStorage.getItem('dashboard-theme');
+            if (savedTheme && this.themes[savedTheme]) {
+                this.currentTheme = savedTheme;
+            }
+        } catch (e) {
+            console.warn('No se pudo cargar la preferencia de tema');
+        }
+        this.applyTheme();
+    },
+
+    // Inicializar el sistema de temas
+    initThemeSystem: function() {
+        this.loadThemePreference();
+        
+        // Si hay un botón de tema en el DOM, actualizarlo
+        if (document.getElementById('theme-toggle-btn')) {
+            this.updateThemeButton();
+        }
     }
 };

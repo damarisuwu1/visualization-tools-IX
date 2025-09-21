@@ -4,7 +4,7 @@ const SegmentationChart = {
     // Configuración de la sección
     sectionConfig: {
         id: 'segmentation-section',
-        title: '2. 👥 Análisis de Segmentación de Usuarios',
+        title: DashboardConfig.getSectionTitle('segmentation'),
         csv1Columns: 'user_id, watch_duration_minutes, completion_percentage, device_type',
         csv2Columns: 'user_id, age, country, subscription_type, total_watch_time_hours'
     },

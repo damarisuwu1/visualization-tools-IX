@@ -214,6 +214,189 @@ body::before {
     font-weight: 500;
 }
 
+/* ============================================
+   BOTÓN DE REGRESO CONTENIDO EN HEADER
+   ============================================ */
+
+.back-to-home-btn {
+    position: absolute;
+    top: 25px;
+    left: 65px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: inherit;
+    text-decoration: none;
+}
+
+/* ============================================
+   BOTÓN DE TOGGLE DE TEMA
+   ============================================ */
+
+.theme-toggle-btn {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: inherit;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+.theme-toggle-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover svg {
+    transform: rotate(15deg);
+}
+
+.back-to-home-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateX(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.back-to-home-btn:active {
+    transform: translateX(0);
+    transition: all 0.1s ease;
+}
+
+.back-to-home-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.back-to-home-btn:hover svg {
+    transform: translateX(-2px);
+}
+
+.header-content {
+    padding-top: 0;
+}
+
+/* ============================================
+   VARIABLES CSS PARA TEMAS
+   ============================================ */
+
+:root {
+    --theme-primary: #3b82f6;
+    --theme-secondary: #06b6d4;
+    --theme-accent: #10b981;
+    --theme-bg: rgba(248, 250, 252, 0.8);
+    --theme-surface: rgba(255, 255, 255, 0.7);
+    --theme-text-primary: #1f2937;
+    --theme-text-secondary: #6b7280;
+    --theme-border: rgba(229, 231, 235, 0.4);
+    --theme-shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   TEMA OSCURO
+   ============================================ */
+
+body.dark-theme {
+    background: linear-gradient(135deg, 
+        rgba(17, 24, 39, 0.9) 0%, 
+        rgba(31, 41, 55, 0.8) 50%, 
+        rgba(55, 65, 81, 0.7) 100%
+    );
+    color: var(--theme-text-primary);
+}
+
+body.dark-theme::before {
+    background-image: 
+        radial-gradient(circle at 25px 25px, rgba(96, 165, 250, 0.08) 2px, transparent 0),
+        radial-gradient(circle at 75px 75px, rgba(34, 211, 238, 0.08) 2px, transparent 0);
+}
+
+body.dark-theme .container {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+    box-shadow: 
+        0 32px 64px var(--theme-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+body.dark-theme .container:hover {
+    box-shadow: 
+        0 40px 80px var(--theme-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+body.dark-theme .header {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.8) 0%, 
+        rgba(37, 99, 235, 0.7) 50%, 
+        rgba(29, 78, 216, 0.8) 100%
+    );
+}
+
+body.dark-theme .card {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+    color: var(--theme-text-primary);
+}
+
+body.dark-theme .card:hover {
+    background: rgba(55, 65, 81, 0.9);
+}
+
+body.dark-theme .input {
+    background: rgba(55, 65, 81, 0.8);
+    color: var(--theme-text-primary);
+    border-color: var(--theme-border);
+}
+
+body.dark-theme .input:focus {
+    background: rgba(55, 65, 81, 0.9);
+    border-color: var(--theme-primary);
+}
+
+body.dark-theme .footer {
+    background: rgba(17, 24, 39, 0.8);
+    color: var(--theme-text-secondary);
+    border-color: var(--theme-border);
+}
+
 /* Responsividad mejorada */
 @media (max-width: 768px) {
     body {
@@ -240,6 +423,37 @@ body::before {
         padding: 20px;
         margin: 12px 0;
     }
+
+    .back-to-home-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 10px;
+        margin-top: 16px;
+    }
+    
+    .back-to-home-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .back-to-home-btn:hover {
+        transform: translateX(-2px);
+    }
+
+    .back-to-home-btn:active {
+        transform: translateX(0);
+    }
+
+    .section-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+    
+    .section-icon svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -258,5 +472,17 @@ body::before {
     .btn {
         padding: 10px 20px;
         font-size: 0.8rem;
+    }
+
+    .back-to-home-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        gap: 4px;
+        margin-top: 12px;
+    }
+
+    .back-to-home-btn svg {
+        width: 14px;
+        height: 14px;
     }
 }

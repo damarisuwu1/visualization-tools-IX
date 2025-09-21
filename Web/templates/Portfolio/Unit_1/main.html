@@ -16,8 +16,23 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Análisis de Datos de Streaming</h1>
-            <p>Dashboard Modular de Análisis</p>
+            <!-- Botón de regreso al inicio -->
+            <button class="back-to-home-btn" onclick="goToHome()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Volver al Inicio
+            </button>
+
+            <!-- Botón de toggle de tema -->
+            <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="DashboardConfig.toggleTheme()">
+                <!-- Este contenido se llenará dinámicamente por JavaScript -->
+            </button>
+
+            <div class="header-content">
+                <h1>📊 Análisis de Datos de Streaming</h1>
+                <p>Dashboard Modular de Análisis</p>
+            </div>
         </div>
 
         <!-- Contenedor para cargar secciones dinámicamente -->
@@ -41,5 +56,31 @@
     
     <!-- Finalmente el orquestador -->
     <script src="../../../static/js/Portfolio/Unit_1/main.js"></script>
+
+    <script>
+        // Función para regresar al inicio
+        function goToHome() {
+            // Ajusta esta ruta según tu estructura de Flask
+            window.location.href = '/'; // Ruta principal
+            
+            // Alternativas según tu configuración:
+            // window.location.href = '/index'; // Si tu ruta principal es /index
+            // window.location.href = '../../../index.html'; // Si es archivo estático
+            // window.location.href = '{{ url_for("home") }}'; // Si usas templates de Flask
+        }
+
+        // Inicializar el sistema de temas cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar el sistema de temas
+            DashboardConfig.initThemeSystem();
+            
+            // Configurar el botón de tema
+            const themeButton = document.getElementById('theme-toggle-btn');
+            if (themeButton) {
+                // El contenido del botón se actualizará automáticamente por updateThemeButton()
+                DashboardConfig.updateThemeButton();
+            }
+        });
+    </script>
 </body>
 </html>

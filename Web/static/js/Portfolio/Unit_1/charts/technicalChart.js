@@ -4,7 +4,7 @@ const TechnicalChart = {
     // Configuración de la sección
     sectionConfig: {
         id: 'technical-section',
-        title: '4. 🔧 Análisis Técnico y de Experiencia',
+        title: DashboardConfig.getSectionTitle('technical'),
         csv1Columns: 'device_type, quality_level, watch_duration_minutes, completion_percentage',
         csv2Columns: 'user_id, country (para correlacionar con infraestructura)'
     },

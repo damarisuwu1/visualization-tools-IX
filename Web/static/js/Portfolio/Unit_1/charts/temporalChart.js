@@ -4,7 +4,7 @@ const TemporalChart = {
     // Configuración de la sección
     sectionConfig: {
         id: 'temporal-section',
-        title: '3. ⏰ Análisis Temporal',
+        title: DashboardConfig.getSectionTitle('temporal'),
         csv1Columns: 'user_id, watch_date, watch_duration_minutes',
         csv2Columns: 'user_id, registration_date, total_watch_time_hours'
     },

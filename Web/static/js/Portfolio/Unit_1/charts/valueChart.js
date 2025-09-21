@@ -4,7 +4,7 @@ const ValueChart = {
     // Configuración de la sección
     sectionConfig: {
         id: 'value-section',
-        title: '5. 💰 Análisis de Valor del Cliente',
+        title: DashboardConfig.getSectionTitle('value'),
         csv1Columns: 'user_id, watch_duration_minutes',
         csv2Columns: 'user_id, subscription_type, total_watch_time_hours, registration_date'
     },

@@ -4,7 +4,7 @@ const EngagementCharts = {
     // Configuración de la sección
     sectionConfig: {
         id: 'engagement-section',
-        title: '1. 📈 Análisis de Engagement y Retención',
+        title: DashboardConfig.getSectionTitle('engagement'),
         csv1Columns: 'completion_percentage, content_id, watch_duration_minutes',
         csv2Columns: 'user_id, age, country, subscription_type'
     },
