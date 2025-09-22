@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualization Tools IX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Tabler Icons -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" as="style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
+    <!-- Route configuration (data attributes for JavaScript) -->
+    <div id="route-config" 
+         data-project-base="{{ url_for('project_unit1') }}"
+         data-portfolio-base="{{ url_for('portfolio_unit1') }}"
+         style="display: none;">
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <h1 class="main-title">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="ti ti-chart-line"></i>
                     Visualization Tools IX
                 </h1>
-                <p class="subtitle">Herramientas de visualización y análisis de datos</p>
+                <div class="team-info">
+                    <p class="subtitle">Data Visualization and Analysis Tools</p>
+                    <div class="team-names">
+                        <span class="team-member">Sergio Barrera</span>
+                        <span class="team-member">Ariel Buenfil</span>
+                        <span class="team-member">Damaris Dzul</span>
+                        <span class="team-member">Paulina Chiquete</span>
+                        <span class="team-member">Diego Monroy</span>
+                        <span class="team-member">Alan Valbuena</span>
+                    </div>
+                </div>
             </div>
             <div class="header-decoration"></div>
         </header>
@@ -24,14 +43,14 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="units-container" id="unitsContainer">
-                <!-- Las unidades se generarán dinámicamente con JavaScript -->
+                <!-- Units will be dynamically generated with JavaScript -->
             </div>
         </main>
 
         <!-- Loading Animation -->
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <p>Cargando contenido...</p>
+            <p>Loading content...</p>
         </div>
     </div>
 
@@ -39,13 +58,13 @@
     <div class="modal" id="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Título</h2>
+                <h2 id="modalTitle">Title</h2>
                 <button class="close-btn" id="closeBtn">
-                    <i class="fas fa-times"></i>
+                    <i class="ti ti-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p id="modalContent">Contenido del modal</p>
+                <div id="modalContent">Modal content</div>
             </div>
         </div>
     </div>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Datos de Streaming - Modular</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- CSS Modular - Primero los temas, luego los estilos principales -->
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/themes.css">
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/main.css">
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/components.css">
+    <link rel="stylesheet" href="../../../static/css/Portfolio/Unit_1/charts.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Botón de regreso al inicio -->
+            <button class="back-to-home-btn" onclick="goToHome()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Volver al Inicio
+            </button>
+
+            <!-- Botón de toggle de tema - Ahora manejado por ThemeManager -->
+            <button 
+                id="theme-toggle-btn" 
+                class="theme-toggle-btn" 
+                data-theme-toggle="true"
+                onclick="themeManager.toggleTheme()"
+                aria-label="Cambiar tema"
+                title="Cambiar tema">
+                <!-- Este contenido se llenará dinámicamente por el ThemeManager -->
+                <span class="theme-icon"></span>
+                <span class="theme-text"></span>
+            </button>
+
+            <div class="header-content">
+                <h1>📊 Análisis de Datos de Streaming</h1>
+                <p>Dashboard Modular de Análisis</p>
+            </div>
+        </div>
+
+        <!-- Contenedor para cargar secciones dinámicamente -->
+        <div id="dashboard-sections"></div>
+    </div>
+
+    <!-- Scripts Modulares -->
+    <!-- Primero las utilidades y el gestor de temas -->
+    <script src="../../../static/js/Portfolio/Unit_1/utils/themeManager.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/utils/chartConfig.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/utils/tabManager.js"></script>
+    
+    <!-- Configuración del dashboard -->
+    <script src="../../../static/js/Portfolio/Unit_1/config/dashboardConfig.js"></script>
+    
+    <!-- Módulos de gráficas -->
+    <script src="../../../static/js/Portfolio/Unit_1/charts/engagementCharts.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/segmentationChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/technicalChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/temporalChart.js"></script>
+    <script src="../../../static/js/Portfolio/Unit_1/charts/valueChart.js"></script>
+    
+    <!-- Finalmente el orquestador -->
+    <script src="../../../static/js/Portfolio/Unit_1/main.js"></script>
+
+    <script>
+        // Función para regresar al inicio
+        function goToHome() {
+            // Ajusta esta ruta según tu estructura de Flask
+            window.location.href = '/'; // Ruta principal
+            
+            // Alternativas según tu configuración:
+            // window.location.href = '/index'; // Si tu ruta principal es /index
+            // window.location.href = '../../../index.html'; // Si es archivo estático
+            // window.location.href = '{{ url_for("home") }}'; // Si usas templates de Flask
+        }
+
+        // Inicialización del sistema cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // El ThemeManager ya se inicializa automáticamente cuando se carga
+            // pero podemos hacer configuraciones adicionales aquí
+            
+            // Suscribirse a cambios de tema para actualizar gráficas si es necesario
+            themeManager.subscribe((newTheme, oldTheme) => {
+                console.log(`Tema cambiado de ${oldTheme} a ${newTheme}`);
+                
+                // Si hay gráficas de Chart.js activas, actualizarlas
+                if (typeof Chart !== 'undefined') {
+                    Chart.helpers.each(Chart.instances, function(chartInstance) {
+                        if (chartInstance.chart) {
+                            // Actualizar colores del gráfico según el nuevo tema
+                            updateChartTheme(chartInstance.chart);
+                        }
+                    });
+                }
+            });
+
+            // Escuchar el evento personalizado de cambio de tema
+            document.addEventListener('themeChange', function(event) {
+                const { theme, themeData } = event.detail;
+                console.log('Evento de cambio de tema:', theme, themeData);
+                
+                // Aquí puedes agregar lógica adicional cuando cambie el tema
+                // Por ejemplo, actualizar elementos específicos que no usen CSS variables
+            });
+        });
+
+        // Función para actualizar el tema de un gráfico de Chart.js
+        function updateChartTheme(chart) {
+            if (!chart || !chart.options) return;
+            
+            const colors = DashboardConfig.getChartColorsForCurrentTheme();
+            
+            // Actualizar colores de texto en leyendas
+            if (chart.options.plugins && chart.options.plugins.legend) {
+                chart.options.plugins.legend.labels.color = colors.text;
+            }
+            
+            // Actualizar colores de tooltips
+            if (chart.options.plugins && chart.options.plugins.tooltip) {
+                chart.options.plugins.tooltip.backgroundColor = colors.surface;
+                chart.options.plugins.tooltip.titleColor = colors.text;
+                chart.options.plugins.tooltip.bodyColor = colors.text;
+                chart.options.plugins.tooltip.borderColor = colors.primary;
+            }
+            
+            // Actualizar colores de escalas
+            if (chart.options.scales) {
+                Object.keys(chart.options.scales).forEach(scaleKey => {
+                    const scale = chart.options.scales[scaleKey];
+                    if (scale.ticks) {
+                        scale.ticks.color = colors.textSecondary;
+                    }
+                    if (scale.grid) {
+                        scale.grid.color = colors.textSecondary + '20';
+                    }
+                });
+            }
+            
+            // Forzar actualización del gráfico
+            chart.update();
+        }
+
+        // Funciones de utilidad para temas (disponibles globalmente)
+        window.ThemeUtils = {
+            // Obtener colores del tema actual
+            getCurrentColors: () => DashboardConfig.getChartColorsForCurrentTheme(),
+            
+            // Verificar si estamos en tema oscuro
+            isDarkTheme: () => themeManager.isDarkTheme(),
+            
+            // Obtener configuración de Chart.js para el tema actual
+            getChartConfig: () => DashboardConfig.getThemeAwareChartConfig(),
+            
+            // Obtener paleta de colores para gráficas
+            getColorPalette: () => DashboardConfig.getChartColorPalette(),
+            
+            // Aplicar tema a un gráfico específico
+            applyThemeToChart: (chart) => updateChartTheme(chart)
+        };
+    </script>
+</body>
+</html>
