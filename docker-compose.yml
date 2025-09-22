@@ -36,14 +36,14 @@ services:
   
 
   # =============== Servicios Privados ===============
-  gen_visualization:
-    build:
-      context: ./Generator
-    container_name: gen_visualization
-    depends_on:
-      - api_visualization
-    env_file:
-      - .env
+  # gen_visualization:
+  #   build:
+  #     context: ./Generator
+  #   container_name: gen_visualization
+  #   depends_on:
+  #     - api_visualization
+  #   env_file:
+  #     - .env
 
   mongo_visualization:
     image: mongo:6.0
