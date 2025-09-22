@@ -1,13 +1,13 @@
 services:
   # =============== Servicios Públicos ===============
-  apidb_visualization:
+  api_visualization:
     build:
       context: ./API
-    container_name: apidb_visualization
+    container_name: api_visualization
     # ports:
-    #   - "503:503"
+      # - "502:502"
     expose:
-      - "503"
+      - "502"
     env_file:
       - .env
     depends_on:
@@ -22,13 +22,13 @@ services:
       context: ./Web
     container_name: web_visualization
     # ports:
-    #   - "501:501"
+      # - "501:501"
     expose:
       - "501"
     env_file:
       - .env
     depends_on:
-      - apidb_visualization
+      - api_visualization
     networks:
       - visualization_net
       - proxy_net
@@ -41,7 +41,7 @@ services:
   #     context: ./Generator
   #   container_name: gen_visualization
   #   depends_on:
-  #     - apidb_visualization
+  #     - api_visualization
   #   env_file:
   #     - .env
 
