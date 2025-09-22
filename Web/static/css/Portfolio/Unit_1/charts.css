@@ -1,0 +1,60 @@
+/* styles/charts.css - Estilos específicos para gráficas */
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.chart-description {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
+    padding: 16px;
+    border-radius: 12px;
+    color: #1e40af;
+    margin-top: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Estilos específicos para diferentes tipos de gráficas */
+.chart-container.small {
+    height: 250px;
+}
+
+.chart-container.large {
+    height: 400px;
+}
+
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.chart-error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(252, 165, 165, 0.1) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}

@@ -5,7 +5,6 @@ from flask_cors import CORS
 from flask_restful import Api, Resource
 from pymongo import MongoClient
 import psycopg2
-from psycopg2.extras import RealDictCursor
 from contextlib import closing
 
 # ===== Cargar variables de entorno
@@ -38,7 +37,7 @@ app.config['get_postgres_connection'] = get_postgres_connection
 CORS(app)
 
 # ===== API Configuration
-api = Api(app, prefix='/api-db')
+api = Api(app, prefix='/api')
 
 # ===== Importar endpoints
 from Endpoints.collections import MongoCollections
@@ -100,3 +99,10 @@ api.add_resource(Info,             '/info')
 api.add_resource(MongoCollections, '/mongo')
 api.add_resource(PostgresTables,   '/postgres')
 
+if __name__ == '__main__':
+    print("=== FLASK INICIADO CORRECTAMENTE ===")
+    print("Accede a estas URLs en POSTMAN:")
+    print("• URL Base: http://127.0.0.1:502/api")
+
+    print("====================================")
+    app.run(debug=True, host='127.0.0.1', port=502)

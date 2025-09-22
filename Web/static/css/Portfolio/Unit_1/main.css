@@ -1,0 +1,397 @@
+/* styles/main.css - Estilos principales y layout modernos (sin temas) */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: var(--theme-gradient-bg);
+    background-attachment: fixed;
+    color: var(--theme-text-primary);
+    min-height: 100vh;
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+}
+
+/* Patrón de fondo sutil */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--theme-pattern);
+    background-size: 100px 100px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+    border: 1px solid var(--theme-border-light);
+    border-radius: 24px;
+    box-shadow: 
+        0 32px 64px var(--theme-shadow),
+        0 0 0 1px var(--theme-border-light) inset;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 
+        0 40px 80px var(--theme-shadow-strong),
+        0 0 0 1px var(--theme-border-light) inset;
+    transform: translateY(-4px);
+}
+
+.header {
+    background: var(--theme-gradient-header);
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+    color: var(--theme-text-inverse);
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo sutil en el header */
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.header:hover::before {
+    left: 100%;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
+}
+
+.header p {
+    margin: 16px 0 0 0;
+    opacity: 0.95;
+    font-size: 1.125rem;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+/* Estilos para el contenido principal */
+.main-content {
+    padding: 0;
+    background: transparent;
+}
+
+/* Estilos para botones modernos */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+    color: var(--theme-text-inverse);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-primary) 25%, transparent);
+    font-family: inherit;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 35%, transparent);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--theme-text-secondary) 0%, var(--theme-text-tertiary) 100%);
+    box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-text-secondary) 25%, transparent);
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-text-secondary) 35%, transparent);
+}
+
+/* Estilos para inputs modernos */
+.input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: var(--theme-text-primary);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-focus-ring);
+    background: var(--theme-surface-elevated);
+}
+
+/* Estilos para cards */
+.card {
+    background: var(--theme-surface);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--theme-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px 0;
+    box-shadow: 0 8px 32px var(--theme-shadow);
+    transition: all 0.3s ease;
+    color: var(--theme-text-primary);
+}
+
+.card:hover {
+    background: var(--theme-surface-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px var(--theme-shadow-strong);
+}
+
+/* Footer moderno */
+.footer {
+    padding: 30px;
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+    text-align: center;
+    color: var(--theme-text-secondary);
+    border-top: 1px solid var(--theme-border);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ============================================
+   BOTÓN DE REGRESO CONTENIDO EN HEADER
+   ============================================ */
+
+.back-to-home-btn {
+    position: absolute;
+    top: 25px;
+    left: 65px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--theme-border-light);
+    color: var(--theme-text-inverse);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px var(--theme-shadow);
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.back-to-home-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--theme-border-strong);
+    transform: translateX(-2px);
+    box-shadow: 0 6px 25px var(--theme-shadow-strong);
+}
+
+.back-to-home-btn:active {
+    transform: translateX(0);
+    transition: all 0.1s ease;
+}
+
+.back-to-home-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.back-to-home-btn:hover svg {
+    transform: translateX(-2px);
+}
+
+/* ============================================
+   BOTÓN DE TOGGLE DE TEMA
+   ============================================ */
+
+.theme-toggle-btn {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--theme-border-light);
+    color: var(--theme-text-inverse);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px var(--theme-shadow);
+    font-family: inherit;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--theme-border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--theme-shadow-strong);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+.theme-toggle-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover svg {
+    transform: rotate(15deg);
+}
+
+.header-content {
+    padding-top: 0;
+}
+
+/* Responsividad mejorada */
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+    
+    .container {
+        border-radius: 20px;
+    }
+    
+    .header {
+        padding: 30px 20px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    .card {
+        padding: 20px;
+        margin: 12px 0;
+    }
+
+    .back-to-home-btn,
+    .theme-toggle-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 10px;
+    }
+    
+    .back-to-home-btn svg,
+    .theme-toggle-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .back-to-home-btn:hover {
+        transform: translateX(-2px);
+    }
+
+    .back-to-home-btn:active {
+        transform: translateX(0);
+    }
+
+    .section-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+    
+    .section-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .container {
+        border-radius: 16px;
+    }
+    
+    .header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+    }
+
+    .back-to-home-btn,
+    .theme-toggle-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+
+    .back-to-home-btn svg,
+    .theme-toggle-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+}
