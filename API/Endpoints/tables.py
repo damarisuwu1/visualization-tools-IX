@@ -116,10 +116,35 @@ class PostgresTables(Resource):
                     "status": "error",
                     "info": "Valida que se encuentre 'table' en el payload"
                 }, 400
-            if not data or not isinstance(data, dict):
+            
+            if not data:
                 return {
                     "status": "error",
-                    "info": "Valida que se encuentre 'data' como objeto en el payload"
+                    "info": "Valida que se encuentre 'data' en el payload"
+                }, 400
+            
+            # ===== Normalizar data a lista de diccionarios
+            if isinstance(data, dict):
+                # Si es un solo diccionario, convertir a lista
+                data_list = [data]
+            elif isinstance(data, list):
+                # Si es una lista, validar que todos sean diccionarios
+                if not all(isinstance(item, dict) for item in data):
+                    return {
+                        "status": "error",
+                        "info": "Todos los elementos en 'data' deben ser objetos/diccionarios"
+                    }, 400
+                data_list = data
+            else:
+                return {
+                    "status": "error",
+                    "info": "Valida que 'data' sea un objeto o una lista de objetos"
+                }, 400
+            
+            if not data_list:
+                return {
+                    "status": "error",
+                    "info": "La lista 'data' no puede estar vacía"
                 }, 400
             
             with closing(self.get_connection()) as conn:
@@ -134,11 +159,12 @@ class PostgresTables(Resource):
                     """, (table_name,))
                     table_exists = cursor.fetchone()[0]
                     
-                    # ===== Si la tabla no existe, crearla
+                    # ===== Si la tabla no existe, crearla basándose en el primer registro
                     if not table_exists:
+                        first_record = data_list[0]
                         # Determinar tipos de datos para cada columna
                         column_definitions = []
-                        for key, value in data.items():
+                        for key, value in first_record.items():
                             if isinstance(value, bool):
                                 column_type = "BOOLEAN"
                             elif isinstance(value, int):
@@ -181,40 +207,57 @@ class PostgresTables(Resource):
                                 EXECUTE FUNCTION update_updated_at_column();
                         """)
                     
-                    # ===== Construir query INSERT
-                    columns = list(data.keys())
-                    values = list(data.values())
-                    placeholders = ", ".join(["%s"] * len(values))
+                    # ===== Insertar múltiples registros
+                    inserted_records = []
                     
-                    insert_query = f"""
-                        INSERT INTO {table_name} ({", ".join(columns)}) 
-                        VALUES ({placeholders}) 
-                        RETURNING *
-                    """
-                    
-                    # ===== Ejecutar inserción
-                    cursor.execute(insert_query, values)
-                    inserted_row = cursor.fetchone()
-                    column_names = [desc[0] for desc in cursor.description]
-                    
-                    # Convertir a diccionario serializable
-                    result_dict = {}
-                    if inserted_row:
-                        for i, value in enumerate(inserted_row):
-                            result_dict[column_names[i]] = self._serialize_value(value)
+                    for record in data_list:
+                        # ===== Construir query INSERT para cada registro
+                        columns = list(record.keys())
+                        values = list(record.values())
+                        placeholders = ", ".join(["%s"] * len(values))
+                        
+                        insert_query = f"""
+                            INSERT INTO {table_name} ({", ".join(columns)}) 
+                            VALUES ({placeholders}) 
+                            RETURNING *
+                        """
+                        
+                        # ===== Ejecutar inserción
+                        cursor.execute(insert_query, values)
+                        inserted_row = cursor.fetchone()
+                        column_names = [desc[0] for desc in cursor.description]
+                        
+                        # Convertir a diccionario serializable
+                        result_dict = {}
+                        if inserted_row:
+                            for i, value in enumerate(inserted_row):
+                                result_dict[column_names[i]] = self._serialize_value(value)
+                            inserted_records.append(result_dict)
                 
                 conn.commit()
             
             action = "created_table_and_inserted" if not table_exists else "inserted"
             
-            return {
-                "status": "success",
-                "database": "postgresql",
-                "table": table_name,
-                "action": action,
-                "info": f"Tabla '{table_name}' {'creada e ' if not table_exists else ''}registro insertado",
-                "data": result_dict
-            }, 201
+            # ===== Preparar respuesta según si fue un registro o múltiples
+            if len(inserted_records) == 1:
+                return {
+                    "status": "success",
+                    "database": "postgresql",
+                    "table": table_name,
+                    "action": action,
+                    "info": f"Tabla '{table_name}' {'creada e ' if not table_exists else ''}registro insertado",
+                    "data": inserted_records[0]
+                }, 201
+            else:
+                return {
+                    "status": "success",
+                    "database": "postgresql",
+                    "table": table_name,
+                    "action": action,
+                    "info": f"Tabla '{table_name}' {'creada e ' if not table_exists else ''}{len(inserted_records)} registros insertados",
+                    "count": len(inserted_records),
+                    "data": inserted_records
+                }, 201
         
         # ===== Manejo de errores
         except Exception:
