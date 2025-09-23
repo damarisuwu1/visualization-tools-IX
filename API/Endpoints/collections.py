@@ -84,7 +84,7 @@ class MongoCollections(Resource):
             # ===== Data
             payload = request.json
             collection_name = payload.get("collection")
-            documento = payload.get("data")
+            data = payload.get("data")
         
             # ===== Validaciones
             if not collection_name:
@@ -92,23 +92,62 @@ class MongoCollections(Resource):
                     "status": "error",
                     "info": "Valida que se encuentre 'collection' en el payload"
                 }, 400
-            if not documento:
+            
+            if not data:
                 return {
                     "status": "error",
                     "info": "Valida que se encuentre 'data' en el payload"
                 }, 400
             
-            # ===== Consulta en BD
-            result = self.db[collection_name].insert_one(documento)
-            
-            # ===== Confirmación
-            return {
-                "status": "created",
+            # ===== Normalizar data a lista de documentos
+            if isinstance(data, dict):
+                # Si es un solo documento, usar insert_one
+                result = self.db[collection_name].insert_one(data)
                 
-                "collection": collection_name,
-                "info": f"Documento insertado en la colección '{collection_name}'",
-                "inserted_id": str(result.inserted_id)
-            }, 201
+                return {
+                    "status": "created",
+                    "database": "mongodb",
+                    "collection": collection_name,
+                    "action": "inserted",
+                    "info": f"Documento insertado en la colección '{collection_name}'",
+                    "data": {
+                        "inserted_id": str(result.inserted_id)
+                    }
+                }, 201
+                
+            elif isinstance(data, list):
+                # Si es una lista, validar que todos sean diccionarios/documentos
+                if not data:
+                    return {
+                        "status": "error",
+                        "info": "La lista 'data' no puede estar vacía"
+                    }, 400
+                    
+                if not all(isinstance(item, dict) for item in data):
+                    return {
+                        "status": "error",
+                        "info": "Todos los elementos en 'data' deben ser documentos/diccionarios"
+                    }, 400
+                
+                # Usar insert_many para múltiples documentos
+                result = self.db[collection_name].insert_many(data)
+                
+                return {
+                    "status": "created",
+                    "database": "mongodb", 
+                    "collection": collection_name,
+                    "action": "inserted",
+                    "info": f"{len(result.inserted_ids)} documentos insertados en la colección '{collection_name}'",
+                    "count": len(result.inserted_ids),
+                    "data": {
+                        "inserted_ids": [str(id) for id in result.inserted_ids]
+                    }
+                }, 201
+            else:
+                return {
+                    "status": "error",
+                    "info": "Valida que 'data' sea un documento o una lista de documentos"
+                }, 400
         
         # ===== Manejo de errores
         except Exception:
