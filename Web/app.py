@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 # =============== Rutas ===============
 # ===== Home =====
-@app.route('/')
+@app.route('/visualization-tools')
 def home():
     try:
         return render_template('index.html')
