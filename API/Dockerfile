@@ -11,10 +11,10 @@ COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
 # ----- PUERTO EXPUESTO -----
-EXPOSE 502
+EXPOSE 503
 
 # ----- COPIAR CÓDIGO FUENTE -----
 COPY . /app
 
 # ----- COMANDO DE ARRANQUE -----
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:502", "app:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:503", "app:app"]
