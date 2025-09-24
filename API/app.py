@@ -38,7 +38,7 @@ app.config['get_postgres_connection'] = get_postgres_connection
 CORS(app)
 
 # ===== API Configuration
-api = Api(app, prefix='/api')
+api = Api(app, prefix='/visualization-tools/api')
 
 # ===== Importar endpoints
 from Endpoints.collections import MongoCollections
