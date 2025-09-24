@@ -104,7 +104,7 @@ api.add_resource(visualization, '/Unit1/portfolio')
 if __name__ == '__main__':
     print("=== FLASK INICIADO CORRECTAMENTE ===")
     print("Accede a estas URLs en POSTMAN:")
-    print("• URL Base: http://127.0.0.1:502/api")
+    print("• URL Base: http://127.0.0.1:503/api")
 
     print("====================================")
-    app.run(debug=True, host='127.0.0.1', port=502)
+    app.run(debug=True, host='127.0.0.1', port=503)
