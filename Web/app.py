@@ -24,7 +24,7 @@ def home():
 
 
 # ===== Proyectos =====
-@app.route('/visualization-tools/project/unit1')
+@app.route('/project/unit1')
 def project_unit1():
     try:
         return render_template('Project/Unit_1/main_u1.html')
@@ -35,7 +35,7 @@ def project_unit1():
 
 # ===== Portafolios =====
 
-@app.route('/visualization-tools/portfolio/unit1')
+@app.route('/portfolio/unit1')
 def portfolio_unit1():
     try:
         return render_template('Portfolio/Unit_1/main.html')
