@@ -1,5 +1,6 @@
 import os, requests, pandas as pd, json
 from dotenv import load_dotenv
+import time
 
 # =============== Carga de contenido
 load_dotenv()
@@ -30,7 +31,7 @@ def json_processed():
 
 def transform_csv(file_path: str, users: bool = True):
     """
-    Converts the CSV format into JSON-like to send it as an API payload. The function creates keys based on the CSV column names. It also creates the values as arrays from the data related to each column.
+    Converts the CSV format into JSON-like to send it as an API payload. The function creates a list with JSON items, each item has keys based on the CSV column names and each key has a single value from the data related to their respective column.
     ## **Parameters**
     - ```file_path```: Path to the file that will be processed.
     - ```users```: Determine whether the file is for the table users. Otherwise, the table will be viewing_sessions.
@@ -38,33 +39,35 @@ def transform_csv(file_path: str, users: bool = True):
     ## **Returns**
     A dictionary with the table name and its data:\n
     {'table': 'table_name',\n
-    'data': {\n
-        'column1': ['value1', 'value2', 'value3', ...],
+    'data': [\n
+        \n{
+        'column1': 'value',\n
+        'column2': 'value',
         ...
-        }\n
-    }
+        },\n
+        {
+        'column1': 'value',
+        'column2': 'value',
+        ...
+        }, ...\n
+    ]
     """
 
     df = pd.read_csv(file_path)
-    df_columns = df.columns.to_list()
-    data= {}
-    for column in df_columns:
-        items = []
-        column_items = users_df[column].to_list()
-        for item in column_items:
-            tupple_item = (item,)
-            items.append(tupple_item)
-        data[column] = items
     if users == True:
         table_name = 'users'
     else:
         table_name = 'viewing_sessions'
-    
+    df.to_json(path_or_buf=f"./data/{table_name}_processed.json", orient='records')
+    #Giving a few seconds to process and save the file.
+    time.sleep(3)
+    with open(f"./data/{table_name}_processed.json", "r") as json_raw:
+        content_processed = json.load(json_raw)
     payload = requests.post(
         f'{URL_API}/api/postgres', 
         json= {
         'table': table_name,
-        'data': data
+        'data': content_processed
         })
     return payload
 
