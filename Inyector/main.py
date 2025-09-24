@@ -13,19 +13,27 @@ viewing_df = pd.read_csv('./data/viewing.csv')
 # ---------------- PROCESAMIENTO DE DOCUMENTOS --------------------- # 
 
 # =============== Procesamiento de JSON --> MONGO
-def json_processed():
+def json_processed(id_prefix: str = "M"):
+    """
+    - ```id_prefix```: Find the character that distinguish the _id key. Possible values: ```"M"``` (for movies), ```"S"``` (for series).
+    """
+    values = []
     for key, documents in content:
         for docs in documents:
             collection = key
             data = docs
-            response = requests.post(
-                f"{URL_API}/api/mongo",
-                json={
-                    "collection": collection,
-                    "data": data
+            if id_prefix in data["_id"]:
+                values.append(data)
+                payload ={
+                'collection': collection,
+                'data': values
                 }
-            )
+    
+    response = requests.post(
+                f"{URL_API}/api/mongo",
+                json=payload)
     return response
+
 
 # =============== Procesamiento de CSVs --> POSTGRESQL
 
@@ -72,6 +80,7 @@ def transform_csv(file_path: str, users: bool = True):
     return payload
 
 if __name__ == '__main__':
-    json_processed()
+    json_processed(id_prefix="M")
+    json_processed(id_prefix="S")
     transform_csv('./data/users.csv', True)
     transform_csv('./data/viewing_sessions.csv', False)
