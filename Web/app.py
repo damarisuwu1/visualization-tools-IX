@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # =============== Configs ===============
 load_dotenv()
 app = Flask(__name__)
+app.config['APPLICATION_ROOT'] = '/visualization-tools'
 logging.basicConfig(level=logging.INFO)
 
 
