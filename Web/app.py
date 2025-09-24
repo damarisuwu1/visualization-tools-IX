@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 # =============== Configs ===============
 load_dotenv()
-app = Flask(__name__)
+app = Flask(__name__,root_path='/visualization-tools')
 logging.basicConfig(level=logging.INFO)
 
 
@@ -48,12 +48,12 @@ def portfolio_unit1():
 if __name__ == '__main__':
     print("=== FLASK INICIADO CORRECTAMENTE ===")
     print("Accede a estas URLs en tu navegador:")
-    print("• Página principal: http://127.0.0.1:501/")
-    print("• Proyecto Unidad 1: http://127.0.0.1:501/project/unit1")
-    print("• Portafolio Unidad 1: http://127.0.0.1:501/portfolio/unit1")
+    print("• Página principal: http://127.0.0.1:502/")
+    print("• Proyecto Unidad 1: http://127.0.0.1:502/project/unit1")
+    print("• Portafolio Unidad 1: http://127.0.0.1:502/portfolio/unit1")
     print("• Otras rutas disponibles:")
     print("  - /project/unit[1-6] (proyectos)")
     print("  - /portfolio/unit[1-6] (portafolios)")
 
     print("====================================")
-    app.run(debug=True, host='127.0.0.1', port=501)
+    app.run(debug=True, host='127.0.0.1', port=502)

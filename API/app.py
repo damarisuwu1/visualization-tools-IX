@@ -6,6 +6,7 @@ from flask_restful import Api, Resource
 from pymongo import MongoClient
 import psycopg2
 from contextlib import closing
+from Endpoints.Unit1.portfolio import visualization
 
 # ===== Cargar variables de entorno
 load_dotenv()
@@ -98,11 +99,12 @@ class Info(Resource):
 api.add_resource(Info,             '/info')
 api.add_resource(MongoCollections, '/mongo')
 api.add_resource(PostgresTables,   '/postgres')
+api.add_resource(visualization, '/Unit1/portfolio')
 
 if __name__ == '__main__':
     print("=== FLASK INICIADO CORRECTAMENTE ===")
     print("Accede a estas URLs en POSTMAN:")
-    print("• URL Base: http://127.0.0.1:502/api")
+    print("• URL Base: http://127.0.0.1:503/api")
 
     print("====================================")
-    app.run(debug=True, host='127.0.0.1', port=502)
+    app.run(debug=True, host='127.0.0.1', port=503)
