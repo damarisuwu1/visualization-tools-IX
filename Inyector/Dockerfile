@@ -9,8 +9,6 @@ COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
 
-EXPOSE 504
-
 COPY . /app
 
-CMD ["python", "main.py"]
+CMD ["python", "__main__.py"]
