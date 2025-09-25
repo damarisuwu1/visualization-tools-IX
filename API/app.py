@@ -36,7 +36,8 @@ app = Flask(__name__)
 app.config['mongo_db'] = mongo_db
 app.config['get_postgres_connection'] = get_postgres_connection
 CORS(app)
-api = Api(app, prefix='/api')
+# api = Api(app, prefix='/api') # dev
+api = Api(app) # main
 
 
 # ===== Registrar endpoints
