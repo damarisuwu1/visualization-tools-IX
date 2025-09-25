@@ -13,4 +13,4 @@ EXPOSE 504
 
 COPY . /app
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:504", "app:app"]
+CMD ["python", "main.py"]
