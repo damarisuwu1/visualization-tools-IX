@@ -4,7 +4,7 @@ from flask import current_app
 from contextlib import closing
 from pymongo import MongoClient
 
-class Proyecto_1(Resource):
+class Portfolio_2(Resource):
     def __init__(self):
         self.db: MongoClient = current_app.config["mongo_db"]
         self.get_connection = current_app.config["get_postgres_connection"]

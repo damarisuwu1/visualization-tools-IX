@@ -143,3 +143,7 @@ The API uses the prefix `/api/` for requests, and additional prefixes are added 
 ## Possible Errors
 
 * If there is no connection to the databases, ensure that the `.env` file exists and contains the required keys for the databases.
+
+
+## Author(s):
+* [monroyminerodiego](https://github.com/monroyminerodiego)
