@@ -26,7 +26,19 @@ services:
       - postgres_visualization
     networks:
       - visualization_net
-      
+    
+  inyector:
+    build:
+      context: ./Inyector
+    container_name: inyector
+    ports: 
+      - "504:504"
+    env_file:
+      - .env
+    depends_on:
+      - api_visualization
+    networks:
+      - visualization_net
   
 
   # =============== Servicios Privados ===============
