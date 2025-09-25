@@ -108,7 +108,7 @@ class Portfolio_1(Resource):
         try:
             return {
                 "status":"success",
-                "data":{
+                "info":{
                     "engagement"   : self.__obtener_info_engagement(),
                     "value"        : self.__obtener_info_value(),
                     "temporal"     : self.__obtener_info_temporal(),

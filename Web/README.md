@@ -7,13 +7,13 @@ La información para poder llenar las gráficas se obtiene desde el microservici
 
 ### Portafolio
 #### Unidad 1
-* Endpoint: /api/unidad-1/portfolio
-* Metodos aceptados: GET
+* Endpoint: `/api/unidad-1/portfolio`
+* Metodos aceptados: `GET`
 * Payload respuesta:
 ``` json
 {
     "status":"success", // Puede ser 'success', 'error'
-    "data" : {
+    "info" : {
         "engagement":{
             "completionByAge": {
                 "labels": ["18-25", "26-35", "36-45", "46-55", "55+"],
@@ -78,7 +78,11 @@ La información para poder llenar las gráficas se obtiene desde el microservici
 
 ### Proyecto
 #### Unidad 1
-* Endpoint: /api/unidad-1/project
+* Endpoint: `/api/unidad-1/project`
+* Metodos aceptados: `GET`
+* Payload respuesta:
+``` json
+```
 
 ## Author(s):
 * [Alan Valbuena](https://github.com/AlanVAal)
