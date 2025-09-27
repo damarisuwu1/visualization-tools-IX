@@ -1,4 +1,4 @@
-/* styles/components.css - Estilos de componentes modernos */
+/* css/components.css - Estilos de componentes modernos */
 
 .analysis-section {
     margin: 24px;
@@ -44,13 +44,13 @@
 }
 
 .columns-needed {
-    background: var(--theme-info-box-bg);
+    background: var(--theme-surface-elevated);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
     padding: 20px;
     border-radius: 16px;
     margin-bottom: 24px;
     border: 1px solid var(--theme-border);
-    backdrop-filter: var(--theme-backdrop-blur-light);
-    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
     transition: all 0.3s ease;
 }
 
@@ -68,118 +68,16 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.csv-columns {
-    margin: 8px 0;
-    padding: 8px 12px;
+.columns-list {
+    color: var(--theme-primary);
+    background: color-mix(in srgb, var(--theme-primary) 15%, transparent);
+    border-left: 3px solid var(--theme-primary);
+    padding: 12px 16px;
     border-radius: 8px;
     font-weight: 500;
     font-size: 0.9rem;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-}
-
-.csv1 {
-    color: var(--theme-danger);
-    background: color-mix(in srgb, var(--theme-danger) 15%, transparent);
-    border-left: 3px solid var(--theme-danger);
-}
-
-.csv2 {
-    color: var(--theme-accent);
-    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
-    border-left: 3px solid var(--theme-accent);
-}
-
-.nav-tabs {
-    display: flex;
-    background: var(--theme-surface);
-    backdrop-filter: var(--theme-backdrop-blur);
-    -webkit-backdrop-filter: var(--theme-backdrop-blur);
-    border-radius: 16px 16px 0 0;
-    overflow: hidden;
-    border: 1px solid var(--theme-border);
-    border-bottom: none;
-}
-
-.nav-tab {
-    flex: 1;
-    padding: 16px 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 500;
-    color: var(--theme-text-secondary);
-    font-size: 0.95rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-tab::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: color-mix(in srgb, var(--theme-primary) 10%, transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.nav-tab:hover::before {
-    opacity: 1;
-}
-
-.nav-tab.active {
-    background: var(--theme-surface-elevated);
-    color: var(--theme-text-primary);
-    font-weight: 600;
-    box-shadow: 0 4px 6px var(--theme-shadow);
-}
-
-.nav-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
-}
-
-.nav-tab:hover {
-    color: var(--theme-text-primary);
-    transform: translateY(-1px);
-}
-
-.tab-content {
-    display: none;
-    background: var(--theme-chart-bg);
-    backdrop-filter: var(--theme-backdrop-blur);
-    -webkit-backdrop-filter: var(--theme-backdrop-blur);
-    padding: 32px;
-    border-radius: 0 0 16px 16px;
-    min-height: 500px;
-    border: 1px solid var(--theme-border);
-    border-top: none;
-    box-shadow: 0 4px 6px var(--theme-shadow);
-}
-
-.tab-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin: 8px 0;
 }
 
 /* Estilos adicionales para elementos modernos */
@@ -238,25 +136,10 @@
 }
 
 /* Estilos específicos para el tema oscuro */
-body.dark-theme .tab-content {
-    color: var(--theme-chart-text);
-}
-
-body.dark-theme .tab-content * {
-    color: var(--theme-chart-text);
-}
-
-/* Asegurar que el texto de las gráficas sea visible */
-body.dark-theme .recharts-text,
-body.dark-theme .recharts-label,
-body.dark-theme .recharts-cartesian-axis-tick-value,
-body.dark-theme .recharts-legend-item-text {
-    fill: var(--theme-chart-text) !important;
-}
-
-body.dark-theme .recharts-cartesian-grid-horizontal line,
-body.dark-theme .recharts-cartesian-grid-vertical line {
-    stroke: var(--theme-chart-grid) !important;
+body.dark-theme .analysis-section .chart-description,
+body.dark-theme .analysis-section p,
+body.dark-theme .analysis-section div:not(.chart-container):not([id*="Chart"]) {
+    color: var(--theme-text-primary) !important;
 }
 
 /* Responsividad */
@@ -266,61 +149,7 @@ body.dark-theme .recharts-cartesian-grid-vertical line {
         padding: 20px;
     }
     
-    .nav-tab {
-        padding: 12px 16px;
-        font-size: 0.9rem;
-    }
-    
-    .tab-content {
-        padding: 20px;
-    }
-    
     .analysis-title {
         font-size: 1.3rem;
     }
-}
-/* Solución específica para las descripciones de gráficas que no usan tabs */
-
-/* Para las descripciones de gráficas creadas directamente */
-body.dark-theme .chart-description {
-    color: var(--theme-text-primary) !important;
-}
-
-/* Para cualquier contenido dentro de las secciones de análisis */
-body.dark-theme .analysis-section .chart-description,
-body.dark-theme .analysis-section p,
-body.dark-theme .analysis-section div:not(.chart-container):not([id*="Chart"]) {
-    color: var(--theme-text-primary) !important;
-}
-
-/* Selectores específicos para cada sección por ID */
-body.dark-theme #segmentation-section .chart-description,
-body.dark-theme #technical-section .chart-description,
-body.dark-theme #temporal-section .chart-description,
-body.dark-theme #value-section .chart-description {
-    color: var(--theme-text-primary) !important;
-}
-
-/* Selectores más específicos para chart containers */
-body.dark-theme .chart-container + div,
-body.dark-theme .chart-container ~ div {
-    color: var(--theme-text-primary) !important;
-}
-
-/* Para todos los elementos de texto dentro de secciones de análisis */
-body.dark-theme .analysis-section * {
-    color: var(--theme-text-primary) !important;
-}
-
-/* Excluir canvas y elementos de Chart.js del selector universal */
-body.dark-theme .analysis-section canvas,
-body.dark-theme .analysis-section .chartjs-tooltip,
-body.dark-theme .analysis-section .chartjs-legend {
-    color: initial !important;
-}
-
-/* Asegurar que títulos de secciones también cambien */
-body.dark-theme .analysis-title,
-body.dark-theme .section-title {
-    color: var(--theme-text-primary) !important;
 }

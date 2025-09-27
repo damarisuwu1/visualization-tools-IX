@@ -1,7 +1,7 @@
 // js/utils/tabManager.js - Gestor de pestañas y navegación
 
 const TabManager = {
-    // Función principal para cambiar tabs (corregida)
+    // Función principal para cambiar tabs
     showTab: function(sectionId, tabId, buttonElement) {
         // Ocultar todos los tabs de esa sección
         const tabs = document.querySelectorAll(`[id^="${sectionId}-tab"]`);
@@ -24,7 +24,7 @@ const TabManager = {
         }
     },
 
-    // Inicializar tabs para una sección (corregida)
+    // Inicializar tabs para una sección
     initializeTabs: function(sectionId, tabConfigs) {
         const section = document.getElementById(sectionId);
         if (!section) {
@@ -94,12 +94,7 @@ const TabManager = {
         columnsNeeded.className = 'columns-needed';
         columnsNeeded.innerHTML = `
             <div class="columns-title">Columnas Necesarias:</div>
-            <div class="csv-columns">
-                <span class="csv1">CSV1:</span> ${config.csv1Columns}
-            </div>
-            <div class="csv-columns">
-                <span class="csv2">CSV2:</span> ${config.csv2Columns}
-            </div>
+            <div class="columns-list">${config.requiredColumns}</div>
         `;
 
         section.appendChild(title);

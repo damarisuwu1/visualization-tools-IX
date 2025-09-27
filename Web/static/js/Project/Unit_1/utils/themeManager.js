@@ -1,4 +1,4 @@
-// themeManager.js - Gestor de temas modular
+// js/utils/themeManager.js - Gestor de temas modular
 
 class ThemeManager {
     constructor() {
@@ -43,7 +43,7 @@ class ThemeManager {
         };
         
         this.observers = [];
-        this.storageKey = 'app-theme-preference';
+        this.storageKey = 'salary-dashboard-theme';
         this.init();
     }
 
@@ -70,17 +70,6 @@ class ThemeManager {
             </svg>`,
             moon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-            </svg>`,
-            auto: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 2v2" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 20v2" stroke="currentColor" stroke-width="2"/>
-                <path d="m4.93 4.93 1.41 1.41" stroke="currentColor" stroke-width="2"/>
-                <path d="m17.66 17.66 1.41 1.41" stroke="currentColor" stroke-width="2"/>
-                <path d="M2 12h2" stroke="currentColor" stroke-width="2"/>
-                <path d="M20 12h2" stroke="currentColor" stroke-width="2"/>
-                <path d="m6.34 17.66-1.41 1.41" stroke="currentColor" stroke-width="2"/>
-                <path d="m19.07 4.93-1.41 1.41" stroke="currentColor" stroke-width="2"/>
             </svg>`
         };
         return icons[type] || '';
@@ -89,14 +78,6 @@ class ThemeManager {
     // Obtener el tema actual
     getCurrentTheme() {
         return this.themes[this.currentTheme];
-    }
-
-    // Obtener todas las configuraciones de tema disponibles
-    getAvailableThemes() {
-        return Object.keys(this.themes).map(key => ({
-            key,
-            ...this.themes[key]
-        }));
     }
 
     // Cambiar tema
@@ -114,7 +95,7 @@ class ThemeManager {
         return true;
     }
 
-    // Alternar entre temas (principalmente claro/oscuro)
+    // Alternar entre temas
     toggleTheme() {
         const newTheme = this.currentTheme === 'default' ? 'dark' : 'default';
         return this.setTheme(newTheme);
@@ -137,27 +118,11 @@ class ThemeManager {
             body.classList.add(theme.cssClass);
         }
 
-        // Aplicar propiedades CSS personalizadas (opcional, ya que las variables CSS manejan esto)
-        this.updateCSSProperties(theme.properties);
-
         // Actualizar elementos de interfaz específicos
         this.updateThemeButtons();
         
         // Emitir evento personalizado
         this.dispatchThemeChangeEvent();
-    }
-
-    // Actualizar propiedades CSS del documento (backup por si se necesita)
-    updateCSSProperties(properties) {
-        const root = document.documentElement;
-        Object.entries(properties).forEach(([key, value]) => {
-            root.style.setProperty(`--theme-${this.camelToKebab(key)}`, value);
-        });
-    }
-
-    // Convertir camelCase a kebab-case
-    camelToKebab(str) {
-        return str.replace(/([A-Z])/g, '-$1').toLowerCase();
     }
 
     // Actualizar todos los botones de tema en la página
@@ -184,50 +149,9 @@ class ThemeManager {
             textElement.textContent = `Modo ${nextTheme.name}`;
         }
 
-        // Si el botón no tiene elementos específicos, actualizar todo el contenido
-        if (!iconElement && !textElement) {
-            button.innerHTML = `${nextTheme.icon} <span>Modo ${nextTheme.name}</span>`;
-        }
-
         // Actualizar atributos de accesibilidad
         button.setAttribute('aria-label', `Cambiar a tema ${nextTheme.name.toLowerCase()}`);
         button.setAttribute('title', `Cambiar a tema ${nextTheme.name.toLowerCase()}`);
-    }
-
-    // Crear botón de tema con HTML
-    createThemeButton(options = {}) {
-        const {
-            className = 'theme-toggle-btn',
-            showText = true,
-            position = 'header' // 'header', 'floating', 'inline'
-        } = options;
-
-        const theme = this.getCurrentTheme();
-        const nextTheme = this.currentTheme === 'default' ? this.themes.dark : this.themes.default;
-
-        const button = document.createElement('button');
-        button.className = className;
-        button.setAttribute('data-theme-toggle', 'true');
-        button.setAttribute('aria-label', `Cambiar a tema ${nextTheme.name.toLowerCase()}`);
-        button.setAttribute('title', `Cambiar a tema ${nextTheme.name.toLowerCase()}`);
-        
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'theme-icon';
-        iconSpan.innerHTML = nextTheme.icon;
-
-        button.appendChild(iconSpan);
-
-        if (showText) {
-            const textSpan = document.createElement('span');
-            textSpan.className = 'theme-text';
-            textSpan.textContent = `Modo ${nextTheme.name}`;
-            button.appendChild(textSpan);
-        }
-
-        // Agregar event listener
-        button.addEventListener('click', () => this.toggleTheme());
-
-        return button;
     }
 
     // Escuchar cambios en las preferencias del sistema
@@ -236,7 +160,6 @@ class ThemeManager {
             const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
             
             darkModeQuery.addEventListener('change', (e) => {
-                // Solo aplicar automáticamente si no hay preferencia guardada
                 const saved = this.getStoredPreference();
                 if (!saved) {
                     const systemTheme = e.matches ? 'dark' : 'default';
@@ -270,7 +193,6 @@ class ThemeManager {
             if (saved && this.themes[saved]) {
                 this.currentTheme = saved;
             } else {
-                // Si no hay preferencia guardada, usar la del sistema
                 this.currentTheme = this.getSystemPreference();
             }
         } catch (error) {
@@ -285,17 +207,6 @@ class ThemeManager {
             return localStorage.getItem(this.storageKey);
         } catch (error) {
             return null;
-        }
-    }
-
-    // Limpiar preferencia guardada
-    clearThemePreference() {
-        try {
-            localStorage.removeItem(this.storageKey);
-            this.currentTheme = this.getSystemPreference();
-            this.applyTheme();
-        } catch (error) {
-            console.warn('No se pudo limpiar la preferencia de tema:', error);
         }
     }
 
@@ -329,7 +240,7 @@ class ThemeManager {
         document.dispatchEvent(event);
     }
 
-    // Métodos de utilidad para CSS
+    // Métodos de utilidad
     isDarkTheme() {
         return this.currentTheme === 'dark';
     }
@@ -338,32 +249,23 @@ class ThemeManager {
         return this.getCurrentTheme().properties[property];
     }
 
-    // Integración con Chart.js
-    getChartThemeConfig() {
-        const theme = this.getCurrentTheme();
-        return {
-            backgroundColor: theme.properties.backgroundColor,
-            textColor: theme.properties.textPrimary,
-            gridColor: theme.properties.borderColor,
-            tooltipBackgroundColor: theme.properties.surfaceColor,
-            tooltipTextColor: theme.properties.textPrimary
-        };
-    }
-
-    // Destructor para limpiar event listeners
     destroy() {
         this.observers = [];
-        // Aquí podrías limpiar otros event listeners si fuera necesario
     }
 }
 
 // Crear instancia global
 const themeManager = new ThemeManager();
 
-// Exportar para uso en módulos
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ThemeManager;
-}
+// Event listener para el botón de tema
+document.addEventListener('DOMContentLoaded', () => {
+    const themeButton = document.querySelector('[data-theme-toggle]');
+    if (themeButton) {
+        themeButton.addEventListener('click', () => {
+            themeManager.toggleTheme();
+        });
+    }
+});
 
 // Hacer disponible globalmente
 window.ThemeManager = ThemeManager;

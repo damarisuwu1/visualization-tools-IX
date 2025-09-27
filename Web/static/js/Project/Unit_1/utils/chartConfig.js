@@ -1,3 +1,5 @@
+// js/utils/chartConfig.js - Configuración común para Chart.js
+
 const ChartConfig = {
     // Configuración común para todas las gráficas
     commonOptions: {
@@ -41,6 +43,10 @@ const ChartConfig = {
                 bottom: 10,
                 left: 10
             }
+        },
+        animation: {
+            duration: 800,
+            easing: 'easeOutCubic'
         }
     },
 
@@ -49,12 +55,10 @@ const ChartConfig = {
         primary: '#3b82f6',
         primaryRGBA: 'rgba(59, 130, 246, 0.8)',
         primaryBorder: '#2563eb',
-        primaryBorderRGBA: 'rgba(37, 99, 235, 1)',
 
         secondary: '#06b6d4',
         secondaryRGBA: 'rgba(6, 182, 212, 0.8)',
         secondaryBorder: '#0891b2',
-        secondaryBorderRGBA: 'rgba(8, 145, 178, 1)',
 
         success: '#10b981',
         warning: '#f59e0b',
@@ -77,16 +81,7 @@ const ChartConfig = {
             '#6366f1', // Indigo
             '#a855f7', // Purple
             '#22d3ee'  // Sky
-        ],
-
-        // Gradientes para elementos especiales
-        gradients: {
-            primary: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-            secondary: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
-            success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-            warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            danger: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-        }
+        ]
     },
 
     // Función helper para crear datasets con estilo moderno
@@ -112,6 +107,15 @@ const ChartConfig = {
     getOptionsFor: function(chartType) {
         const baseOptions = { ...this.commonOptions };
 
+        // Actualizar colores según el tema actual
+        const colors = this.getCurrentThemeColors();
+        
+        // Aplicar colores del tema a las opciones base
+        baseOptions.plugins.legend.labels.color = colors.text;
+        baseOptions.plugins.tooltip.backgroundColor = colors.surface;
+        baseOptions.plugins.tooltip.titleColor = colors.text;
+        baseOptions.plugins.tooltip.bodyColor = colors.textSecondary;
+
         switch(chartType) {
             case 'bar':
                 return {
@@ -119,11 +123,11 @@ const ChartConfig = {
                     scales: {
                         x: {
                             grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
+                                color: colors.gridColor,
+                                borderColor: colors.gridColor
                             },
                             ticks: {
-                                color: '#6b7280',
+                                color: colors.textSecondary,
                                 font: {
                                     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                                     size: 12,
@@ -134,15 +138,18 @@ const ChartConfig = {
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
+                                color: colors.gridColor,
+                                borderColor: colors.gridColor
                             },
                             ticks: {
-                                color: '#6b7280',
+                                color: colors.textSecondary,
                                 font: {
                                     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                                     size: 12,
                                     weight: '500'
+                                },
+                                callback: function(value) {
+                                    return '$' + (value / 1000) + 'K';
                                 }
                             }
                         }
@@ -168,11 +175,11 @@ const ChartConfig = {
                         x: {
                             display: true,
                             grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
+                                color: colors.gridColor,
+                                borderColor: colors.gridColor
                             },
                             ticks: {
-                                color: '#6b7280',
+                                color: colors.textSecondary,
                                 font: {
                                     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                                     size: 12,
@@ -184,15 +191,18 @@ const ChartConfig = {
                             display: true,
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
+                                color: colors.gridColor,
+                                borderColor: colors.gridColor
                             },
                             ticks: {
-                                color: '#6b7280',
+                                color: colors.textSecondary,
                                 font: {
                                     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                                     size: 12,
                                     weight: '500'
+                                },
+                                callback: function(value) {
+                                    return '$' + (value / 1000) + 'K';
                                 }
                             }
                         }
@@ -210,75 +220,47 @@ const ChartConfig = {
                     }
                 };
 
-            case 'scatter':
-            case 'bubble':
-                return {
-                    ...baseOptions,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                            grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
-                            },
-                            ticks: {
-                                color: '#6b7280',
-                                font: {
-                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                                    size: 12,
-                                    weight: '500'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(156, 163, 175, 0.2)',
-                                borderColor: 'rgba(156, 163, 175, 0.3)'
-                            },
-                            ticks: {
-                                color: '#6b7280',
-                                font: {
-                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                                    size: 12,
-                                    weight: '500'
-                                }
-                            }
-                        }
-                    }
-                };
-
-            case 'radar':
-                return {
-                    ...baseOptions,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(156, 163, 175, 0.3)'
-                            },
-                            pointLabels: {
-                                color: '#374151',
-                                font: {
-                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                                    size: 12,
-                                    weight: '500'
-                                }
-                            },
-                            ticks: {
-                                color: '#6b7280',
-                                backdropColor: 'rgba(255, 255, 255, 0.8)'
-                            }
-                        }
-                    }
-                };
-
             default:
                 return baseOptions;
         }
+    },
+
+    // Obtener colores del tema actual
+    getCurrentThemeColors: function() {
+        if (typeof themeManager !== 'undefined') {
+            const theme = themeManager.getCurrentTheme();
+            return {
+                text: theme.properties.textPrimary,
+                textSecondary: theme.properties.textSecondary,
+                surface: theme.properties.surfaceColor,
+                gridColor: theme.properties.borderColor
+            };
+        }
+
+        // Colores por defecto si no hay gestor de temas
+        return {
+            text: '#1f2937',
+            textSecondary: '#6b7280',
+            surface: 'rgba(255, 255, 255, 0.95)',
+            gridColor: 'rgba(156, 163, 175, 0.2)'
+        };
+    },
+
+    // Formatear valores de dinero
+    formatCurrency: function(value) {
+        if (value >= 1000000) {
+            return '$' + (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+            return '$' + (value / 1000).toFixed(0) + 'K';
+        }
+        return '$' + value.toLocaleString();
+    },
+
+    // Obtener configuración adaptada al tema
+    getThemeAwareConfig: function(chartType) {
+        return this.getOptionsFor(chartType);
     }
 };
 
-// Hacer disponible globalmente en el navegador
+// Hacer disponible globalmente
 window.ChartConfig = ChartConfig;
