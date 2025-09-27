@@ -28,20 +28,102 @@ const EngagementCharts = {
         }
     ],
 
-    // Datos de ejemplo
+    // URL del endpoint (tu endpoint real)
+    apiEndpoint: 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/portfolio',
+
+    // Datos (se llenarán desde la API)
     data: {
         completionByAge: {
-            labels: ['18-25', '26-35', '36-45', '46-55', '55+'],
-            values: [72, 78, 65, 58, 45]
+            labels: [],
+            values: []
         },
         abandonmentByCountry: {
-            labels: ['México', 'España', 'Colombia', 'Argentina', 'Chile'],
-            values: [25, 18, 32, 28, 22]
+            labels: [],
+            values: []
         },
         engagementBySubscription: {
-            labels: ['Basic', 'Standard', 'Premium'],
-            values: [25, 38, 52]
+            labels: [],
+            values: []
         }
+    },
+
+    // Método para consumir datos del endpoint
+    async fetchEngagementData() {
+        try {
+            console.log('Obteniendo datos de engagement desde API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Agregar headers adicionales si es necesario (auth, etc.)
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            // Verificar que el status sea success
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            // Extraer solo la parte de engagement del response
+            const engagementData = apiData.info?.engagement;
+            
+            if (!engagementData) {
+                throw new Error('Datos de engagement no encontrados en la respuesta de la API');
+            }
+
+            // Mapear los datos de la API a nuestro formato local
+            this.data.completionByAge = {
+                labels: engagementData.completionByAge?.labels || [],
+                values: engagementData.completionByAge?.values || []
+            };
+
+            this.data.abandonmentByCountry = {
+                labels: engagementData.abandonmentByCountry?.labels || [],
+                values: engagementData.abandonmentByCountry?.values || []
+            };
+
+            this.data.engagementBySubscription = {
+                labels: engagementData.engagementBySubscription?.labels || [],
+                values: engagementData.engagementBySubscription?.values || []
+            };
+
+            console.log('Datos de engagement obtenidos correctamente:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error obteniendo datos de engagement:', error);
+            
+            // En caso de error, usar datos por defecto
+            this.setDefaultData();
+            return false;
+        }
+    },
+
+    // Método para establecer datos por defecto en caso de error
+    setDefaultData() {
+        console.log('Usando datos por defecto...');
+        
+        this.data = {
+            completionByAge: {
+                labels: ['18-25', '26-35', '36-45', '46-55', '55+'],
+                values: [0, 0, 0, 0, 0]
+            },
+            abandonmentByCountry: {
+                labels: ['México', 'España', 'Colombia', 'Argentina', 'Chile'],
+                values: [0, 0, 0, 0, 0]
+            },
+            engagementBySubscription: {
+                labels: ['Basic', 'Standard', 'Premium'],
+                values: [0, 0, 0]
+            }
+        };
     },
 
     // Crear la sección completa
@@ -59,29 +141,86 @@ const EngagementCharts = {
         }
         
         // Inicializar tabs después de que la sección esté en el DOM
-        setTimeout(() => {
+        setTimeout(async () => {
             TabManager.initializeTabs(this.sectionConfig.id, this.tabConfigs);
             console.log('Tabs inicializados');
             
-            // Inicializar gráficas después de que los tabs estén listos
+            // Obtener datos de la API antes de inicializar gráficas
+            await this.fetchEngagementData();
+            
+            // Inicializar gráficas después de obtener los datos
             setTimeout(() => {
                 this.initializeCharts();
-                console.log('Gráficas inicializadas');
+                console.log('Gráficas inicializadas con datos de la API');
             }, 100);
         }, 50);
         
         return section;
     },
 
+    // Método para refrescar datos
+    async refreshData() {
+        console.log('Refrescando datos de engagement...');
+        
+        // Mostrar indicador de carga (opcional)
+        this.showLoadingState();
+        
+        const success = await this.fetchEngagementData();
+        
+        if (success) {
+            // Recrear las gráficas con los nuevos datos
+            this.initializeCharts();
+            console.log('Datos refrescados correctamente');
+        }
+        
+        // Ocultar indicador de carga
+        this.hideLoadingState();
+    },
+
+    // Mostrar estado de carga (opcional)
+    showLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '0.6';
+            // Agregar spinner o mensaje de carga si es necesario
+        }
+    },
+
+    // Ocultar estado de carga
+    hideLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '1';
+        }
+    },
+
     // Inicializar todas las gráficas
     initializeCharts: function() {
         try {
+            // Destruir gráficas existentes si existen
+            this.destroyExistingCharts();
+            
             this.createCompletionChart();
             this.createAbandonmentChart();
             this.createSubscriptionChart();
         } catch (error) {
             console.error('Error inicializando gráficas:', error);
         }
+    },
+
+    // Destruir gráficas existentes para evitar duplicados
+    destroyExistingCharts() {
+        const chartIds = ['engagementChart1', 'engagementChart2', 'engagementChart3'];
+        
+        chartIds.forEach(chartId => {
+            const canvas = document.getElementById(chartId);
+            if (canvas) {
+                const chart = Chart.getChart(canvas);
+                if (chart) {
+                    chart.destroy();
+                }
+            }
+        });
     },
 
     // Gráfica 1: Completion Rate por Edad

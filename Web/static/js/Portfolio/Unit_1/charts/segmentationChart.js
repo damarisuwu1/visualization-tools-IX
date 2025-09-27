@@ -9,15 +9,72 @@ const SegmentationChart = {
         csv2Columns: 'user_id, age, country, subscription_type, total_watch_time_hours'
     },
 
-    // Datos de ejemplo para los segmentos
+    // URL del endpoint
+    apiEndpoint: 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/portfolio',
+
+    // Datos (se llenarán desde la API)
     data: {
-        heavyUsers: [{x: 45, y: 85}, {x: 52, y: 78}, {x: 38, y: 92}],
-        regularUsers: [{x: 25, y: 65}, {x: 28, y: 58}, {x: 32, y: 72}],
-        casualViewers: [{x: 12, y: 35}, {x: 8, y: 28}, {x: 15, y: 42}]
+        heavyUsers: [],
+        regularUsers: [],
+        casualViewers: []
+    },
+
+    // Método para consumir datos del endpoint
+    async fetchSegmentationData() {
+        try {
+            console.log('Obteniendo datos de segmentación desde API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const segmentationData = apiData.info?.segmentation;
+            
+            if (!segmentationData) {
+                throw new Error('Datos de segmentación no encontrados en la respuesta de la API');
+            }
+
+            this.data.heavyUsers = segmentationData.heavyUsers || [];
+            this.data.regularUsers = segmentationData.regularUsers || [];
+            this.data.casualViewers = segmentationData.casualViewers || [];
+
+            console.log('Datos de segmentación obtenidos correctamente:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error obteniendo datos de segmentación:', error);
+            this.setDefaultData();
+            return false;
+        }
+    },
+
+    // Método para establecer datos por defecto
+    setDefaultData() {
+        console.log('Usando datos por defecto para segmentación...');
+        
+        this.data = {
+            heavyUsers: [{x: 45, y: 85}, {x: 52, y: 78}, {x: 38, y: 92}],
+            regularUsers: [{x: 25, y: 65}, {x: 28, y: 58}, {x: 32, y: 72}],
+            casualViewers: [{x: 12, y: 35}, {x: 8, y: 28}, {x: 15, y: 42}]
+        };
     },
 
     // Crear la sección
     createSection: function() {
+        console.log('Creando sección de segmentación...');
         const section = TabManager.createSection(this.sectionConfig);
         
         // Crear contenedor de gráfica simple (sin tabs)
@@ -35,13 +92,65 @@ const SegmentationChart = {
         section.appendChild(chartContainer);
         section.appendChild(description);
         
+        // Agregar la sección al dashboard
+        const container = document.getElementById('dashboard-sections');
+        if (container) {
+            container.appendChild(section);
+        }
+        
+        // Inicializar después de agregar al DOM
+        setTimeout(async () => {
+            await this.fetchSegmentationData();
+            setTimeout(() => {
+                this.initializeChart();
+            }, 100);
+        }, 50);
+        
         return section;
+    },
+
+    // Método para refrescar datos
+    async refreshData() {
+        console.log('Refrescando datos de segmentación...');
+        this.showLoadingState();
+        
+        const success = await this.fetchSegmentationData();
+        
+        if (success) {
+            this.initializeChart();
+            console.log('Datos de segmentación refrescados correctamente');
+        }
+        
+        this.hideLoadingState();
+    },
+
+    showLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '0.6';
+        }
+    },
+
+    hideLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '1';
+        }
     },
 
     // Inicializar la gráfica
     initializeChart: function() {
         const ctx = document.getElementById('segmentationChart');
-        if (!ctx) return;
+        if (!ctx) {
+            console.error('Canvas segmentationChart no encontrado');
+            return;
+        }
+
+        // Destruir gráfica existente si existe
+        const existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+            existingChart.destroy();
+        }
 
         new Chart(ctx, {
             type: 'scatter',
@@ -87,3 +196,6 @@ const SegmentationChart = {
         });
     }
 };
+
+// Hacer disponible globalmente
+window.SegmentationChart = SegmentationChart;

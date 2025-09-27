@@ -1,0 +1,180 @@
+/* css/charts.css - Estilos específicos para gráficas */
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin: 20px 0;
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+    border: 1px solid var(--theme-border-light);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px var(--theme-shadow);
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    background: var(--theme-surface-hover);
+    box-shadow: 0 12px 40px var(--theme-shadow-strong);
+    transform: translateY(-2px);
+}
+
+.chart-description {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-primary) 10%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-secondary) 10%, transparent) 100%
+    );
+    padding: 16px;
+    border-radius: 12px;
+    color: var(--theme-text-primary);
+    margin-top: 16px;
+    border: 1px solid color-mix(in srgb, var(--theme-primary) 20%, transparent);
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    transition: all 0.3s ease;
+}
+
+.chart-description:hover {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-primary) 15%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-secondary) 15%, transparent) 100%
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--theme-shadow);
+}
+
+/* Estilos específicos para diferentes tipos de gráficas */
+.chart-container.small {
+    height: 300px;
+}
+
+.chart-container.medium {
+    height: 400px;
+}
+
+.chart-container.large {
+    height: 500px;
+}
+
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--theme-text-secondary);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.chart-loading::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--theme-border);
+    border-top: 2px solid var(--theme-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 12px;
+}
+
+.chart-error {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-danger) 10%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-danger) 15%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--theme-danger) 30%, transparent);
+    color: var(--theme-danger);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+}
+
+/* Estilos para canvas de Chart.js */
+.chart-container canvas {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+}
+
+/* Personalización de tooltips de Chart.js */
+.chartjs-tooltip {
+    background: var(--theme-surface-elevated) !important;
+    border: 1px solid var(--theme-border) !important;
+    border-radius: 8px !important;
+    color: var(--theme-text-primary) !important;
+    box-shadow: 0 4px 12px var(--theme-shadow) !important;
+    backdrop-filter: var(--theme-backdrop-blur-light) !important;
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light) !important;
+}
+
+.chartjs-tooltip-title {
+    color: var(--theme-text-primary) !important;
+    font-weight: 600 !important;
+}
+
+.chartjs-tooltip-body {
+    color: var(--theme-text-secondary) !important;
+}
+
+/* Estilos específicos para tema oscuro */
+body.dark-theme .chart-description {
+    color: var(--theme-text-primary) !important;
+    border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
+}
+
+body.dark-theme .chart-container {
+    background: var(--theme-surface);
+    border-color: var(--theme-border-light);
+}
+
+body.dark-theme .chart-loading {
+    color: var(--theme-text-secondary);
+}
+
+body.dark-theme .chart-error {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-danger) 15%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-danger) 20%, transparent) 100%
+    );
+    color: var(--theme-danger);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+    
+    .chart-container.large {
+        height: 350px;
+    }
+    
+    .chart-description {
+        font-size: 13px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        height: 250px;
+        padding: 12px;
+    }
+    
+    .chart-container.large {
+        height: 300px;
+    }
+    
+    .chart-description {
+        font-size: 12px;
+        padding: 10px;
+    }
+}

@@ -9,18 +9,81 @@ const TemporalChart = {
         csv2Columns: 'user_id, registration_date, total_watch_time_hours'
     },
 
-    // Datos de ejemplo para cohortes
+    // URL del endpoint
+    apiEndpoint: 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/portfolio',
+
+    // Datos (se llenarán desde la API)
     data: {
-        labels: ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6'],
+        labels: [],
         cohorts: {
-            enero: [100, 85, 72, 65, 58, 52],
-            febrero: [100, 88, 78, 70, 65, 60],
-            marzo: [100, 92, 82, 75, 72, 68]
+            enero: [],
+            febrero: [],
+            marzo: []
         }
+    },
+
+    // Método para consumir datos del endpoint
+    async fetchTemporalData() {
+        try {
+            console.log('Obteniendo datos temporales desde API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const temporalData = apiData.info?.temporal;
+            
+            if (!temporalData) {
+                throw new Error('Datos temporales no encontrados en la respuesta de la API');
+            }
+
+            this.data.labels = temporalData.labels || [];
+            this.data.cohorts = temporalData.cohorts || {
+                enero: [],
+                febrero: [],
+                marzo: []
+            };
+
+            console.log('Datos temporales obtenidos correctamente:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error obteniendo datos temporales:', error);
+            this.setDefaultData();
+            return false;
+        }
+    },
+
+    // Método para establecer datos por defecto
+    setDefaultData() {
+        console.log('Usando datos por defecto para análisis temporal...');
+        
+        this.data = {
+            labels: ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6'],
+            cohorts: {
+                enero: [100, 85, 72, 65, 58, 52],
+                febrero: [100, 88, 78, 70, 65, 60],
+                marzo: [100, 92, 82, 75, 72, 68]
+            }
+        };
     },
 
     // Crear la sección
     createSection: function() {
+        console.log('Creando sección temporal...');
         const section = TabManager.createSection(this.sectionConfig);
         
         // Crear contenedor de gráfica simple
@@ -38,13 +101,65 @@ const TemporalChart = {
         section.appendChild(chartContainer);
         section.appendChild(description);
         
+        // Agregar la sección al dashboard
+        const container = document.getElementById('dashboard-sections');
+        if (container) {
+            container.appendChild(section);
+        }
+        
+        // Inicializar después de agregar al DOM
+        setTimeout(async () => {
+            await this.fetchTemporalData();
+            setTimeout(() => {
+                this.initializeChart();
+            }, 100);
+        }, 50);
+        
         return section;
+    },
+
+    // Método para refrescar datos
+    async refreshData() {
+        console.log('Refrescando datos temporales...');
+        this.showLoadingState();
+        
+        const success = await this.fetchTemporalData();
+        
+        if (success) {
+            this.initializeChart();
+            console.log('Datos temporales refrescados correctamente');
+        }
+        
+        this.hideLoadingState();
+    },
+
+    showLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '0.6';
+        }
+    },
+
+    hideLoadingState() {
+        const section = document.getElementById(this.sectionConfig.id);
+        if (section) {
+            section.style.opacity = '1';
+        }
     },
 
     // Inicializar la gráfica
     initializeChart: function() {
         const ctx = document.getElementById('temporalChart');
-        if (!ctx) return;
+        if (!ctx) {
+            console.error('Canvas temporalChart no encontrado');
+            return;
+        }
+
+        // Destruir gráfica existente si existe
+        const existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+            existingChart.destroy();
+        }
 
         new Chart(ctx, {
             type: 'line',
@@ -87,3 +202,6 @@ const TemporalChart = {
         });
     }
 };
+
+// Hacer disponible globalmente
+window.TemporalChart = TemporalChart;
