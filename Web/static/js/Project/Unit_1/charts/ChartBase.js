@@ -67,14 +67,38 @@ class ChartBase {
 
     // Obtener paleta de colores del tema actual
     getColorPalette() {
-        if (SalaryConfig && typeof SalaryConfig.getChartColorPalette === 'function') {
-            return SalaryConfig.getChartColorPalette();
+        return this.getChartColorPalette();
+    }
+
+    // Obtener paleta de colores (método principal)
+    getChartColorPalette() {
+        if (DashboardConfig && typeof DashboardConfig.getChartColorPalette === 'function') {
+            return DashboardConfig.getChartColorPalette();
         }
         
         return [
             '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444',
             '#8b5cf6', '#ec4899', '#84cc16', '#14b8a6', '#f43f5e'
         ];
+    }
+
+    // Obtener colores específicos del tema
+    getThemeColors(themeName) {
+        const defaultColors = {
+            textPrimary: '#1f2937',
+            textSecondary: '#6b7280',
+            borderColor: 'rgba(229, 231, 235, 0.4)'
+        };
+
+        if (themeName === 'dark') {
+            return {
+                textPrimary: '#f9fafb',
+                textSecondary: '#d1d5db',
+                borderColor: 'rgba(75, 85, 99, 0.4)'
+            };
+        }
+
+        return defaultColors;
     }
 
     // Preparar datos para la gráfica (debe ser implementado por cada subclase)
@@ -109,6 +133,10 @@ class ChartBase {
             
             if (this.chart) {
                 this.initialized = true;
+                
+                // Suscribirse a cambios de tema SOLO una vez
+                this.subscribeToThemeChanges();
+                
                 console.log(`Gráfica ${this.canvasId} inicializada correctamente`);
                 return true;
             } else {
@@ -153,6 +181,12 @@ class ChartBase {
             this.chart.destroy();
             this.chart = null;
             this.initialized = false;
+        }
+        
+        // Limpiar suscripción de tema
+        if (this.themeSubscription) {
+            this.themeSubscription();
+            this.themeSubscription = null;
         }
     }
 
@@ -211,20 +245,70 @@ class ChartBase {
     // Suscribirse a cambios de tema
     subscribeToThemeChanges() {
         if (typeof themeManager !== 'undefined') {
-            return themeManager.subscribe((newTheme) => {
-                this.onThemeChange(newTheme);
-            });
+            // Solo suscribirse una vez
+            if (!this.themeSubscription) {
+                this.themeSubscription = themeManager.subscribe((newTheme, oldTheme) => {
+                    // Evitar loops infinitos
+                    if (newTheme !== oldTheme) {
+                        this.onThemeChange(newTheme);
+                    }
+                });
+            }
+            return this.themeSubscription;
         }
         return null;
     }
 
     // Manejar cambios de tema
     onThemeChange(newTheme) {
-        if (this.chart && this.data) {
-            // Re-crear la gráfica con el nuevo tema
-            const options = this.getBaseOptions();
-            this.destroy();
-            this.chart = this.createChart(this.data, options);
+        if (this.chart && this.data && !this.updatingTheme) {
+            this.updatingTheme = true;
+            console.log(`🎨 Aplicando tema ${newTheme} a gráfica ${this.canvasId}`);
+            
+            try {
+                // Obtener nueva paleta de colores
+                const colorPalette = this.getChartColorPalette();
+                
+                // Actualizar colores en los datasets
+                if (this.chart.data.datasets) {
+                    this.chart.data.datasets.forEach((dataset, index) => {
+                        const colorIndex = index % colorPalette.length;
+                        
+                        if (Array.isArray(dataset.backgroundColor)) {
+                            dataset.backgroundColor = colorPalette;
+                            dataset.borderColor = colorPalette;
+                        } else {
+                            dataset.backgroundColor = colorPalette[colorIndex];
+                            dataset.borderColor = colorPalette[colorIndex];
+                        }
+                    });
+                }
+                
+                // Actualizar opciones del chart según el tema
+                const themeColors = this.getThemeColors(newTheme);
+                if (this.chart.options.plugins && this.chart.options.plugins.legend) {
+                    this.chart.options.plugins.legend.labels.color = themeColors.textPrimary;
+                }
+                
+                if (this.chart.options.scales) {
+                    Object.keys(this.chart.options.scales).forEach(scaleKey => {
+                        const scale = this.chart.options.scales[scaleKey];
+                        if (scale.ticks) scale.ticks.color = themeColors.textSecondary;
+                        if (scale.grid) scale.grid.color = themeColors.borderColor;
+                    });
+                }
+                
+                // Actualizar sin animación para evitar loops
+                this.chart.update('none');
+                
+            } catch (error) {
+                console.error(`Error aplicando tema a ${this.canvasId}:`, error);
+            } finally {
+                // Resetear flag después de un pequeño delay
+                setTimeout(() => {
+                    this.updatingTheme = false;
+                }, 100);
+            }
         }
     }
 }

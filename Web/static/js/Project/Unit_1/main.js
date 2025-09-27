@@ -6,6 +6,7 @@ class DashboardManager {
         this.initialized = false;
         this.themeManager = null;
         this.tabManager = null;
+        this.themeSubscription = null; // Para evitar múltiples suscripciones
         
         // Configuración de inicialización
         this.config = {
@@ -62,10 +63,22 @@ class DashboardManager {
             'RemoteWorkChart', 'RolesChart', 'CompanyChart', 'TemporalChart'
         ];
 
+        console.log('🔍 Verificando dependencias...');
+        
+        // Verificar cada dependencia individualmente
+        required.forEach(dep => {
+            const exists = typeof window[dep] !== 'undefined';
+            console.log(`${exists ? '✅' : '❌'} ${dep}: ${exists ? 'disponible' : 'FALTANTE'}`);
+        });
+
         const missing = required.filter(dep => typeof window[dep] === 'undefined');
         
         if (missing.length > 0) {
             console.error('❌ Dependencias faltantes:', missing);
+            console.error('📋 Lista completa de dependencias faltantes:');
+            missing.forEach((dep, index) => {
+                console.error(`${index + 1}. ${dep}`);
+            });
             return false;
         }
 
@@ -75,15 +88,22 @@ class DashboardManager {
 
     // Inicializar el gestor de temas
     initThemeManager() {
-        if (typeof themeManager !== 'undefined') {
-            this.themeManager = themeManager;
+        if (typeof window.themeManager !== 'undefined') {
+            this.themeManager = window.themeManager;
             
-            // Suscribirse a cambios de tema
-            this.themeManager.subscribe((newTheme) => {
-                this.onThemeChange(newTheme);
-            });
+            // SOLO suscribirse una vez y evitar el tema inicial
+            if (!this.themeSubscription) {
+                this.themeSubscription = this.themeManager.subscribe((newTheme, oldTheme) => {
+                    // Solo procesar si realmente cambió el tema y no es la inicialización
+                    if (newTheme !== oldTheme && oldTheme !== undefined) {
+                        this.onThemeChange(newTheme);
+                    }
+                });
+            }
 
             console.log('🎨 Gestor de temas inicializado');
+        } else {
+            console.warn('⚠️ themeManager no encontrado, continuando sin gestión de temas');
         }
     }
 
@@ -93,6 +113,12 @@ class DashboardManager {
         if (!container) {
             console.error('❌ Contenedor principal no encontrado');
             return;
+        }
+
+        // Remover loading container
+        const loadingContainer = container.querySelector('.loading-container');
+        if (loadingContainer) {
+            loadingContainer.remove();
         }
 
         // Crear tabs principales
@@ -119,7 +145,9 @@ class DashboardManager {
         sections.forEach((section, index) => {
             const tab = document.createElement('button');
             tab.className = `main-tab ${index === 0 ? 'active' : ''}`;
-            tab.textContent = section.title.replace(/[\d\w]/g, '').trim();
+            // Limpiar el título para mostrar solo el texto sin emojis
+            const cleanTitle = section.title.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+            tab.textContent = cleanTitle || section.title;
             tab.dataset.sectionId = section.id;
             
             tab.addEventListener('click', (e) => {
@@ -141,18 +169,40 @@ class DashboardManager {
         const sections = DashboardConfig.getAllSections();
 
         sections.forEach((sectionConfig, index) => {
-            // Crear sección usando la clase específica de cada gráfica
+            // Crear una sección básica si la clase específica no existe
             const ChartClass = window[sectionConfig.chartClass];
+            let section;
+            
             if (ChartClass && typeof ChartClass.createSection === 'function') {
-                const section = ChartClass.createSection();
-                section.classList.add(index === 0 ? 'active' : 'hidden');
-                sectionsContainer.appendChild(section);
+                section = ChartClass.createSection();
             } else {
-                console.warn(`❌ Clase de gráfica no encontrada: ${sectionConfig.chartClass}`);
+                // Crear sección básica como fallback
+                section = this.createBasicSection(sectionConfig);
+                console.warn(`⚠️ Usando sección básica para: ${sectionConfig.chartClass}`);
             }
+            
+            section.id = sectionConfig.id + '-section';
+            section.classList.add('analysis-section');
+            section.classList.add(index === 0 ? 'active' : 'hidden');
+            sectionsContainer.appendChild(section);
         });
 
         return sectionsContainer;
+    }
+
+    // Crear sección básica como fallback
+    createBasicSection(config) {
+        const section = document.createElement('div');
+        section.innerHTML = `
+            <div class="section-header">
+                <h2>${config.title}</h2>
+                <p>${config.description}</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="${config.canvasId}" width="400" height="200"></canvas>
+            </div>
+        `;
+        return section;
     }
 
     // Inicializar todas las gráficas
@@ -168,10 +218,42 @@ class DashboardManager {
                 await new Promise(resolve => setTimeout(resolve, this.config.animationDelay));
             } catch (error) {
                 console.error(`❌ Error inicializando gráfica ${section.id}:`, error);
+                // Crear gráfica básica como fallback
+                this.createFallbackChart(section);
             }
         }
 
-        console.log('✅ Todas las gráficas inicializadas');
+        console.log('✅ Inicialización de gráficas completada');
+    }
+
+    // Crear gráfica básica como fallback
+    createFallbackChart(sectionConfig) {
+        const canvas = document.getElementById(sectionConfig.canvasId);
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const sampleData = DashboardConfig.sampleData[sectionConfig.id];
+        
+        if (sampleData && window.Chart) {
+            const chart = new Chart(ctx, {
+                type: sectionConfig.chartType,
+                data: {
+                    labels: sampleData.labels,
+                    datasets: [{
+                        label: 'Datos de muestra',
+                        data: sampleData.data,
+                        backgroundColor: sampleData.colors || DashboardConfig.colorPalette
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            this.charts[sectionConfig.id] = chart;
+            console.log(`✅ Gráfica fallback creada para ${sectionConfig.id}`);
+        }
     }
 
     // Inicializar una gráfica específica
@@ -193,7 +275,7 @@ class DashboardManager {
             const chart = new ChartClass();
             const sampleData = DashboardConfig.sampleData[sectionConfig.id];
             
-            if (sampleData) {
+            if (sampleData && chart.init) {
                 const success = chart.init(sampleData);
                 if (success) {
                     this.charts[sectionConfig.id] = chart;
@@ -240,22 +322,7 @@ class DashboardManager {
             this.resizeAllCharts();
         }, 250));
 
-        // Listener para cambios de tema
-        document.addEventListener('themeChange', (e) => {
-            this.onThemeChange(e.detail.theme);
-        });
-
-        // Listener para el botón de tema
-        const themeButton = document.querySelector('[data-theme-toggle]');
-        if (themeButton && !themeButton.hasAttribute('data-listener-added')) {
-            themeButton.addEventListener('click', () => {
-                if (this.themeManager) {
-                    this.themeManager.toggleTheme();
-                }
-            });
-            themeButton.setAttribute('data-listener-added', 'true');
-        }
-
+        // NO agregar más listeners de tema aquí - ya está manejado en ThemeManager
         console.log('👂 Event listeners configurados');
     }
 
@@ -355,6 +422,12 @@ class DashboardManager {
 
     // Destruir el dashboard
     destroy() {
+        // Limpiar suscripción de tema
+        if (this.themeSubscription) {
+            this.themeSubscription();
+            this.themeSubscription = null;
+        }
+
         // Destruir todas las gráficas
         Object.values(this.charts).forEach(chart => {
             if (chart && chart.destroy) {
@@ -375,12 +448,16 @@ let dashboardManager = null;
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🌟 DOM cargado, inicializando dashboard...');
     
-    // Crear y inicializar el dashboard
-    dashboardManager = new DashboardManager();
-    await dashboardManager.init();
-    
-    // Hacer disponible globalmente para debugging
-    window.dashboardManager = dashboardManager;
+    try {
+        // Crear y inicializar el dashboard
+        dashboardManager = new DashboardManager();
+        await dashboardManager.init();
+        
+        // Hacer disponible globalmente para debugging
+        window.dashboardManager = dashboardManager;
+    } catch (error) {
+        console.error('💥 Error crítico al inicializar:', error);
+    }
 });
 
 // Hacer clases disponibles globalmente

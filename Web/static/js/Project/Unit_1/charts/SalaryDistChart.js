@@ -13,7 +13,7 @@ class SalaryDistChart extends ChartBase {
     // Preparar datos para la gráfica distribucional
     prepareData(rawData) {
         // Si no hay datos reales, usar datos de ejemplo
-        const data = rawData || SalaryConfig.sampleData.distributional;
+        const data = rawData || DashboardConfig.sampleData.distributional;
         
         const colors = this.getColorPalette();
         
@@ -88,8 +88,8 @@ class SalaryDistChart extends ChartBase {
         section.className = 'analysis-section';
         section.id = 'distributional-section';
 
-        const config = SalaryConfig.getSectionById('distributional');
-        const title = SalaryConfig.getSectionTitle('distributional');
+        const config = DashboardConfig.getSectionById('distributional');
+        const title = DashboardConfig.getSectionTitle('distributional');
 
         section.innerHTML = `
             ${title}
@@ -114,7 +114,7 @@ class SalaryDistChart extends ChartBase {
     static initializeChart() {
         try {
             const chart = new SalaryDistChart();
-            const sampleData = SalaryConfig.sampleData.distributional;
+            const sampleData = DashboardConfig.sampleData.distributional;
             
             setTimeout(() => {
                 const success = chart.init(sampleData);
