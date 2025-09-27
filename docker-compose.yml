@@ -1,17 +1,17 @@
 services:
   # =============== Servicios Públicos ===============
-  # web_visualization:
-  #   build:
-  #     context: ./Web
-  #   container_name: web_visualization
-  #   ports:
-  #     - "502:502"
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - api_visualization
-  #   networks:
-  #     - visualization_net
+  web_visualization:
+    build:
+      context: ./Web
+    container_name: web_visualization
+    ports:
+      - "502:502"
+    env_file:
+      - .env
+    depends_on:
+      - api_visualization
+    networks:
+      - visualization_net
 
   api_visualization:
     build:
@@ -35,21 +35,23 @@ services:
   #   build:
   #     context: ./Generator
   #   container_name: gen_visualization
-  #   depends_on:
-  #     - api_visualization
-  #   env_file:
-  #     - .env
-
-  # inyector_visualization:
-  #   build:
-  #     context: ./Inyector
-  #   container_name: inyector_visualization
   #   env_file:
   #     - .env
   #   depends_on:
   #     - api_visualization
   #   networks:
   #     - visualization_net
+
+  inyector_visualization:
+    build:
+      context: ./Inyector
+    container_name: inyector_visualization
+    env_file:
+      - .env
+    depends_on:
+      - api_visualization
+    networks:
+      - visualization_net
 
   mongo_visualization:
     image: mongo:6.0

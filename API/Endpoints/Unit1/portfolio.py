@@ -17,21 +17,21 @@ class Portfolio_1(Resource):
         # === completionByAge
         completionByAge = {
             "labels": ["18-25", "26-35", "36-45", "46-55", "55+"],
-            "values": [..., ..., ..., ..., ...]
+            "values": [5, 10, 15, 20, 25]
         }
 
 
         # === abandonmentByCountry
         abandonmentByCountry = {
             "labels": ["México", "España", "Colombia", "Argentina", "Chile"],
-            "values": [..., ..., ..., ..., ...]
+            "values": [5, 10, 15, 20, 25]
         }
 
 
         # === engagementBySubscription
         engagementBySubscription = {
             "labels": ["Basic", "Standard", "Premium"],
-            "values": [..., ..., ...]
+            "values": [30, 35, 40]
         }
 
 
@@ -46,16 +46,16 @@ class Portfolio_1(Resource):
         '''
         return {
             "basic": [
-                {"x": ..., "y": ..., "r": ...}, 
-                {"x": ..., "y": ..., "r": ...}
+                {"x": 5, "y": 10, "r": 15}, 
+                {"x": 20, "y": 25, "r": 30}
             ],
             "standard": [
-                {"x": ..., "y": ..., "r": ...},
-                {"x": ..., "y": ..., "r": ...}
+                {"x": 5, "y": 10, "r": 15},
+                {"x": 20, "y": 25, "r": 30}
             ],
             "premium": [
-                {"x": ..., "y": ..., "r": ...},
-                {"x": ..., "y": ..., "r": ...}
+                {"x": 5, "y": 10, "r": 15},
+                {"x": 20, "y": 25, "r": 30}
             ]
         }
 
@@ -65,9 +65,9 @@ class Portfolio_1(Resource):
         return {
             "labels": ["Mes 1", "Mes 2", "Mes 3", "Mes 4", "Mes 5", "Mes 6"],
             "cohorts": {
-                "enero":   [..., ..., ..., ..., ..., ...],
-                "febrero": [..., ..., ..., ..., ..., ...],
-                "marzo":   [..., ..., ..., ..., ..., ...]
+                "enero":   [35, 40, 65, 70, 95, 0],
+                "febrero": [45, 50, 75, 80, 5, 10],
+                "marzo":   [55, 60, 85, 90, 15, 20]
             }
         }
 
@@ -76,8 +76,8 @@ class Portfolio_1(Resource):
         '''
         return {
             "labels": ["Mobile", "Desktop", "TV", "Tablet"],
-            "duration":   [..., ..., ..., ...],
-            "completion": [..., ..., ..., ...]
+            "duration":   [25, 30, 45, 50],
+            "completion": [35, 40, 55, 60]
         }
 
     def __obtener_info_segmentation(self):
@@ -85,19 +85,19 @@ class Portfolio_1(Resource):
         '''
         return {
             "heavyUsers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
+                {"x": 65, "y": 70},
+                {"x": 75, "y": 80},
+                {"x": 85, "y": 90}
             ],
             "regularUsers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
+                {"x": 95, "y": 0},
+                {"x": 5, "y": 10},
+                {"x": 15, "y": 20}
             ],
             "casualViewers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
+                {"x": 25, "y": 30},
+                {"x": 35, "y": 40},
+                {"x": 45, "y": 50}
             ]
         }
     
