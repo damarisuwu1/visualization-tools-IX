@@ -1,91 +1,34 @@
-# ==================================== ARIEL ============================================
-import os, requests, pandas as pd, json
+# ==================================== Improved version =================================
+
+import os
 from dotenv import load_dotenv
-import time
+from Scripts.json_process import NoSQL_Process
+from Scripts.csv_process import SQL_Process
 
-# =============== Carga de contenido
 load_dotenv()
-URL_API = os.getenv('URL_API')
-with open('./data/content.json','r') as file: content_json = json.load(file)
-content = content_json.items()
 
-# ---------------- PROCESAMIENTO DE DOCUMENTOS --------------------- # 
+#send_postgres_A = SQL_Process("A")
+#send_postgres_B = SQL_Process("B")
+#send_postgres_C = SQL_Process("C")
+#send_postgres_D = SQL_Process("D")
+send_mongo_A1 = NoSQL_Process("A", "movies")
+send_mongo_B1 = NoSQL_Process("B", "movies")
+send_mongo_C1 = NoSQL_Process("C", "movies")
+send_mongo_D1 = NoSQL_Process("D", "movies")
+send_mongo_A2 = NoSQL_Process("A", "series")
+send_mongo_B2 = NoSQL_Process("B", "series")
+send_mongo_C2 = NoSQL_Process("C", "series")
+send_mongo_D2 = NoSQL_Process("D", "series")
 
-# =============== Procesamiento de JSON --> MONGO
-def json_processed(id_prefix: str = "M"):
-    """
-    - ```id_prefix```: Find the character that distinguish the _id key. Possible values: ```"M"``` (for movies), ```"S"``` (for series).
-    """
-    values = []
-    for key, documents in content:
-        for docs in documents:
-            collection = key
-            data = docs
-            if id_prefix in data["_id"]:
-                values.append(data)
-                # ===== DIEGO: ¿Por cada iteración generas el payload?, ¿Con qué objetivo? =====
-                payload ={
-                'collection': collection,
-                'data': values
-                }
-    # ===== DIEGO: ¿Qué pasa si generas el payload directo en la variable 'json'? =====
-    response = requests.post(
-                f"{URL_API}/api/mongo",
-                json=payload)
-    return response
-
-
-# =============== Procesamiento de CSVs --> POSTGRESQL
-
-def transform_csv(file_path: str, users: bool = True):
-    """
-    Converts the CSV format into JSON-like to send it as an API payload. The function creates a list with JSON items, each item has keys based on the CSV column names and each key has a single value from the data related to their respective column.
-    ## **Parameters**
-    - ```file_path```: Path to the file that will be processed.
-    - ```users```: Determine whether the file is for the table "users", otherwise, the table will be "viewing_sessions".
-
-    ## **Returns**
-    A dictionary with the table name and its data:\n
-    {'table': 'table_name',\n
-    'data': [\n
-        \n{
-        'column1': 'value',\n
-        'column2': 'value',
-        ...
-        },\n
-        {
-        'column1': 'value',
-        'column2': 'value',
-        ...
-        }, ...\n
-    ]
-    """
-
-    df = pd.read_csv(file_path)
-    if users == True:
-        table_name = 'users'
-    else:
-        table_name = 'viewing_sessions'
-    # ===== DIEGO: ¿Con qué objetivo guardas el dataframe de nuevo como json? =====
-    df.to_json(path_or_buf=f"./{table_name}_processed.json", orient='records')
-    #Giving a few seconds to process and save the file.
-    time.sleep(6)
-    with open(f"./data/{table_name}_processed.json", "r") as json_raw:
-        content_processed = json.load(json_raw)
-    payload = requests.post(
-        f'{URL_API}/api/postgres', 
-        json= {
-        'table': table_name,
-        'data': content_processed
-        })
-    return payload
-
-if __name__ == '__main__':
-    json_processed(id_prefix="M") # Creates collection "movies" and inserts data
-    json_processed(id_prefix="S") # Creates collection "series" and inserts data
-    transform_csv('./Files/data/users.csv', True) # Creates table "users" and inserts data
-    transform_csv('./Files/data/viewing_sessions.csv', False) # Creates table "viewing_sessions" and inserts data
-# ================================================================================ 
+#send_postgres_A.procesar()
+send_mongo_A1.procesar()
+send_mongo_B1.procesar()
+send_mongo_C1.procesar()
+send_mongo_D1.procesar()
+send_mongo_A2.procesar()
+send_mongo_B2.procesar()
+send_mongo_C2.procesar()
+send_mongo_D2.procesar()
 
 
 # ==================================== DIEGO ============================================
