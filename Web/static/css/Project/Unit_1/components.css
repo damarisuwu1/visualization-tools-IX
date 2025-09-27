@@ -1,0 +1,155 @@
+/* css/components.css - Estilos de componentes modernos */
+
+.analysis-section {
+    margin: 24px;
+    padding: 32px;
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur);
+    border: 1px solid var(--theme-border-light);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px var(--theme-shadow);
+    transition: all 0.3s ease;
+}
+
+.analysis-section:hover {
+    background: var(--theme-surface-hover);
+    box-shadow: 0 12px 40px var(--theme-shadow-strong);
+    transform: translateY(-4px);
+}
+
+.analysis-title {
+    color: var(--theme-text-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid transparent;
+    background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary)) bottom no-repeat;
+    background-size: 100% 2px;
+    display: flex;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.section-icon {
+    margin-right: 12px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px;
+    background: color-mix(in srgb, var(--theme-primary) 20%, transparent);
+    border-radius: 10px;
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+}
+
+.columns-needed {
+    background: var(--theme-surface-elevated);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid var(--theme-border);
+    transition: all 0.3s ease;
+}
+
+.columns-needed:hover {
+    background: var(--theme-surface-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--theme-shadow);
+}
+
+.columns-title {
+    font-weight: 600;
+    color: var(--theme-text-primary);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.columns-list {
+    color: var(--theme-primary);
+    background: color-mix(in srgb, var(--theme-primary) 15%, transparent);
+    border-left: 3px solid var(--theme-primary);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    margin: 8px 0;
+}
+
+/* Estilos adicionales para elementos modernos */
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid color-mix(in srgb, var(--theme-primary) 20%, transparent);
+    border-top: 2px solid var(--theme-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    padding: 16px;
+    background: color-mix(in srgb, var(--theme-danger) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-danger) 30%, transparent);
+    border-radius: 12px;
+    color: var(--theme-danger);
+    font-weight: 500;
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+}
+
+.success-message {
+    padding: 16px;
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    border-radius: 12px;
+    color: var(--theme-accent);
+    font-weight: 500;
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+}
+
+.info-card {
+    background: var(--theme-surface);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    border: 1px solid var(--theme-border-light);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    background: var(--theme-surface-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--theme-shadow);
+}
+
+/* Estilos específicos para el tema oscuro */
+body.dark-theme .analysis-section .chart-description,
+body.dark-theme .analysis-section p,
+body.dark-theme .analysis-section div:not(.chart-container):not([id*="Chart"]) {
+    color: var(--theme-text-primary) !important;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .analysis-section {
+        margin: 16px;
+        padding: 20px;
+    }
+    
+    .analysis-title {
+        font-size: 1.3rem;
+    }
+}

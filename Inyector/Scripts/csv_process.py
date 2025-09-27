@@ -1,4 +1,4 @@
-import os
+import os, pandas as pd, requests
 from typing import Literal
 
 class SQL_Process:
@@ -16,6 +16,7 @@ class SQL_Process:
     def __leer_archivo_version_A(self):
         '''
         '''
+        
 
     def __parsear_archivo_version_A(self):
         '''

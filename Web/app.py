@@ -27,7 +27,7 @@ def home():
 @app.route('/project/unit1')
 def project_unit1():
     try:
-        return render_template('Project/Unit_1/main_u1.html')
+        return render_template('Project/Unit_1/main.html')
     except Exception as e:
         error = traceback.format_exc()
         app.logger.error(f"Error cargando proyecto unidad 1: {e}")
