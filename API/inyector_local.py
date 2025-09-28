@@ -1,7 +1,9 @@
 import os, pandas as pd, requests, json
+from dotenv import load_dotenv
+load_dotenv()
 
 location_path = os.path.dirname(os.path.dirname(__file__))
-BASE_URL = 'http://0.0.0.0:503'
+BASE_URL = os.getenv('URL_API')
 
 # ===== Content
 content_path = os.path.join(location_path,'Inyector','Files','data','content.json')
