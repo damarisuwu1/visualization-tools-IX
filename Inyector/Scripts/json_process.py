@@ -9,10 +9,17 @@ class NoSQL_Process:
     # =============== CONSTRUCTOR ===============
     def __init__(self, version:Literal['A','B','C','D'],data:Literal['movies','series']):
         '''
+        ## Parameters
+        ### version:
         - ```A```: Procesar el dataset registro por registro, validar el tipo de dato que es y si todo esta bien, subirlo al API igual registro por registro.
         - ```B```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico y luego procesar el dataframe fila por fila para subirlo al API
         - ```C```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subirlo al API con una sola llamada, subiendo todo el dataframe como lista dentro del payload.
         - ```D```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subir al API por bloques de 50 registros (por poner un ejemplo)
+        ### data:
+        - ```movies```: Procesar los valores de la colección movies.
+        - ```series```: Procesar los valores de la colección series.
+        ## Returns
+        Nothing.
         '''
         
         self.version = version.upper()
@@ -301,8 +308,8 @@ class NoSQL_Process:
     # =============== METODOS PUBLICOS ===============
     def procesar(self):
 
-        if self.version == 'A':   self.__procesar_version_A()
-        elif self.version == 'B': self.__procesar_version_B()
-        elif self.version == 'C': self.__procesar_version_C()
-        elif self.version == 'D': self.__procesar_version_D()
+        if self.version == 'A':   return self.__procesar_version_A()
+        elif self.version == 'B': return self.__procesar_version_B()
+        elif self.version == 'C': return self.__procesar_version_C()
+        elif self.version == 'D': return self.__procesar_version_D()
         else: raise Exception(f'No se proporcionó una versión valida. Se espera sólo A, B, C o D, pero se ingresó: {self.version}')
