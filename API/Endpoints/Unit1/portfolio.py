@@ -130,16 +130,33 @@ class Portfolio_1(Resource):
 
         return {
             "labels" : ["México", "España", "Colombia", "Argentina", "Chile"],
-            "values" : [5, 10, 15, 20, 25],
-            "values2" : values
+            "values" : values
         }
     
     def __engagement_by_syscription(self):
         '''
         '''
+        tiers  = ["Basic", "Standard", "Premium"]
+        values = []
+
+        # === Busca los usuarios dependiendo su tier de suscripcion
+        for tier in tiers:
+            response, code = self.postgres.get(
+                table_name = 'users',
+                filters = {"subscription_type":tier}
+            )
+            if code != 200: raise Exception(f"7. Se encontró un error al consultar la info de la bd - ({code}): {response}")
+            
+            # === Obtiene el numero de usuarios en ese tier y el promedio de 'total_watch_time_hours'
+            total_users = response['count']
+            total_hours = sum([user['total_watch_time_hours'] for user in response['data']])
+            total_avrg  = int(total_hours / total_users)
+
+            values.append(total_avrg)
+
         return {
-            "labels": ["Basic", "Standard", "Premium"],
-            "values": [30, 35, 40]
+            "labels": tiers,
+            "values": values
         }
     
     def __obtener_info_engagement(self):
@@ -278,10 +295,10 @@ class Portfolio_1(Resource):
                 "status":"success",
                 "info":{
                     "engagement"   : self.__obtener_info_engagement(),
-                    "value"        : self.__obtener_info_value(),
-                    "temporal"     : self.__obtener_info_temporal(),
-                    "technical"    : self.__obtener_info_technical(),
-                    "segmentation" : self.__obtener_info_segmentation()
+                    # "value"        : self.__obtener_info_value(),
+                    # "temporal"     : self.__obtener_info_temporal(),
+                    # "technical"    : self.__obtener_info_technical(),
+                    # "segmentation" : self.__obtener_info_segmentation()
                 }
             }, 200
         except:
