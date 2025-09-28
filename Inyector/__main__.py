@@ -2,8 +2,8 @@
 
 import os
 from dotenv import load_dotenv
-from Scripts.json_process import NoSQL_Process
-from Scripts.csv_process import SQL_Process
+from Scripts.Portfolio.json_process import NoSQL_Process
+from Scripts.Portfolio.csv_process import SQL_Process
 
 if __name__ == "__main__":
     
