@@ -36,15 +36,15 @@ app = Flask(__name__)
 app.config['mongo_db'] = mongo_db
 app.config['get_postgres_connection'] = get_postgres_connection
 CORS(app)
-# api = Api(app, prefix='/api') # dev
-api = Api(app) # main
+api = Api(app, prefix='/api') # dev
+# api = Api(app) # main
 
 
 # ===== Registrar endpoints
 # === Generales
-from Endpoints.collections import MongoCollections
-from Endpoints.tables import PostgresTables
-from Endpoints.info import Info
+from Endpoints.Utils.collections import MongoCollections
+from Endpoints.Utils.tables import PostgresTables
+from Endpoints.Utils.info import Info
 
 api.add_resource(Info,             '/info')
 api.add_resource(MongoCollections, '/mongo')

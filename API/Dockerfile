@@ -4,6 +4,9 @@ FROM python:3.11
 # ----- DIRECTORIO DE TRABAJO -----
 WORKDIR /app
 
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONIOENCODING=utf-8
+
 # ----- COPIAR DEPENDENCIAS -----
 COPY requirements.txt /app
 

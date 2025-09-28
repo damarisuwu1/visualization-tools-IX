@@ -1,15 +1,20 @@
-import traceback
-from flask_restful import Resource
+import traceback, json
 from flask import current_app, request
+from flask_restful import Resource
 from contextlib import closing
-import json
 from datetime import datetime
+from werkzeug.datastructures import ImmutableMultiDict
 
 class PostgresTables(Resource):
+    # =============== CONSTRUCTOR ===============
     def __init__(self):
         self.get_connection = current_app.config["get_postgres_connection"]
 
-    def _serialize_value(self, value):
+    
+
+
+    # =============== METODOS PRIVADOS ===============
+    def __serialize_value(self, value):
         """Convierte valores no serializables a formatos compatibles con JSON"""
         if isinstance(value, datetime):
             return value.isoformat()
@@ -18,11 +23,11 @@ class PostgresTables(Resource):
         else:
             return value
 
-    def _serialize_row(self, row, columns):
+    def __serialize_row(self, row, columns):
         """Convierte una fila de la base de datos a un diccionario serializable"""
         row_dict = {}
         for i, value in enumerate(row):
-            serialized_value = self._serialize_value(value)
+            serialized_value = self.__serialize_value(value)
             # Manejar tipos especiales
             if isinstance(serialized_value, (dict, list)):
                 row_dict[columns[i]] = json.dumps(serialized_value)
@@ -30,33 +35,87 @@ class PostgresTables(Resource):
                 row_dict[columns[i]] = serialized_value
         return row_dict
 
-    def get(self):
-        try:
-            # ===== Nombre de la tabla
-            table_name = request.args.get("table")
-
-            if not table_name:
-                return {
-                    "status": "error", 
-                    "info": "Falta el parámetro '?table=' en el endpoint"
-                }, 400
-
-            # ===== Construir filtros WHERE
-            where_conditions = []
-            params = []
-            limit = None
-            offset = None
-            
-            for key, value in request.args.items():
-                if key in ["table", "limit", "offset"]:
-                    if key == "limit":
-                        limit = int(value) if value.isdigit() else None
-                    elif key == "offset":
-                        offset = int(value) if value.isdigit() else None
-                    continue
+    def __create_args_from_params(self, table_name, filters=None, limit=None, offset=None):
+        """
+        Crea un ImmutableMultiDict desde parámetros de función
+        """
+        args_list = [('table', table_name)]
+        
+        if filters:
+            for key, value in filters.items():
+                if isinstance(value, list):
+                    for v in value:
+                        args_list.append((key, str(v)))
                 else:
-                    where_conditions.append(f"{key} = %s")
-                    # Conversión básica de tipos
+                    args_list.append((key, str(value)))
+        
+        if limit:
+            args_list.append(('limit', str(limit)))
+        if offset:
+            args_list.append(('offset', str(offset)))
+        
+        return ImmutableMultiDict(args_list)
+
+    def __parse_args(self, args_source):
+        """
+        Parsea argumentos desde request.args o desde ImmutableMultiDict
+        """
+        # ===== Nombre de la tabla
+        table_name = args_source.get("table")
+
+        if not table_name:
+            return None, {
+                "status": "error", 
+                "info": "Falta el parámetro 'table' en la consulta"
+            }, 400
+
+        # ===== Construir filtros WHERE
+        where_conditions = []
+        params = []
+        limit = None
+        offset = None
+        
+        # Obtener todos los argumentos únicos (sin duplicados de keys)
+        processed_keys = set()
+        
+        for key in args_source.keys():
+            if key in processed_keys:
+                continue
+                
+            processed_keys.add(key)
+            
+            if key in ["table", "limit", "offset"]:
+                if key == "limit":
+                    limit_value = args_source.get("limit")
+                    limit = int(limit_value) if limit_value and limit_value.isdigit() else None
+                elif key == "offset":
+                    offset_value = args_source.get("offset")
+                    offset = int(offset_value) if offset_value and offset_value.isdigit() else None
+                continue
+            
+            # Obtener todos los valores para esta clave
+            values = args_source.getlist(key)
+            
+            if len(values) == 1:
+                # Un solo valor - condición de igualdad
+                where_conditions.append(f"{key} = %s")
+                value = values[0]
+                # Conversión básica de tipos
+                if value.lower() == "true":
+                    params.append(True)
+                elif value.lower() == "false":
+                    params.append(False)
+                elif value.isdigit():
+                    params.append(int(value))
+                else:
+                    params.append(value)
+            else:
+                # Múltiples valores - usar operador IN
+                placeholders = ", ".join(["%s"] * len(values))
+                where_conditions.append(f"{key} IN ({placeholders})")
+                
+                # Convertir todos los valores y agregarlos a params
+                for value in values:
                     if value.lower() == "true":
                         params.append(True)
                     elif value.lower() == "false":
@@ -66,6 +125,13 @@ class PostgresTables(Resource):
                     else:
                         params.append(value)
 
+        return (table_name, where_conditions, params, limit, offset), None, 200
+
+    def __execute_query(self, table_name, where_conditions, params, limit, offset):
+        """
+        Ejecuta la consulta en PostgreSQL
+        """
+        try:
             # ===== Construir query
             base_query = f"SELECT * FROM {table_name}"
             
@@ -87,7 +153,7 @@ class PostgresTables(Resource):
                     # Convertir a diccionarios serializables
                     results = []
                     for row in rows:
-                        results.append(self._serialize_row(row, columns))
+                        results.append(self.__serialize_row(row, columns))
 
             return {
                 "status": "fetched",
@@ -102,6 +168,37 @@ class PostgresTables(Resource):
                 "status": "error",
                 "info": traceback.format_exc().splitlines()
             }, 500
+
+    
+    
+    
+    # =============== METODOS HTTP ===============
+    def get(self, table_name=None, filters=None, limit=None, offset=None):
+        """
+        Endpoint HTTP o método directo
+        
+        Si se llama como endpoint HTTP: usa request.args
+        Si se pasan parámetros: los usa directamente
+        """
+        if table_name:
+            # Llamada directa con parámetros
+            mock_args = self.__create_args_from_params(table_name, filters, limit, offset)
+            parsed_data, error_response, status_code = self.__parse_args(mock_args)
+            
+            if error_response:
+                return error_response, status_code
+            
+            table_name, where_conditions, params, limit, offset = parsed_data
+            return self.__execute_query(table_name, where_conditions, params, limit, offset)
+        else:
+            # Llamada como endpoint HTTP
+            parsed_data, error_response, status_code = self.__parse_args(request.args)
+            
+            if error_response:
+                return error_response, status_code
+            
+            table_name, where_conditions, params, limit, offset = parsed_data
+            return self.__execute_query(table_name, where_conditions, params, limit, offset)
 
     def post(self):
         try:
@@ -231,7 +328,7 @@ class PostgresTables(Resource):
                         result_dict = {}
                         if inserted_row:
                             for i, value in enumerate(inserted_row):
-                                result_dict[column_names[i]] = self._serialize_value(value)
+                                result_dict[column_names[i]] = self.__serialize_value(value)
                             inserted_records.append(result_dict)
                 
                 conn.commit()
