@@ -7,7 +7,7 @@ from pymongo import MongoClient
 import psycopg2
 
 # ===== Cargar variables de entorno
-load_dotenv()
+load_dotenv('../.env')
 
 # ===== Configuración de conexiones
 def get_mongo_client():
@@ -75,7 +75,7 @@ api.add_resource(Proyecto_3,    '/unit-3/project')
 if __name__ == '__main__':
     print("=== FLASK INICIADO CORRECTAMENTE ===")
     print("Accede a estas URLs en POSTMAN:")
-    print("• URL Base: http://127.0.0.1:503/api")
+    print("• URL Base: http://127.0.0.1:5003/api")
 
     print("====================================")
-    app.run(debug=True, host='127.0.0.1', port=503)
+    app.run(debug=True, host='127.0.0.1', port=5003)

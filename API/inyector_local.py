@@ -10,7 +10,7 @@ content_path = os.path.join(location_path,'Inyector','Files','data','content.jso
 with open(content_path,'r') as file: content_file = json.load(file)
 
 # === Movies
-movies = content_file['movies']
+movies = content_file['movies'][:500]
 response = requests.post(
     f"{BASE_URL}/api/mongo",
     json = {
@@ -23,7 +23,7 @@ response = requests.post(
 print('Ya se subio la información de movies')
 
 # === Series
-series = content_file['series']
+series = content_file['series'][:500]
 response = requests.post(
     f"{BASE_URL}/api/mongo",
     json = {
@@ -38,7 +38,7 @@ print('Ya se subio la información de series')
 # ===== Users
 users_path = os.path.join(location_path,'Inyector','Files','data','users.csv')
 users_df = pd.read_csv(users_path)
-users = json.loads(users_df.to_json(orient='records'))
+users = json.loads(users_df.to_json(orient='records'))[:500]
 response = requests.post(
     f"{BASE_URL}/api/postgres",
     json = {
@@ -53,7 +53,7 @@ print('Ya se subio la información de users')
 # ===== Viewing Sessions
 users_path = os.path.join(location_path,'Inyector','Files','data','viewing_sessions.csv')
 users_df = pd.read_csv(users_path)
-users = json.loads(users_df.to_json(orient='records'))
+users = json.loads(users_df.to_json(orient='records'))[:500]
 response = requests.post(
     f"{BASE_URL}/api/postgres",
     json = {

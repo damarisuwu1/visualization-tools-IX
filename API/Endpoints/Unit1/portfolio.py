@@ -89,6 +89,8 @@ class Portfolio_1(Resource):
     def __abandonment_by_country(self):
         ''' 
         '''
+        paises = ["Mexico", "Colombia", "Argentina", "Chile"]
+
         # === Busca el total de registros de viewing_sessions
         response, code = self.postgres.get(
             table_name = 'viewing_sessions'
@@ -98,7 +100,7 @@ class Portfolio_1(Resource):
 
         # === Busca la información pais por país
         values = []
-        for pais in ["Mexico","España","Colombia","Argentina","Chile"]:
+        for pais in paises:
 
             # === Primero busca los ids de los usuarios en el pais
             response, code = self.postgres.get(
@@ -110,18 +112,18 @@ class Portfolio_1(Resource):
             if code != 200: raise Exception(f"5. Se encontró un error al consultar la info de la bd - ({code}): {response}")
             else: response = response['data']
 
-            user_id_range = list(set(register['user_id'] for register in response))
+            user_id_range = list(set([register['user_id'] for register in response]))
 
-            # === Busca los completion_percentage < 15 de los user_id_range
+            # === Busca los completion_percentage < 30 de los user_id_range
             response, code = self.postgres.get(
                 table_name = 'viewing_sessions',
                 filters = {
                     "user_id":user_id_range,
-                    "completion_percentage":[i*0.1 for i in range(150)]
+                    "completion_percentage":[i*0.1 for i in range(300)]
                 }
             )
             if code != 200: raise Exception(f"6. Se encontró un error al consultar la info de la bd - ({code}): {response}")
-            else: response = response['count']
+            else:  response = response['count']
 
             # === Guarda el porcentaje
             porcentaje_completition_range = int((response * 100) / total_registros)
@@ -129,7 +131,7 @@ class Portfolio_1(Resource):
         
 
         return {
-            "labels" : ["México", "España", "Colombia", "Argentina", "Chile"],
+            "labels" : paises,
             "values" : values
         }
     
@@ -167,122 +169,6 @@ class Portfolio_1(Resource):
             "abandonmentByCountry"     : self.__abandonment_by_country(),
             "engagementBySubscription" : self.__engagement_by_syscription(),
         }
-
-    
-    
-    
-    
-    
-    def __basic(self):
-        return [
-                {"x": 5, "y": 10, "r": 15}, 
-                {"x": 20, "y": 25, "r": 30}
-            ]
-    
-    def __standard(self):
-        return [
-                {"x": 5, "y": 10, "r": 15},
-                {"x": 20, "y": 25, "r": 30}
-            ]
-
-    def __premium(self):
-        return [
-                {"x": 5, "y": 10, "r": 15},
-                {"x": 20, "y": 25, "r": 30}
-            ]
-
-    def __obtener_info_value(self):
-        ''' 
-        '''
-        return {
-            "basic": self.__basic(),
-            "standard": self.__standard(),
-            "premium": self.__premium()
-        }
-
-    
-    
-    
-    
-    
-    def __enero(self):
-        return [35, 40, 65, 70, 95, 0]
-    
-    def __febrero (self):
-        return [45, 50, 75, 80, 5, 10]
-    
-    def __marzo(self):
-        return [55, 60, 85, 90, 15, 20]
-
-    def __obtener_info_temporal(self):
-        ''' 
-        '''
-        return {
-            "labels": ["Mes 1", "Mes 2", "Mes 3", "Mes 4", "Mes 5", "Mes 6"],
-            "cohorts": {
-                "enero":   self.__enero(),
-                "febrero": self.__febrero(),
-                "marzo":   self.__marzo()
-            }
-        }
-
-    
-    
-    
-    
-    
-    def __duration(self):
-        return [25, 30, 45, 50]
-    
-    def __completition(self):
-        return [35, 40, 55, 60]
-    
-    def __obtener_info_technical(self):
-        ''' 
-        '''
-        return {
-            "labels": ["Mobile", "Desktop", "TV", "Tablet"],
-            "duration":   self.__duration(),
-            "completion": self.__completition(),
-        }
-
-    
-    
-    
-    
-    
-    def __heavyUsers(self):
-        return [
-                {"x": 65, "y": 70},
-                {"x": 75, "y": 80},
-                {"x": 85, "y": 90}
-            ]
-
-    def __regularUsers(self):
-        return [
-                {"x": 95, "y": 0},
-                {"x": 5, "y": 10},
-                {"x": 15, "y": 20}
-            ]
-
-    def __casualViewers(self):
-        return [
-                {"x": 25, "y": 30},
-                {"x": 35, "y": 40},
-                {"x": 45, "y": 50}
-            ]
-    
-    def __obtener_info_segmentation(self):
-        ''' 
-        '''
-        return {
-            "heavyUsers": self.__heavyUsers(),
-            "regularUsers": self.__regularUsers(),
-            "casualViewers": self.__casualViewers(),
-        }
-    
-    
-    
     
     
     
@@ -294,11 +180,7 @@ class Portfolio_1(Resource):
             return {
                 "status":"success",
                 "info":{
-                    "engagement"   : self.__obtener_info_engagement(),
-                    # "value"        : self.__obtener_info_value(),
-                    # "temporal"     : self.__obtener_info_temporal(),
-                    # "technical"    : self.__obtener_info_technical(),
-                    # "segmentation" : self.__obtener_info_segmentation()
+                    "engagement"   : self.__obtener_info_engagement()
                 }
             }, 200
         except:
