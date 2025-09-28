@@ -4,7 +4,7 @@ from flask_restful import Resource
 from ..Utils.collections import MongoCollections
 from ..Utils.tables      import PostgresTables
 
-class Portfolio_1(Resource):
+class Proyecto_1(Resource):
     # =============== CONSTRUCTOR ===============
     def __init__(self):
         self.mongo = MongoCollections()
