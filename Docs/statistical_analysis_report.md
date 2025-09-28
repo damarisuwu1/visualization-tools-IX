@@ -1,18 +1,18 @@
 # Statistical Analysis Report
-## Comprehensive Data Science Project for Streaming Platform
+## Comprehensive Data Science Portfolio for Streaming Platform
 
-### 📊 Project Overview
+### 📊 Portfolio Overview
 
-This comprehensive data science project analyzes user behavior and content performance for a streaming platform using advanced statistical methods, machine learning techniques, and temporal analysis. The project delivers actionable insights through rigorous data exploration, statistical testing, predictive modeling, and advanced analytical techniques.
+This comprehensive data science Portfolio analyzes user behavior and content performance for a streaming platform using advanced statistical methods, machine learning techniques, and temporal analysis. The Portfolio delivers actionable insights through rigorous data exploration, statistical testing, predictive modeling, and advanced analytical techniques.
 
-**Project Duration**: Complete analysis framework  
+**Portfolio Duration**: Complete analysis framework  
 **Data Volume**: 5,000+ users, 222,785+ viewing sessions, 300+ content items  
 **Time Period**: January 2022 - August 2024  
 **Analysis Depth**: Exploratory → Statistical → Predictive → Advanced Analytics  
 
 ---
 
-### 🗂️ Project Structure
+### 🗂️ Portfolio Structure
 
 ```
 ML/
