@@ -42,9 +42,9 @@ api = Api(app) # main
 
 # ===== Registrar endpoints
 # === Generales
-from Endpoints.collections import MongoCollections
-from Endpoints.tables import PostgresTables
-from Endpoints.info import Info
+from Endpoints.Utils.collections import MongoCollections
+from Endpoints.Utils.tables import PostgresTables
+from Endpoints.Utils.info import Info
 
 api.add_resource(Info,             '/info')
 api.add_resource(MongoCollections, '/mongo')

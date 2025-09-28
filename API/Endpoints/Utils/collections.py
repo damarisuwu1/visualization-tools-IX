@@ -3,45 +3,106 @@ from flask_restful import Resource
 from flask import current_app, request
 from pymongo import MongoClient
 from bson import ObjectId
+from werkzeug.datastructures import ImmutableMultiDict
 
 class MongoCollections(Resource):
+    # =============== CONSTRUCTOR ===============
     def __init__(self):
-        self.db: MongoClient = current_app.config["mongo_db"]
+        self.db:MongoClient = current_app.config["mongo_db"]
 
-    def get(self):
-        try:
-            # ===== Nombre de la colección
-            collection_name = request.args.get("collection")
-
-            if not collection_name:
-                return {
-                    "status": "error", 
-                    "info": "Falta el parámetro '?collection=' en el endpoint"
-                }, 400
-
-            # ===== Construir filtros
-            query_filters = {}
-            limit = None
-            skip = None
-            
-            for key, value in request.args.items():
-                if key in ["collection", "limit", "skip"]:
-                    if key == "limit":
-                        limit = int(value) if value.isdigit() else None
-                    elif key == "skip":
-                        skip = int(value) if value.isdigit() else None
-                    continue
-                elif key == "id":
-                    try:
-                        query_filters["_id"] = ObjectId(value)
-                    except Exception as ex:
-                        return {
-                            "status": "error", 
-                            "info": "El id proporcionado no es válido",
-                            "error": f"{ex}"
-                        }, 400
+    # =============== METODOS PRIVADOS ===============
+    def __create_args_from_params(self, collection_name, filters=None, limit=None, skip=None):
+        """
+        Crea un ImmutableMultiDict desde parámetros de función
+        
+        Args:
+            collection_name (str): Nombre de la colección
+            filters (dict): Filtros donde las claves pueden tener listas como valores
+            limit (int): Límite de documentos
+            skip (int): Documentos a saltar
+        """
+        args_list = [('collection', collection_name)]
+        
+        if filters:
+            for key, value in filters.items():
+                if isinstance(value, list):
+                    # Múltiples valores para la misma clave
+                    for v in value:
+                        args_list.append((key, str(v)))
                 else:
-                    # Conversión básica de tipos
+                    # Un solo valor
+                    args_list.append((key, str(value)))
+        
+        if limit:
+            args_list.append(('limit', str(limit)))
+        if skip:
+            args_list.append(('skip', str(skip)))
+        
+        return ImmutableMultiDict(args_list)
+
+    def __parse_args(self, args_source):
+        """
+        Parsea argumentos desde request.args o desde ImmutableMultiDict
+        
+        Args:
+            args_source: request.args o ImmutableMultiDict
+        """
+        # ===== Nombre de la colección
+        collection_name = args_source.get("collection")
+
+        if not collection_name:
+            return None, {
+                "status": "error", 
+                "info": "Falta el parámetro 'collection' en la consulta"
+            }, 400
+
+        # ===== Construir filtros
+        query_filters = {}
+        limit = None
+        skip = None
+        
+        # Obtener todos los argumentos únicos (sin duplicados de keys)
+        processed_keys = set()
+        
+        for key in args_source.keys():
+            if key in processed_keys:
+                continue
+                
+            processed_keys.add(key)
+            
+            if key in ["collection", "limit", "skip"]:
+                if key == "limit":
+                    limit_value = args_source.get("limit")
+                    limit = int(limit_value) if limit_value and limit_value.isdigit() else None
+                elif key == "skip":
+                    skip_value = args_source.get("skip")
+                    skip = int(skip_value) if skip_value and skip_value.isdigit() else None
+                continue
+            
+            # Obtener todos los valores para esta clave
+            values = args_source.getlist(key)
+            
+            if key == "_id" or key == "id":
+                # Manejo especial para IDs de MongoDB
+                try:
+                    if len(values) == 1:
+                        # Un solo ID
+                        query_filters["_id"] = ObjectId(values[0])
+                    else:
+                        # Múltiples IDs - usar operador $in
+                        object_ids = [ObjectId(value) for value in values]
+                        query_filters["_id"] = {"$in": object_ids}
+                except Exception as ex:
+                    return None, {
+                        "status": "error", 
+                        "info": f"Uno o más IDs proporcionados no son válidos: {values}",
+                        "error": f"{ex}"
+                    }, 400
+            else:
+                # Para otros campos
+                if len(values) == 1:
+                    # Un solo valor - conversión de tipo básica
+                    value = values[0]
                     if value.lower() == "true":
                         query_filters[key] = True
                     elif value.lower() == "false":
@@ -50,7 +111,27 @@ class MongoCollections(Resource):
                         query_filters[key] = int(value)
                     else:
                         query_filters[key] = value
+                else:
+                    # Múltiples valores - usar operador $in con conversión de tipos
+                    converted_values = []
+                    for value in values:
+                        if value.lower() == "true":
+                            converted_values.append(True)
+                        elif value.lower() == "false":
+                            converted_values.append(False)
+                        elif value.isdigit():
+                            converted_values.append(int(value))
+                        else:
+                            converted_values.append(value)
+                    query_filters[key] = {"$in": converted_values}
 
+        return (collection_name, query_filters, limit, skip), None, 200
+
+    def __execute_query(self, collection_name, query_filters, limit, skip):
+        """
+        Ejecuta la consulta en MongoDB
+        """
+        try:
             # ===== Ejecutar consulta
             collection = self.db[collection_name]
             cursor = collection.find(query_filters)
@@ -78,6 +159,58 @@ class MongoCollections(Resource):
                 "status": "error", 
                 "info": traceback.format_exc().splitlines()
             }, 500
+
+    def __query_collection(self, collection_name, filters=None, limit=None, skip=None):
+        """
+        Método para consultar colecciones directamente desde código
+        
+        Args:
+            collection_name (str): Nombre de la colección
+            filters (dict): Filtros, ej: {'status': 'active', 'type': ['A', 'B']}
+            limit (int): Límite de documentos
+            skip (int): Documentos a saltar
+        
+        Returns:
+            tuple: (response_data, status_code)
+        """
+        # Crear args simulados
+        mock_args = self.__create_args_from_params(collection_name, filters, limit, skip)
+        
+        # Parsear argumentos
+        parsed_data, error_response, status_code = self.__parse_args(mock_args)
+        
+        if error_response:
+            return error_response, status_code
+        
+        collection_name, query_filters, limit, skip = parsed_data
+        
+        # Ejecutar consulta
+        return self.__execute_query(collection_name, query_filters, limit, skip)
+
+    
+    
+    # =============== METODOS HTTP ===============
+    def get(self, collection_name=None, filters=None, limit=None, skip=None):
+        """
+        Endpoint HTTP o método directo
+        
+        Si se llama como endpoint HTTP: usa request.args
+        Si se pasan parámetros: los usa directamente
+        """
+        if collection_name:
+            # Llamada directa con parámetros
+            return self.__query_collection(collection_name, filters, limit, skip)
+        else:
+            # Llamada como endpoint HTTP
+            parsed_data, error_response, status_code = self.__parse_args(request.args)
+            
+            if error_response:
+                return error_response, status_code
+            
+            collection_name, query_filters, limit, skip = parsed_data
+            
+            # Ejecutar consulta
+            return self.__execute_query(collection_name, query_filters, limit, skip)
     
     def post(self):
         try:
