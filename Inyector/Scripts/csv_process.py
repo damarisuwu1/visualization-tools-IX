@@ -1,5 +1,6 @@
 import os, pandas as pd, requests, csv, json
 from typing import Literal
+from Scripts.utils import transform_types
 
 URL_API = os.getenv('URL_API')
 
@@ -30,28 +31,52 @@ class SQL_Process:
     def __leer_archivo_version_A(self):
         '''
         '''
+        file_path = os.path.join(self.location_path, 'Files', 'data', f'{self.table}.csv')
+        with open(file_path, newline='', mode='r') as file:
+            csv_file = csv.DictReader(file)
+            for row in csv_file:
+                yield row
         
-        
 
-    def __parsear_archivo_version_A(self):
+    def __parsear_archivo_version_A(self, dictionary: dict):
         '''
         '''
+        if self.table == "users":
+            columns = ['user_id', 'age', 'country', 'subscription_type', 'registration_date', 'total_watch_time_hours']
+            data_types = [str, int, str, str, str, float]
+            self.processed_dict = transform_types(dictionary, columns, data_types)
+        else:
+            columns = ['session_id','user_id', 'content_id', 'watch_date', 'watch_duration_minutes', 'completion_percentage', 'device_type', 'quality_level']
+            data_types = [str, str, str, str, int, float, str, str]
+            self.processed_dict = transform_types(dictionary, columns, data_types)
+    
+    def __preparar_payload_version_A(self, dictionary: dict):
+        '''
+        '''
+        dictionary = self.processed_dict
+        self.payload_body = {
+            'table':self. table,
+            'data': dictionary
+        }
 
-    def __preparar_payload_version_A(self):
-        '''
-        '''
 
-    def __enviar_info_version_A(self):
+    def __enviar_info_version_A(self, dictionary: dict):
         '''
         '''
+        dictionary = self.payload_body
+        response = requests.post(
+            url=f"{URL_API}/api/postgres",
+            json= dictionary
+        )
+        return response
 
     def __procesar_version_A(self):
         '''
         '''
-        self.__leer_archivo_version_A()
-        self.__parsear_archivo_version_A()
-        self.__preparar_payload_version_A()
-        self.__enviar_info_version_A()
+        for dictionary in self.__leer_archivo_version_A():
+            self.__parsear_archivo_version_A(dictionary)
+            self.__preparar_payload_version_A(dictionary)
+            self.__enviar_info_version_A(dictionary)
 
 
 
