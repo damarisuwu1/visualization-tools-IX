@@ -1,29 +1,105 @@
-// js/charts/SalaryDistChart.js - Gráfica de distribución salarial
+// js/charts/SalaryDistChart.js - Salary Distribution Chart with API Integration
 
 class SalaryDistChart extends ChartBase {
     constructor() {
         super('salaryDistChart');
         this.sectionConfig = {
             id: 'distributional-section',
-            title: 'Análisis Distribucional de Salarios',
-            description: 'Distribución de salarios por nivel de experiencia'
+            title: 'Salary Distribution Analysis',
+            description: 'Salary distribution by experience level'
+        };
+        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.data = null;
+    }
+
+    // Fetch data from API
+    async fetchData() {
+        try {
+            console.log('Fetching salary distribution data from API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const distributionalData = apiData.info?.distributional;
+            
+            if (!distributionalData) {
+                console.warn('Distributional data not found in API response, using defaults');
+                this.setDefaultData();
+                return false;
+            }
+
+            this.data = {
+                labels: distributionalData.labels || [],
+                data: distributionalData.data || [],
+                colors: distributionalData.colors || null
+            };
+
+            console.log('Salary distribution data fetched successfully:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error fetching salary distribution data:', error);
+            this.setDefaultData();
+            return false;
+        }
+    }
+
+    // Set default data in case of error
+    setDefaultData() {
+        console.log('Using default salary distribution data...');
+        this.data = {
+            labels: ['Entry Level', 'Junior', 'Mid-Level', 'Senior', 'Lead', 'Executive'],
+            data: [0, 0, 0, 0, 0, 0],
+            colors: null
         };
     }
 
-    // Preparar datos para la gráfica distribucional
+    // Prepare data for chart
     prepareData(rawData) {
-        // Si no hay datos reales, usar datos de ejemplo
-        const data = rawData || DashboardConfig.sampleData.distributional;
-        
+        // Si rawData ya tiene la estructura correcta del API
+        const data = rawData || this.data || DashboardConfig.sampleData.distributional;
         const colors = this.getColorPalette();
+        
+        // IMPORTANTE: Asegurarse de que los datos existen
+        if (!data || !data.labels || !data.data) {
+            console.error('Invalid data structure:', data);
+            return {
+                labels: [],
+                datasets: [{
+                    label: 'Average Salary (USD)',
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            };
+        }
         
         return {
             labels: data.labels,
             datasets: [{
-                label: 'Salario Promedio (USD)',
-                data: data.data,
+                label: 'Average Salary (USD)',
+                data: data.data, // Asegúrate que esto sea un array de números
                 backgroundColor: data.colors || colors.slice(0, data.labels.length),
-                borderColor: (data.colors || colors.slice(0, data.labels.length)).map(color => color.replace('0.8', '1')),
+                borderColor: (data.colors || colors.slice(0, data.labels.length)).map(color => 
+                    color.replace('0.8', '1')
+                ),
                 borderWidth: 2,
                 borderRadius: 8,
                 borderSkipped: false
@@ -31,7 +107,7 @@ class SalaryDistChart extends ChartBase {
         };
     }
 
-    // Crear gráfica de barras
+    // Create bar chart
     createChart(data, baseOptions) {
         const options = {
             ...baseOptions,
@@ -40,7 +116,7 @@ class SalaryDistChart extends ChartBase {
                 ...baseOptions.plugins,
                 title: {
                     display: true,
-                    text: 'Distribución de Salarios por Nivel de Experiencia',
+                    text: 'Salary Distribution by Experience Level',
                     font: {
                         size: 16,
                         weight: 'bold'
@@ -54,7 +130,7 @@ class SalaryDistChart extends ChartBase {
                     ...ChartConfig.getOptionsFor('bar').scales.y,
                     title: {
                         display: true,
-                        text: 'Salario Anual (USD)',
+                        text: 'Annual Salary (USD)',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -65,7 +141,7 @@ class SalaryDistChart extends ChartBase {
                     ...ChartConfig.getOptionsFor('bar').scales.x,
                     title: {
                         display: true,
-                        text: 'Nivel de Experiencia',
+                        text: 'Experience Level',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -82,7 +158,7 @@ class SalaryDistChart extends ChartBase {
         });
     }
 
-    // Crear sección HTML
+    // Create HTML section
     static createSection() {
         const section = document.createElement('div');
         section.className = 'analysis-section';
@@ -94,50 +170,66 @@ class SalaryDistChart extends ChartBase {
         section.innerHTML = `
             ${title}
             <div class="columns-needed">
-                <div class="columns-title">Columnas Necesarias:</div>
+                <div class="columns-title">Required Columns:</div>
                 <div class="columns-list">${config.requiredColumns.join(', ')}</div>
             </div>
             <div class="chart-container">
                 <canvas id="salaryDistChart"></canvas>
             </div>
             <div class="chart-description">
-                Esta gráfica muestra la distribución de salarios promedio según el nivel de experiencia. 
-                Los datos revelan una progresión clara desde puestos junior hasta ejecutivos, 
-                permitiendo identificar las brechas salariales entre diferentes niveles.
+                This chart shows the distribution of average salaries by experience level. 
+                The data reveals a clear progression from junior positions to executive roles, 
+                allowing identification of salary gaps between different levels.
             </div>
         `;
 
         return section;
     }
 
-    // Inicializar gráfica con datos de ejemplo
-    static initializeChart() {
+    // Initialize chart with API data
+    static async initializeChart() {
         try {
             const chart = new SalaryDistChart();
-            const sampleData = DashboardConfig.sampleData.distributional;
+            
+            // Fetch data from API
+            await chart.fetchData();
             
             setTimeout(() => {
-                const success = chart.init(sampleData);
+                const success = chart.init(chart.data);
                 if (success) {
-                    console.log('✅ Gráfica distribucional inicializada');
+                    console.log('✅ Salary distribution chart initialized');
                 } else {
-                    console.error('❌ Error inicializando gráfica distribucional');
+                    console.error('❌ Error initializing salary distribution chart');
                 }
             }, 100);
             
             return chart;
         } catch (error) {
-            console.error('❌ Error creando gráfica distribucional:', error);
+            console.error('❌ Error creating salary distribution chart:', error);
             return null;
         }
     }
 
-    // Formatear tooltip personalizado
+    // Refresh data from API
+    async refreshData() {
+        console.log('Refreshing salary distribution data...');
+        
+        const success = await this.fetchData();
+        
+        if (success && this.chart) {
+            const preparedData = this.prepareData(this.data);
+            this.chart.data = preparedData;
+            this.chart.update();
+            console.log('Salary distribution data refreshed successfully');
+        }
+    }
+
+    // Format custom tooltip label
     formatTooltipLabel(context) {
         const value = context.parsed.y;
         return `${context.dataset.label}: ${ChartConfig.formatCurrency(value)}`;
     }
 }
 
-// Hacer disponible globalmente
+// Make available globally
 window.SalaryDistChart = SalaryDistChart;

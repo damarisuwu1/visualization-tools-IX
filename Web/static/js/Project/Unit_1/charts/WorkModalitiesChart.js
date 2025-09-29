@@ -1,30 +1,33 @@
-// js/charts/WorkModalitiesChart.js - Corregido sin ChatGPT
+// js/charts/WorkModalitiesChart.js - Work Modalities Chart with API Integration
+
 class WorkModalitiesChart {
     constructor(canvasId, data = null) {
-        console.log(`🔄 Creando WorkModalitiesChart con canvas: ${canvasId}`);
+        console.log(`🔄 Creating WorkModalitiesChart with canvas: ${canvasId}`);
         
         this.canvasId = canvasId;
         this.data = data;
         this.chart = null;
-        // Solo las 3 modalidades principales
-        this.selectedLines = new Set(['hybrid', 'presencial', 'remoto']);
+        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        
+        // Only 3 main modalities
+        this.selectedLines = new Set(['hybrid', 'onsite', 'remote']);
         
         this.aiBoomYear = 2022;
         this.aiBoomLineConfig = {
             color: '#dc2626',
             width: 2,
             dash: [5, 5],
-            label: 'Boom de la IA'
+            label: 'AI Boom'
         };
         
         this.canvas = this.getCanvasWithRetry(canvasId, 3);
         
         if (!this.canvas) {
-            console.error(`❌ Canvas no encontrado después de reintentos: ${canvasId}`);
+            console.error(`❌ Canvas not found after retries: ${canvasId}`);
             return;
         }
         
-        console.log(`✅ Canvas encontrado: ${canvasId}`);
+        console.log(`✅ Canvas found: ${canvasId}`);
         this.init();
     }
 
@@ -34,13 +37,13 @@ class WorkModalitiesChart {
             if (canvas) {
                 return canvas;
             }
-            console.warn(`⚠️ Intento ${i + 1}/${maxRetries}: Canvas ${canvasId} no encontrado`);
+            console.warn(`⚠️ Attempt ${i + 1}/${maxRetries}: Canvas ${canvasId} not found`);
         }
         return null;
     }
 
-    init() {
-        console.log('🔄 Inicializando WorkModalitiesChart...');
+    async init() {
+        console.log('🔄 Initializing WorkModalitiesChart...');
         
         try {
             this.createControls();
@@ -48,27 +51,72 @@ class WorkModalitiesChart {
             if (this.data) {
                 this.processData(this.data);
             } else {
-                this.loadSampleData();
+                await this.fetchData();
             }
             
             this.createChart();
             this.setupEventListeners();
             
-            console.log('✅ WorkModalitiesChart inicializada correctamente');
+            console.log('✅ WorkModalitiesChart initialized correctly');
         } catch (error) {
-            console.error('❌ Error inicializando WorkModalitiesChart:', error);
+            console.error('❌ Error initializing WorkModalitiesChart:', error);
+        }
+    }
+
+    // Fetch data from API
+    async fetchData() {
+        try {
+            console.log('Fetching work modalities data from API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const modalitiesData = apiData.info?.workModalities;
+            
+            if (!modalitiesData) {
+                console.warn('Work modalities data not found in API response, using defaults');
+                this.loadSampleData();
+                return false;
+            }
+
+            this.processedData = {
+                labels: modalitiesData.labels || [],
+                datasets: modalitiesData.datasets || []
+            };
+
+            console.log('Work modalities data fetched successfully:', this.processedData);
+            return true;
+
+        } catch (error) {
+            console.error('Error fetching work modalities data:', error);
+            this.loadSampleData();
+            return false;
         }
     }
 
     createControls() {
         if (!this.canvas) {
-            console.error('❌ Canvas no disponible para crear controles');
+            console.error('❌ Canvas not available to create controls');
             return;
         }
         
         const container = this.canvas.parentElement;
         if (!container) {
-            console.error('❌ Contenedor padre del canvas no encontrado');
+            console.error('❌ Parent container of canvas not found');
             return;
         }
         
@@ -77,36 +125,36 @@ class WorkModalitiesChart {
             existingControls.remove();
         }
         
-        // Solo 3 controles: Híbrido, Presencial, Remoto
+        // Only 3 controls: Hybrid, On-site, Remote
         const controlsContainer = document.createElement('div');
         controlsContainer.className = 'chart-controls';
         controlsContainer.innerHTML = `
             <div class="modalities-controls">
-                <h4>Seleccionar Modalidades:</h4>
+                <h4>Select Modalities:</h4>
                 <div class="modality-toggles">
                     <label class="modality-toggle" data-modality="hybrid">
                         <input type="checkbox" value="hybrid" checked>
                         <span class="toggle-label">
-                            <i class="ti ti-building-bridge"></i> Híbrido
+                            <i class="ti ti-building-bridge"></i> Hybrid
                         </span>
                     </label>
-                    <label class="modality-toggle" data-modality="presencial">
-                        <input type="checkbox" value="presencial" checked>
+                    <label class="modality-toggle" data-modality="onsite">
+                        <input type="checkbox" value="onsite" checked>
                         <span class="toggle-label">
-                            <i class="ti ti-building-skyscraper"></i> Presencial
+                            <i class="ti ti-building-skyscraper"></i> On-site
                         </span>
                     </label>
-                    <label class="modality-toggle" data-modality="remoto">
-                        <input type="checkbox" value="remoto" checked>
+                    <label class="modality-toggle" data-modality="remote">
+                        <input type="checkbox" value="remote" checked>
                         <span class="toggle-label">
-                            <i class="ti ti-home"></i> Remoto
+                            <i class="ti ti-home"></i> Remote
                         </span>
                     </label>
                 </div>
                 <div class="ai-boom-info">
                     <small>
                         <i class="ti ti-info-circle"></i>
-                        La línea roja punteada marca el año 2022 (Boom de IA).
+                        The red dotted line marks year 2022 (AI Boom).
                     </small>
                 </div>
             </div>
@@ -116,15 +164,15 @@ class WorkModalitiesChart {
     }
 
     loadSampleData() {
-        console.log('📊 Cargando datos de ejemplo...');
+        console.log('📊 Loading sample data...');
         
-        // SOLO 3 datasets: híbrido, presencial, remoto (sin ChatGPT)
+        // ONLY 3 datasets: hybrid, on-site, remote
         this.processedData = {
             labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
             datasets: [
                 {
                     id: 'hybrid',
-                    label: 'Híbrido',
+                    label: 'Hybrid',
                     data: [35, 32, 30, 45, 65, 85],
                     borderColor: '#2ecc71',
                     backgroundColor: 'rgba(46, 204, 113, 0.1)',
@@ -138,8 +186,8 @@ class WorkModalitiesChart {
                     fill: false
                 },
                 {
-                    id: 'presencial',
-                    label: 'Presencial',
+                    id: 'onsite',
+                    label: 'On-site',
                     data: [35, 30, 15, 8, 5, 3],
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231, 76, 60, 0.1)',
@@ -153,8 +201,8 @@ class WorkModalitiesChart {
                     fill: false
                 },
                 {
-                    id: 'remoto',
-                    label: 'Remoto',
+                    id: 'remote',
+                    label: 'Remote',
                     data: [20, 25, 60, 30, 18, 18],
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
@@ -170,26 +218,26 @@ class WorkModalitiesChart {
             ]
         };
         
-        console.log('✅ Datos cargados:', this.processedData);
+        console.log('✅ Data loaded:', this.processedData);
     }
 
     processData(rawData) {
-        console.log('📊 Procesando datos reales para modalidades de trabajo...');
+        console.log('📊 Processing real data for work modalities...');
         this.loadSampleData();
     }
 
     createChart() {
         if (!this.canvas) {
-            console.error('❌ Canvas no disponible para crear gráfica');
+            console.error('❌ Canvas not available to create chart');
             return;
         }
 
         if (typeof Chart === 'undefined') {
-            console.error('❌ Chart.js no está disponible');
+            console.error('❌ Chart.js is not available');
             return;
         }
 
-        console.log('📊 Creando gráfica de modalidades...');
+        console.log('📊 Creating modalities chart...');
 
         const config = {
             type: 'line',
@@ -211,7 +259,7 @@ class WorkModalitiesChart {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Evolución de Modalidades de Trabajo (2020-2025)',
+                        text: 'Work Modalities Evolution (2020-2025)',
                         font: {
                             size: 18,
                             weight: 'bold'
@@ -252,7 +300,7 @@ class WorkModalitiesChart {
                             title: (context) => {
                                 const year = context[0].label;
                                 const isAIBoomYear = year === this.aiBoomYear.toString();
-                                return `${isAIBoomYear ? '🚀 ' : ''}Año ${year}${isAIBoomYear ? ' - Boom de la IA' : ''}`;
+                                return `${isAIBoomYear ? '🚀 ' : ''}Year ${year}${isAIBoomYear ? ' - AI Boom' : ''}`;
                             },
                             label: (context) => {
                                 const value = context.parsed.y;
@@ -278,7 +326,7 @@ class WorkModalitiesChart {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Año',
+                            text: 'Year',
                             font: {
                                 size: 14,
                                 weight: 'bold'
@@ -306,7 +354,7 @@ class WorkModalitiesChart {
                         display: true,
                         title: {
                             display: true,
-                            text: 'Porcentaje (%)',
+                            text: 'Percentage (%)',
                             font: {
                                 size: 14,
                                 weight: 'bold'
@@ -360,9 +408,9 @@ class WorkModalitiesChart {
 
         try {
             this.chart = new Chart(this.canvas, config);
-            console.log('✅ Gráfica creada exitosamente');
+            console.log('✅ Chart created successfully');
         } catch (error) {
-            console.error('❌ Error creando gráfica:', error);
+            console.error('❌ Error creating chart:', error);
         }
     }
 
@@ -402,29 +450,28 @@ class WorkModalitiesChart {
 
     getVisibleDatasets() {
         if (!this.processedData || !this.processedData.datasets) {
-            console.warn('⚠️ No hay datos procesados disponibles');
+            console.warn('⚠️ No processed data available');
             return [];
         }
         
-        // Solo las modalidades seleccionadas (NO ChatGPT)
         const visible = this.processedData.datasets.filter(dataset => 
             this.selectedLines.has(dataset.id)
         );
         
-        console.log(`📊 Datasets visibles: ${visible.length}`, visible.map(d => d.label));
+        console.log(`📊 Visible datasets: ${visible.length}`, visible.map(d => d.label));
         return visible;
     }
 
     setupEventListeners() {
         const toggles = document.querySelectorAll('.modality-toggle input[type="checkbox"]');
         
-        console.log(`🔗 Configurando ${toggles.length} event listeners`);
+        console.log(`🔗 Setting up ${toggles.length} event listeners`);
         
         toggles.forEach(toggle => {
             toggle.addEventListener('change', (e) => {
                 const modalityId = e.target.value;
                 
-                console.log(`🔄 Toggle cambiado: ${modalityId} -> ${e.target.checked}`);
+                console.log(`🔄 Toggle changed: ${modalityId} -> ${e.target.checked}`);
                 
                 if (e.target.checked) {
                     this.selectedLines.add(modalityId);
@@ -439,18 +486,32 @@ class WorkModalitiesChart {
 
     updateChart() {
         if (!this.chart) {
-            console.warn('⚠️ No hay gráfica para actualizar');
+            console.warn('⚠️ No chart to update');
             return;
         }
         
-        console.log('🔄 Actualizando gráfica...');
+        console.log('🔄 Updating chart...');
         
         try {
             this.chart.data.datasets = this.getVisibleDatasets();
             this.chart.update('active');
-            console.log('✅ Gráfica actualizada');
+            console.log('✅ Chart updated');
         } catch (error) {
-            console.error('❌ Error actualizando gráfica:', error);
+            console.error('❌ Error updating chart:', error);
+        }
+    }
+
+    // Refresh data from API
+    async refreshData() {
+        console.log('Refreshing work modalities data...');
+        
+        const success = await this.fetchData();
+        
+        if (success && this.chart) {
+            this.chart.data.labels = this.processedData.labels;
+            this.chart.data.datasets = this.getVisibleDatasets();
+            this.chart.update();
+            console.log('Work modalities data refreshed successfully');
         }
     }
 
@@ -469,7 +530,7 @@ class WorkModalitiesChart {
     updateTheme() {
         if (!this.chart) return;
         
-        console.log('🎨 Actualizando tema de gráfica...');
+        console.log('🎨 Updating chart theme...');
         
         const textColor = this.getThemeColor('text');
         const gridColor = this.getThemeColor('grid');
@@ -490,7 +551,7 @@ class WorkModalitiesChart {
     }
 
     destroy() {
-        console.log('🗑️ Destruyendo WorkModalitiesChart...');
+        console.log('🗑️ Destroying WorkModalitiesChart...');
         
         const toggles = document.querySelectorAll('.modality-toggle input[type="checkbox"]');
         toggles.forEach(toggle => {
