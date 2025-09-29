@@ -30,15 +30,6 @@ const DashboardConfig = {
             chartClass: 'GeographicChart',
             canvasId: 'geoChart'
         },
-        remote: {
-            id: 'remote',
-            title: '🏠 Remote Work Analysis',
-            description: 'Salary evolution by remote work modality',
-            requiredColumns: ['remote_ratio', 'salary_in_usd', 'work_year'],
-            chartType: 'line',
-            chartClass: 'RemoteWorkChart',
-            canvasId: 'remoteChart'
-        },
         roles: {
             id: 'roles',
             title: '👥 Role Analysis',

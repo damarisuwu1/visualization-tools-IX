@@ -56,10 +56,27 @@ class WorkModalitiesChart {
             
             this.createChart();
             this.setupEventListeners();
+            this.setupThemeListener();
             
             console.log('✅ WorkModalitiesChart initialized correctly');
         } catch (error) {
             console.error('❌ Error initializing WorkModalitiesChart:', error);
+        }
+    }
+
+    setupThemeListener() {
+        if (window.themeManager) {
+            this.themeUnsubscribe = window.themeManager.subscribe(() => {
+                console.log('🎨 Theme changed, updating WorkModalitiesChart...');
+                this.updateTheme();
+            });
+            console.log('✅ Theme listener registered for WorkModalitiesChart');
+        } else {
+            console.warn('⚠️ themeManager not available');
+            document.addEventListener('themeChange', () => {
+                console.log('🎨 Theme changed via event, updating WorkModalitiesChart...');
+                this.updateTheme();
+            });
         }
     }
 
@@ -93,10 +110,8 @@ class WorkModalitiesChart {
                 return false;
             }
 
-            this.processedData = {
-                labels: modalitiesData.labels || [],
-                datasets: modalitiesData.datasets || []
-            };
+            // Process and normalize API data
+            this.processData(modalitiesData);
 
             console.log('Work modalities data fetched successfully:', this.processedData);
             return true;
@@ -123,6 +138,11 @@ class WorkModalitiesChart {
         const existingControls = container.querySelector('.chart-controls');
         if (existingControls) {
             existingControls.remove();
+        }
+        
+        const existingDescription = container.querySelector('.chart-description');
+        if (existingDescription) {
+            existingDescription.remove();
         }
         
         // Only 3 controls: Hybrid, On-site, Remote
@@ -161,6 +181,29 @@ class WorkModalitiesChart {
         `;
         
         container.insertBefore(controlsContainer, container.firstChild);
+        
+        // Add chart description after the chart-container with better spacing
+        const chartContainer = this.canvas.closest('.chart-container');
+        if (chartContainer) {
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.className = 'chart-description';
+            descriptionContainer.style.marginTop = '50px'; // Increased space to prevent overlap
+            descriptionContainer.innerHTML = `
+                This line chart illustrates the evolution of work modalities from 2020 to 2025. 
+                The data shows a significant shift after 2022 (AI Boom), marked by the red dotted line, 
+                when remote work peaked during the pandemic. Since then, hybrid work has emerged as 
+                the dominant model, combining the flexibility of remote work with the collaboration 
+                benefits of on-site presence. Traditional on-site work continues to decline as 
+                organizations embrace more flexible arrangements.
+            `;
+            
+            // Insert after the chart-container (not inside it)
+            if (chartContainer.nextSibling) {
+                chartContainer.parentElement.insertBefore(descriptionContainer, chartContainer.nextSibling);
+            } else {
+                chartContainer.parentElement.appendChild(descriptionContainer);
+            }
+        }
     }
 
     loadSampleData() {
@@ -173,7 +216,7 @@ class WorkModalitiesChart {
                 {
                     id: 'hybrid',
                     label: 'Hybrid',
-                    data: [35, 32, 30, 45, 65, 85],
+                    data: [15, 20, 25, 45, 50, 55],
                     borderColor: '#2ecc71',
                     backgroundColor: 'rgba(46, 204, 113, 0.1)',
                     borderWidth: 3,
@@ -188,7 +231,7 @@ class WorkModalitiesChart {
                 {
                     id: 'onsite',
                     label: 'On-site',
-                    data: [35, 30, 15, 8, 5, 3],
+                    data: [70, 55, 30, 25, 20, 15],
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231, 76, 60, 0.1)',
                     borderWidth: 3,
@@ -203,7 +246,7 @@ class WorkModalitiesChart {
                 {
                     id: 'remote',
                     label: 'Remote',
-                    data: [20, 25, 60, 30, 18, 18],
+                    data: [15, 25, 45, 30, 30, 30],
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
                     borderWidth: 3,
@@ -223,7 +266,53 @@ class WorkModalitiesChart {
 
     processData(rawData) {
         console.log('📊 Processing real data for work modalities...');
-        this.loadSampleData();
+        
+        // Validate and normalize data to ensure percentages sum to 100%
+        if (rawData && rawData.labels && rawData.datasets) {
+            this.processedData = {
+                labels: rawData.labels,
+                datasets: this.normalizeDatasets(rawData.datasets)
+            };
+            console.log('✅ Data processed and normalized');
+        } else {
+            console.warn('⚠️ Invalid data structure, using sample data');
+            this.loadSampleData();
+        }
+    }
+    
+    normalizeDatasets(datasets) {
+        if (!datasets || datasets.length === 0) {
+            return [];
+        }
+        
+        // Get the number of data points (years)
+        const dataLength = datasets[0].data.length;
+        
+        // For each year index, normalize the percentages to sum 100%
+        for (let i = 0; i < dataLength; i++) {
+            let sum = 0;
+            
+            // Calculate current sum for this year
+            datasets.forEach(dataset => {
+                if (dataset.data[i] !== undefined && dataset.data[i] !== null) {
+                    sum += parseFloat(dataset.data[i]);
+                }
+            });
+            
+            // If sum is not 100%, normalize the values
+            if (sum !== 100 && sum > 0) {
+                const factor = 100 / sum;
+                datasets.forEach(dataset => {
+                    if (dataset.data[i] !== undefined && dataset.data[i] !== null) {
+                        dataset.data[i] = parseFloat((dataset.data[i] * factor).toFixed(2));
+                    }
+                });
+                
+                console.log(`📊 Year ${i}: Normalized from ${sum.toFixed(2)}% to 100%`);
+            }
+        }
+        
+        return datasets;
     }
 
     createChart() {
@@ -252,7 +341,7 @@ class WorkModalitiesChart {
                     padding: {
                         top: 40,
                         right: 30,
-                        bottom: 20,
+                        bottom: 60, // Increased bottom padding for Year label
                         left: 20
                     }
                 },
@@ -271,26 +360,15 @@ class WorkModalitiesChart {
                         color: this.getThemeColor('text')
                     },
                     legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            },
-                            color: this.getThemeColor('text')
-                        }
+                        display: false
                     },
                     tooltip: {
                         mode: 'index',
                         intersect: false,
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1f2937',
-                        bodyColor: '#374151',
-                        borderColor: 'rgba(0, 0, 0, 0.1)',
+                        backgroundColor: this.getThemeColor('tooltipBg'),
+                        titleColor: this.getThemeColor('tooltipTitle'),
+                        bodyColor: this.getThemeColor('tooltipBody'),
+                        borderColor: this.getThemeColor('tooltipBorder'),
                         borderWidth: 1,
                         cornerRadius: 12,
                         padding: 16,
@@ -309,7 +387,7 @@ class WorkModalitiesChart {
                             },
                             footer: (tooltipItems) => {
                                 const total = tooltipItems.reduce((sum, item) => sum + item.parsed.y, 0);
-                                return `Total: ${total}%`;
+                                return `Total: ${total.toFixed(2)}%`;
                             }
                         },
                         filter: function(tooltipItem) {
@@ -332,7 +410,7 @@ class WorkModalitiesChart {
                                 weight: 'bold'
                             },
                             padding: {
-                                top: 10
+                                top: 15 // More padding above the label
                             },
                             color: this.getThemeColor('text')
                         },
@@ -520,8 +598,12 @@ class WorkModalitiesChart {
         
         const colors = {
             text: isDark ? '#f9fafb' : '#1f2937',
-            grid: isDark ? 'rgba(75, 85, 99, 0.4)' : 'rgba(156, 163, 175, 0.2)',
-            background: isDark ? 'rgba(31, 41, 55, 0.9)' : 'rgba(255, 255, 255, 0.9)'
+            grid: isDark ? 'rgba(75, 85, 99, 0.4)' : 'rgba(156, 163, 175, 0.3)',
+            background: isDark ? 'rgba(31, 41, 55, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+            tooltipBg: isDark ? 'rgba(31, 41, 55, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+            tooltipTitle: isDark ? '#f9fafb' : '#1f2937',
+            tooltipBody: isDark ? '#d1d5db' : '#374151',
+            tooltipBorder: isDark ? 'rgba(75, 85, 99, 0.5)' : 'rgba(0, 0, 0, 0.1)'
         };
         
         return colors[type] || colors.text;
@@ -536,16 +618,41 @@ class WorkModalitiesChart {
         const gridColor = this.getThemeColor('grid');
         const isDark = document.body.classList.contains('dark-theme');
         
+        // Update title
         this.chart.options.plugins.title.color = textColor;
-        this.chart.options.plugins.legend.labels.color = textColor;
+        
+        // Update legend (if displayed)
+        if (this.chart.options.plugins.legend) {
+            this.chart.options.plugins.legend.labels.color = textColor;
+        }
+        
+        // Update tooltip colors
+        this.chart.options.plugins.tooltip.backgroundColor = this.getThemeColor('tooltipBg');
+        this.chart.options.plugins.tooltip.titleColor = this.getThemeColor('tooltipTitle');
+        this.chart.options.plugins.tooltip.bodyColor = this.getThemeColor('tooltipBody');
+        this.chart.options.plugins.tooltip.borderColor = this.getThemeColor('tooltipBorder');
+        
+        // Update X axis
         this.chart.options.scales.x.title.color = textColor;
         this.chart.options.scales.x.ticks.color = textColor;
         this.chart.options.scales.x.grid.color = gridColor;
+        
+        // Update Y axis
         this.chart.options.scales.y.title.color = textColor;
-        this.chart.options.scales.y.ticks.color = gridColor;
+        this.chart.options.scales.y.ticks.color = textColor;
         this.chart.options.scales.y.grid.color = gridColor;
         
+        // Update AI Boom line color
         this.aiBoomLineConfig.color = isDark ? '#ef4444' : '#dc2626';
+        
+        // Update description color
+        const chartContainer = this.canvas?.closest('.chart-container');
+        if (chartContainer) {
+            const description = chartContainer.nextElementSibling;
+            if (description && description.classList.contains('chart-description')) {
+                description.style.color = textColor;
+            }
+        }
         
         this.chart.update();
     }
@@ -567,6 +674,11 @@ class WorkModalitiesChart {
         const controls = document.querySelector('.chart-controls');
         if (controls) {
             controls.remove();
+        }
+        
+        const description = document.querySelector('.chart-description');
+        if (description) {
+            description.remove();
         }
     }
 }

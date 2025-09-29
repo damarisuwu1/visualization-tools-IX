@@ -60,7 +60,7 @@ class DashboardManager {
         const required = [
             'Chart', 'DashboardConfig', 'ChartConfig', 
             'ChartBase', 'SalaryDistChart', 'GeographicChart',
-            'RemoteWorkChart', 'RolesChart', 'CompanyChart', 'TemporalChart',
+            'RolesChart', 'CompanyChart', 'TemporalChart',
             'WorkModalitiesChart'
         ];
         console.log('🔍 Verificando dependencias...');
