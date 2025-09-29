@@ -74,9 +74,9 @@ class Proyecto_1(Resource):
         return {
             "labels": [str(year) for year in years],
             "datasets": [
-                {"label": "On-site", "data": modality_percentage[0].reindex(years, fill_value=0).round().tolist(), "color": "#e74c3c"},
-                {"label": "Hybrid", "data": modality_percentage[50].reindex(years, fill_value=0).round().tolist(), "color": "#2ecc71"},
-                {"label": "Remote", "data": modality_percentage[100].reindex(years, fill_value=0).round().tolist(), "color": "#3498db"}
+                {"label": "onsite", "data": modality_percentage[0].reindex(years, fill_value=0).round().tolist(), "color": "#e74c3c"},
+                {"label": "hybrid", "data": modality_percentage[50].reindex(years, fill_value=0).round().tolist(), "color": "#2ecc71"},
+                {"label": "remote", "data": modality_percentage[100].reindex(years, fill_value=0).round().tolist(), "color": "#3498db"}
             ]
         }
 
