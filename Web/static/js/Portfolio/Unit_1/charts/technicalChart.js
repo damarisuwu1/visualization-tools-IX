@@ -87,7 +87,7 @@ const TechnicalChart = {
         
         const description = document.createElement('div');
         description.className = 'chart-description';
-        description.innerHTML = '📝 Matriz de correlación entre factores técnicos (dispositivo, calidad) y engagement, útil para optimizar la experiencia técnica.';
+        description.innerHTML = 'Matriz de correlación entre factores técnicos (dispositivo, calidad) y engagement, útil para optimizar la experiencia técnica.';
         
         section.appendChild(chartContainer);
         section.appendChild(description);

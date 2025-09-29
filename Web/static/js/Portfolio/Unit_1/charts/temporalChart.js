@@ -96,7 +96,7 @@ const TemporalChart = {
         
         const description = document.createElement('div');
         description.className = 'chart-description';
-        description.innerHTML = '📝 Análisis de cohortes mostrando la evolución del engagement de usuarios según su fecha de registro, identificando patrones de retención a largo plazo.';
+        description.innerHTML = 'Análisis de cohortes mostrando la evolución del engagement de usuarios según su fecha de registro, identificando patrones de retención a largo plazo.';
         
         section.appendChild(chartContainer);
         section.appendChild(description);

@@ -87,7 +87,7 @@ const ValueChart = {
         
         const description = document.createElement('div');
         description.className = 'chart-description';
-        description.innerHTML = '📝 Gráfica de burbujas mostrando valor del cliente (tamaño de burbuja = tiempo total de visualización) vs antigüedad y tipo de suscripción.';
+        description.innerHTML = 'Gráfica de burbujas mostrando valor del cliente (tamaño de burbuja = tiempo total de visualización) vs antigüedad y tipo de suscripción.';
         
         section.appendChild(chartContainer);
         section.appendChild(description);

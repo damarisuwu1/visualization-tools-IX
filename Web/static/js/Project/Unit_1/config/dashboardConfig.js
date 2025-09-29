@@ -1,57 +1,57 @@
-// js/config/dashboardconfig.js - Configuración central del dashboard
+// js/config/dashboardconfig.js - Central dashboard configuration
 
 const DashboardConfig = {
-    // Configuración de secciones del dashboard
+    // Dashboard sections configuration
     sections: {
         distributional: {
             id: 'distributional',
-            title: '📈 Análisis Distribucional',
-            description: 'Distribución de salarios por nivel de experiencia',
-            requiredColumns: ['experience_level', 'salary_in_usd', 'employment_type'],
+            title: '📈 Salary Evolution: Pre-AI vs Post-AI Era',
+            description: 'Comparison of salary distribution before and after AI boom (ChatGPT launch)',
+            requiredColumns: ['experience_level', 'salary_in_usd', 'work_year'],
             chartType: 'bar',
             chartClass: 'SalaryDistChart',
             canvasId: 'salaryDistChart'
         },
+        workModalities: {
+            id: 'workModalities',
+            title: '📊 Work Modalities Evolution',
+            description: 'Temporal evolution of different work modalities and AI impact',
+            requiredColumns: ['work_year', 'remote_ratio', 'employment_type'],
+            chartType: 'line',
+            chartClass: 'WorkModalitiesChart',
+            canvasId: 'workModalitiesChart'
+        },
         geographic: {
             id: 'geographic',
-            title: '🌍 Análisis Geográfico',
-            description: 'Salarios promedio por país/región',
-            requiredColumns: ['employee_residence', 'company_location', 'salary_in_usd'],
+            title: '🌍 Geographic Analysis: Pre-AI vs Post-AI',
+            description: 'Average salaries by country/region before and after AI boom',
+            requiredColumns: ['employee_residence', 'company_location', 'salary_in_usd', 'work_year'],
             chartType: 'bar',
             chartClass: 'GeographicChart',
             canvasId: 'geoChart'
         },
-        remote: {
-            id: 'remote',
-            title: '🏠 Análisis de Trabajo Remoto',
-            description: 'Evolución salarial por modalidad de trabajo remoto',
-            requiredColumns: ['remote_ratio', 'salary_in_usd', 'work_year'],
-            chartType: 'line',
-            chartClass: 'RemoteWorkChart',
-            canvasId: 'remoteChart'
-        },
         roles: {
             id: 'roles',
-            title: '👥 Análisis por Roles',
-            description: 'Top roles mejor pagados con rangos salariales',
-            requiredColumns: ['job_title', 'salary_in_usd', 'experience_level'],
+            title: '👥 Role Analysis: Pre-AI vs Post-AI',
+            description: 'Top highest-paying roles before and after AI boom',
+            requiredColumns: ['job_title', 'salary_in_usd', 'work_year', 'experience_level'],
             chartType: 'bar',
             chartClass: 'RolesChart',
             canvasId: 'rolesChart'
         },
         company: {
             id: 'company',
-            title: '🏢 Análisis por Tamaño de Empresa',
-            description: 'Distribución salarial según el tamaño de la empresa',
-            requiredColumns: ['company_size', 'salary_in_usd', 'employment_type'],
+            title: '🏢 Company Size Analysis: Post-AI Era',
+            description: 'Salary distribution by company size after AI boom (2023-2025)',
+            requiredColumns: ['company_size', 'salary_in_usd', 'work_year'],
             chartType: 'doughnut',
             chartClass: 'CompanyChart',
             canvasId: 'companyChart'
         },
         temporal: {
             id: 'temporal',
-            title: '📅 Análisis Temporal',
-            description: 'Tendencias salariales por año y nivel de experiencia',
+            title: '📅 Temporal Analysis: Pre-AI vs Post-AI Evolution',
+            description: 'Salary trends evolution by experience level before and after AI boom',
             requiredColumns: ['work_year', 'salary_in_usd', 'experience_level'],
             chartType: 'line',
             chartClass: 'TemporalChart',
@@ -59,78 +59,159 @@ const DashboardConfig = {
         }
     },
 
-    // Datos de ejemplo para demostraciones
+    // Sample data for demonstrations
     sampleData: {
         distributional: {
-            labels: ['Entry-level', 'Mid-level', 'Senior', 'Executive'],
-            data: [65000, 95000, 135000, 185000],
-            colors: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+            labels: ['Entry Level', 'Junior', 'Mid-Level', 'Senior', 'Lead', 'Executive'],
+            preAI: {
+                label: 'Pre-AI Era (2020-2022)',
+                data: [52000, 68000, 95000, 128000, 165000, 210000],
+                color: '#94a3b8' // Gris azulado para el pasado
+            },
+            postAI: {
+                label: 'Post-AI Era (2023-2025)',
+                data: [58000, 75000, 115000, 155000, 195000, 245000],
+                color: '#3b82f6' // Azul vibrante para post-IA
+            },
+            growth: [11.5, 10.3, 21.1, 21.1, 18.2, 16.7] // Porcentaje de crecimiento
+        },
+        workModalities: {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                { 
+                    label: 'Hybrid', 
+                    data: [35, 32, 30, 45, 65, 85], 
+                    color: '#2ecc71' 
+                },
+                { 
+                    label: 'On-site', 
+                    data: [35, 30, 15, 8, 5, 3], 
+                    color: '#e74c3c' 
+                },
+                { 
+                    label: 'Remote', 
+                    data: [20, 25, 60, 30, 18, 18], 
+                    color: '#3498db' 
+                },
+                { 
+                    label: 'AI Boom (ChatGPT)', 
+                    data: [0, 0, 2, 25, 45, 72], 
+                    color: '#f39c12' 
+                }
+            ]
         },
         geographic: {
-            labels: ['Estados Unidos', 'Reino Unido', 'Canadá', 'Alemania', 'Australia'],
-            data: [145000, 85000, 92000, 78000, 105000],
-            colors: ['#9b59b6', '#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+            labels: ['United States', 'United Kingdom', 'Canada', 'Germany', 'Australia', 'Netherlands'],
+            preAI: {
+                label: 'Pre-AI Era (2020-2022)',
+                data: [135000, 78000, 85000, 72000, 95000, 82000],
+                color: '#94a3b8'
+            },
+            postAI: {
+                label: 'Post-AI Era (2023-2025)',
+                data: [155000, 92000, 98000, 84000, 115000, 95000],
+                color: '#3b82f6'
+            },
+            growth: [14.8, 17.9, 15.3, 16.7, 21.1, 15.9]
         },
         remote: {
             labels: ['2020', '2021', '2022', '2023', '2024'],
             datasets: [
                 { 
-                    label: '0% Remoto', 
+                    label: '0% Remote', 
                     data: [85000, 88000, 92000, 95000, 98000], 
                     color: '#e74c3c' 
                 },
                 { 
-                    label: '50% Remoto', 
+                    label: '50% Remote', 
                     data: [90000, 95000, 100000, 105000, 108000], 
                     color: '#f39c12' 
                 },
                 { 
-                    label: '100% Remoto', 
+                    label: '100% Remote', 
                     data: [95000, 102000, 110000, 118000, 125000], 
                     color: '#2ecc71' 
                 }
             ]
         },
         roles: {
-            labels: ['ML Engineer', 'Data Scientist', 'Data Engineer', 'Analytics Manager', 'Data Analyst'],
-            data: [155000, 145000, 135000, 125000, 85000],
-            colors: ['#9b59b6', '#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+            labels: ['AI/ML Engineer', 'Data Scientist', 'Cloud Architect', 'DevOps Engineer', 'Data Engineer'],
+            preAI: {
+                label: 'Pre-AI Era (2020-2022)',
+                data: [125000, 115000, 135000, 120000, 110000],
+                color: '#94a3b8'
+            },
+            postAI: {
+                label: 'Post-AI Era (2023-2025)',
+                data: [165000, 145000, 155000, 140000, 130000],
+                color: '#3b82f6'
+            },
+            growth: [32.0, 26.1, 14.8, 16.7, 18.2]
         },
         company: {
-            labels: ['Startup (S)', 'Mediana (M)', 'Grande (L)'],
-            data: [95000, 125000, 155000],
-            colors: ['#e74c3c', '#f39c12', '#2ecc71']
+            labels: ['Startup (S)', 'Medium (M)', 'Large (L)', 'Enterprise (XL)'],
+            data: [105000, 135000, 165000, 195000],
+            colors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'],
+            description: 'Post-AI Era (2023-2025)'
         },
         temporal: {
-            labels: ['2020', '2021', '2022', '2023', '2024'],
-            datasets: [
-                { 
-                    label: 'Entry-level', 
-                    data: [55000, 58000, 62000, 65000, 68000], 
-                    color: '#3498db' 
-                },
-                { 
-                    label: 'Senior', 
-                    data: [115000, 125000, 135000, 145000, 155000], 
-                    color: '#e74c3c' 
-                }
-            ]
+    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+    datasets: [
+        { 
+            label: 'Entry Level', 
+            data: [48000, 52000, 56000, 58000, 62000, 65000], 
+            color: '#3498db'
+        },
+        { 
+            label: 'Junior', 
+            data: [62000, 65000, 68000, 75000, 78000, 82000], 
+            color: '#2ecc71'
+        },
+        { 
+            label: 'Mid-Level', 
+            data: [85000, 90000, 95000, 115000, 120000, 125000], 
+            color: '#f39c12'
+        },
+        { 
+            label: 'Senior', 
+            data: [120000, 128000, 135000, 155000, 165000, 175000], 
+            color: '#e74c3c'
+        },
+        { 
+            label: 'Lead', 
+            data: [150000, 160000, 165000, 195000, 205000, 215000], 
+            color: '#9b59b6'
+        },
+        { 
+            label: 'Executive', 
+            data: [195000, 205000, 210000, 245000, 255000, 265000], 
+            color: '#34495e'
         }
+    ],
+    growth: {
+        'Entry Level': [8.3, 7.7, 3.6, 6.9, 4.8],
+        'Junior': [4.8, 4.6, 10.3, 4.0, 5.1],
+        'Mid-Level': [5.9, 5.6, 21.1, 4.3, 4.2],
+        'Senior': [6.7, 5.5, 14.8, 6.5, 6.1],
+        'Lead': [6.7, 3.1, 18.2, 5.1, 4.9],
+        'Executive': [5.1, 2.4, 16.7, 4.1, 3.9]
+    }
+}
     },
 
-    // Paleta de colores para gráficas
+    // Color palette for charts
     colorPalette: [
         '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444',
         '#8b5cf6', '#ec4899', '#84cc16', '#14b8a6', '#f43f5e',
         '#6366f1', '#a855f7', '#22d3ee', '#f97316', '#84cc16'
     ],
 
-    // Obtener configuración de sección por ID
+    // Get section configuration by ID
     getSectionById: function(sectionId) {
         return this.sections[sectionId] || null;
     },
 
-    // Obtener título formateado de sección
+    // Get formatted section title
     getSectionTitle: function(sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return '';
@@ -141,19 +222,19 @@ const DashboardConfig = {
         </h2>`;
     },
 
-    // Obtener todas las secciones
+    // Get all sections
     getAllSections: function() {
         return Object.values(this.sections);
     },
 
-    // Obtener secciones por tipo de gráfica
+    // Get sections by chart type
     getSectionsByChartType: function(chartType) {
         return Object.values(this.sections).filter(section => 
             section.chartType === chartType
         );
     },
 
-    // Validar si existen las columnas necesarias
+    // Validate if required columns exist
     validateRequiredColumns: function(availableColumns, sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return false;
@@ -163,7 +244,7 @@ const DashboardConfig = {
         );
     },
 
-    // Obtener columnas faltantes para una sección
+    // Get missing columns for a section
     getMissingColumns: function(availableColumns, sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return [];
@@ -173,15 +254,15 @@ const DashboardConfig = {
         );
     },
 
-    // Obtener paleta de colores para gráficas
+    // Get color palette for charts
     getChartColorPalette: function() {
         return [...this.colorPalette];
     },
 
-    // Configuración de temas
+    // Theme configuration
     themes: {
         light: {
-            name: 'Claro',
+            name: 'Light',
             cssClass: '',
             chartColors: {
                 background: 'rgba(255, 255, 255, 0.9)',
@@ -190,7 +271,7 @@ const DashboardConfig = {
             }
         },
         dark: {
-            name: 'Oscuro',
+            name: 'Dark',
             cssClass: 'dark-theme',
             chartColors: {
                 background: 'rgba(31, 41, 55, 0.9)',
@@ -200,25 +281,25 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de tabs para secciones con múltiples vistas
+    // Tab configurations for sections with multiple views
     tabConfigs: {
         distributional: [
             {
-                title: 'Por Nivel',
+                title: 'By Level',
                 canvasId: 'salaryDistChart',
-                description: 'Distribución por nivel de experiencia'
+                description: 'Distribution by experience level'
             }
         ],
         geographic: [
             {
-                title: 'Por País',
+                title: 'By Country',
                 canvasId: 'geoChart',
-                description: 'Salarios promedio por ubicación geográfica'
+                description: 'Average salaries by geographic location'
             }
         ]
     },
 
-    // Utilidades para formateo
+    // Formatting utilities
     formatters: {
         currency: function(value) {
             if (value >= 1000000) {
@@ -234,7 +315,7 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de animaciones
+    // Animation configuration
     animations: {
         duration: 800,
         easing: 'easeOutCubic',
@@ -243,7 +324,7 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de tooltips globales
+    // Global tooltip configuration
     tooltipConfig: {
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -254,16 +335,16 @@ const DashboardConfig = {
         padding: 12
     },
 
-    // Inicializar configuración
+    // Initialize configuration
     init: function() {
-        console.log('📊 Dashboard Config inicializado');
-        console.log(`📋 Secciones disponibles: ${Object.keys(this.sections).length}`);
+        console.log('📊 Dashboard Config initialized');
+        console.log(`📋 Available sections: ${Object.keys(this.sections).length}`);
         return this;
     }
 };
 
-// Auto-inicializar cuando se carga el archivo
+// Auto-initialize when file loads
 DashboardConfig.init();
 
-// Hacer disponible globalmente
-window.DashboardConfig = DashboardConfig
+// Make available globally
+window.DashboardConfig = DashboardConfig;

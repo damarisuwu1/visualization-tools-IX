@@ -87,7 +87,7 @@ const SegmentationChart = {
         
         const description = document.createElement('div');
         description.className = 'chart-description';
-        description.innerHTML = '📝 Scatter plot de segmentación mostrando usuarios agrupados por comportamiento de consumo y valor, identificando segmentos como "Heavy Users", "Casual Viewers", etc.';
+        description.innerHTML = 'Scatter plot de segmentación mostrando usuarios agrupados por comportamiento de consumo y valor, identificando segmentos como "Heavy Users", "Casual Viewers", etc.';
         
         section.appendChild(chartContainer);
         section.appendChild(description);
