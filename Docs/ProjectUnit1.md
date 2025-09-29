@@ -148,7 +148,7 @@ This document was created with assistance from AI tools. The following outlines 
   - Security audit of exposed ports and credentials
 **Chat Reference:**
 - [https://g.co/gemini/share/67620ea3e4c4](https://g.co/gemini/share/67620ea3e4c4)
-- [ttps://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b](ttps://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b)
+- [https://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b](https://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b)
 ---
 
 **Academic Integrity Statement:** All AI-generated content has been reviewed, understood, verified, and customized by the authors. The team takes full responsibility for the accuracy, appropriateness, and functionality of all content in this document and associated codebase.
