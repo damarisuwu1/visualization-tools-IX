@@ -1,24 +1,82 @@
-// js/charts/RolesChart.js - Gráfica de análisis por roles
+// js/charts/RolesChart.js - Role Analysis Chart with API Integration
 
 class RolesChart extends ChartBase {
     constructor() {
         super('rolesChart');
         this.sectionConfig = {
             id: 'roles-section',
-            title: 'Análisis por Roles',
-            description: 'Top roles mejor pagados con rangos salariales'
+            title: 'Role Analysis',
+            description: 'Top highest-paying roles with salary ranges'
+        };
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
+        this.data = null;
+    }
+
+    // Fetch data from API
+    async fetchData() {
+        try {
+            console.log('Fetching roles data from API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const rolesData = apiData.info?.roles;
+            
+            if (!rolesData) {
+                console.warn('Roles data not found in API response, using defaults');
+                this.setDefaultData();
+                return false;
+            }
+
+            this.data = {
+                labels: rolesData.labels || [],
+                data: rolesData.data || [],
+                colors: rolesData.colors || null
+            };
+
+            console.log('Roles data fetched successfully:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error fetching roles data:', error);
+            this.setDefaultData();
+            return false;
+        }
+    }
+
+    // Set default data in case of error
+    setDefaultData() {
+        console.log('Using default roles data...');
+        this.data = {
+            labels: ['Software Engineer', 'Data Scientist', 'Product Manager', 'Designer', 'DevOps Engineer'],
+            data: [0, 0, 0, 0, 0],
+            colors: null
         };
     }
 
-    // Preparar datos para la gráfica de roles
+    // Prepare data for chart
     prepareData(rawData) {
-        const data = rawData || DashboardConfig.sampleData.roles;
+        const data = rawData || this.data || DashboardConfig.sampleData.roles;
         const colors = this.getColorPalette();
         
         return {
             labels: data.labels,
             datasets: [{
-                label: 'Salario Promedio (USD)',
+                label: 'Average Salary (USD)',
                 data: data.data,
                 backgroundColor: data.colors || colors.slice(0, data.labels.length),
                 borderColor: (data.colors || colors.slice(0, data.labels.length)).map(color => 
@@ -31,7 +89,7 @@ class RolesChart extends ChartBase {
         };
     }
 
-    // Crear gráfica de barras
+    // Create bar chart
     createChart(data, baseOptions) {
         const options = {
             ...baseOptions,
@@ -40,7 +98,7 @@ class RolesChart extends ChartBase {
                 ...baseOptions.plugins,
                 title: {
                     display: true,
-                    text: 'Top 10 Roles Mejor Pagados',
+                    text: 'Top 10 Highest-Paying Roles',
                     font: {
                         size: 16,
                         weight: 'bold'
@@ -57,7 +115,7 @@ class RolesChart extends ChartBase {
                     ...ChartConfig.getOptionsFor('bar').scales.y,
                     title: {
                         display: true,
-                        text: 'Salario Anual (USD)',
+                        text: 'Annual Salary (USD)',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -73,7 +131,7 @@ class RolesChart extends ChartBase {
                     },
                     title: {
                         display: true,
-                        text: 'Roles/Posiciones',
+                        text: 'Roles/Positions',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -90,7 +148,7 @@ class RolesChart extends ChartBase {
         });
     }
 
-    // Crear sección HTML
+    // Create HTML section
     static createSection() {
         const section = document.createElement('div');
         section.className = 'analysis-section';
@@ -102,45 +160,61 @@ class RolesChart extends ChartBase {
         section.innerHTML = `
             ${title}
             <div class="columns-needed">
-                <div class="columns-title">Columnas Necesarias:</div>
+                <div class="columns-title">Required Columns:</div>
                 <div class="columns-list">${config.requiredColumns.join(', ')}</div>
             </div>
             <div class="chart-container">
                 <canvas id="rolesChart"></canvas>
             </div>
             <div class="chart-description">
-                Esta gráfica muestra los roles y posiciones mejor compensadas en el mercado. 
-                Permite identificar las especialidades más demandadas y mejor pagadas, 
-                proporcionando insights valiosos para planificación de carrera y decisiones de contratación.
+                This chart shows the highest compensated roles and positions in the market. 
+                It helps identify the most in-demand and highest-paying specialties, 
+                providing valuable insights for career planning and hiring decisions.
             </div>
         `;
 
         return section;
     }
 
-    // Inicializar gráfica
-    static initializeChart() {
+    // Initialize chart with API data
+    static async initializeChart() {
         try {
             const chart = new RolesChart();
-            const sampleData = DashboardConfig.sampleData.roles;
+            
+            // Fetch data from API
+            await chart.fetchData();
             
             setTimeout(() => {
-                const success = chart.init(sampleData);
+                const success = chart.init(chart.data);
                 if (success) {
-                    console.log('✅ Gráfica de roles inicializada');
+                    console.log('✅ Roles chart initialized');
                 } else {
-                    console.error('❌ Error inicializando gráfica de roles');
+                    console.error('❌ Error initializing roles chart');
                 }
             }, 100);
             
             return chart;
         } catch (error) {
-            console.error('❌ Error creando gráfica de roles:', error);
+            console.error('❌ Error creating roles chart:', error);
             return null;
         }
     }
 
-    // Formatear tooltip personalizado
+    // Refresh data from API
+    async refreshData() {
+        console.log('Refreshing roles data...');
+        
+        const success = await this.fetchData();
+        
+        if (success && this.chart) {
+            const preparedData = this.prepareData(this.data);
+            this.chart.data = preparedData;
+            this.chart.update();
+            console.log('Roles data refreshed successfully');
+        }
+    }
+
+    // Format custom tooltip label
     formatTooltipLabel(context) {
         const value = context.parsed.y;
         const role = context.label;
@@ -148,5 +222,5 @@ class RolesChart extends ChartBase {
     }
 }
 
-// Hacer disponible globalmente
+// Make available globally
 window.RolesChart = RolesChart;

@@ -1,12 +1,12 @@
-// js/config/dashboardconfig.js - Configuración central del dashboard
+// js/config/dashboardconfig.js - Central dashboard configuration
 
 const DashboardConfig = {
-    // Configuración de secciones del dashboard
+    // Dashboard sections configuration
     sections: {
         distributional: {
             id: 'distributional',
-            title: '📈 Análisis Distribucional',
-            description: 'Distribución de salarios por nivel de experiencia',
+            title: '📈 Distribution Analysis',
+            description: 'Salary distribution by experience level',
             requiredColumns: ['experience_level', 'salary_in_usd', 'employment_type'],
             chartType: 'bar',
             chartClass: 'SalaryDistChart',
@@ -14,8 +14,8 @@ const DashboardConfig = {
         },
         workModalities: {
             id: 'workModalities',
-            title: '📊 Evolución de Modalidades de Trabajo',
-            description: 'Evolución temporal de diferentes modalidades de trabajo y el impacto de la IA',
+            title: '📊 Work Modalities Evolution',
+            description: 'Temporal evolution of different work modalities and AI impact',
             requiredColumns: ['work_year', 'remote_ratio', 'employment_type'],
             chartType: 'line',
             chartClass: 'WorkModalitiesChart',
@@ -23,26 +23,17 @@ const DashboardConfig = {
         },
         geographic: {
             id: 'geographic',
-            title: '🌍 Análisis Geográfico',
-            description: 'Salarios promedio por país/región',
+            title: '🌍 Geographic Analysis',
+            description: 'Average salaries by country/region',
             requiredColumns: ['employee_residence', 'company_location', 'salary_in_usd'],
             chartType: 'bar',
             chartClass: 'GeographicChart',
             canvasId: 'geoChart'
         },
-        remote: {
-            id: 'remote',
-            title: '🏠 Análisis de Trabajo Remoto',
-            description: 'Evolución salarial por modalidad de trabajo remoto',
-            requiredColumns: ['remote_ratio', 'salary_in_usd', 'work_year'],
-            chartType: 'line',
-            chartClass: 'RemoteWorkChart',
-            canvasId: 'remoteChart'
-        },
         roles: {
             id: 'roles',
-            title: '👥 Análisis por Roles',
-            description: 'Top roles mejor pagados con rangos salariales',
+            title: '👥 Role Analysis',
+            description: 'Top highest-paying roles with salary ranges',
             requiredColumns: ['job_title', 'salary_in_usd', 'experience_level'],
             chartType: 'bar',
             chartClass: 'RolesChart',
@@ -50,8 +41,8 @@ const DashboardConfig = {
         },
         company: {
             id: 'company',
-            title: '🏢 Análisis por Tamaño de Empresa',
-            description: 'Distribución salarial según el tamaño de la empresa',
+            title: '🏢 Company Size Analysis',
+            description: 'Salary distribution by company size',
             requiredColumns: ['company_size', 'salary_in_usd', 'employment_type'],
             chartType: 'doughnut',
             chartClass: 'CompanyChart',
@@ -59,8 +50,8 @@ const DashboardConfig = {
         },
         temporal: {
             id: 'temporal',
-            title: '📅 Análisis Temporal',
-            description: 'Tendencias salariales por año y nivel de experiencia',
+            title: '📅 Temporal Analysis',
+            description: 'Salary trends by year and experience level',
             requiredColumns: ['work_year', 'salary_in_usd', 'experience_level'],
             chartType: 'line',
             chartClass: 'TemporalChart',
@@ -68,7 +59,7 @@ const DashboardConfig = {
         }
     },
 
-    // Datos de ejemplo para demostraciones
+    // Sample data for demonstrations
     sampleData: {
         distributional: {
             labels: ['Entry-level', 'Mid-level', 'Senior', 'Executive'],
@@ -79,29 +70,29 @@ const DashboardConfig = {
             labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
             datasets: [
                 { 
-                    label: 'Híbrido', 
+                    label: 'Hybrid', 
                     data: [35, 32, 30, 45, 65, 85], 
                     color: '#2ecc71' 
                 },
                 { 
-                    label: 'Presencial', 
+                    label: 'On-site', 
                     data: [35, 30, 15, 8, 5, 3], 
                     color: '#e74c3c' 
                 },
                 { 
-                    label: 'Remoto', 
+                    label: 'Remote', 
                     data: [20, 25, 60, 30, 18, 18], 
                     color: '#3498db' 
                 },
                 { 
-                    label: 'Boom IA (ChatGPT)', 
+                    label: 'AI Boom (ChatGPT)', 
                     data: [0, 0, 2, 25, 45, 72], 
                     color: '#f39c12' 
                 }
             ]
         },
         geographic: {
-            labels: ['Estados Unidos', 'Reino Unido', 'Canadá', 'Alemania', 'Australia'],
+            labels: ['United States', 'United Kingdom', 'Canada', 'Germany', 'Australia'],
             data: [145000, 85000, 92000, 78000, 105000],
             colors: ['#9b59b6', '#3498db', '#2ecc71', '#f39c12', '#e74c3c']
         },
@@ -109,17 +100,17 @@ const DashboardConfig = {
             labels: ['2020', '2021', '2022', '2023', '2024'],
             datasets: [
                 { 
-                    label: '0% Remoto', 
+                    label: '0% Remote', 
                     data: [85000, 88000, 92000, 95000, 98000], 
                     color: '#e74c3c' 
                 },
                 { 
-                    label: '50% Remoto', 
+                    label: '50% Remote', 
                     data: [90000, 95000, 100000, 105000, 108000], 
                     color: '#f39c12' 
                 },
                 { 
-                    label: '100% Remoto', 
+                    label: '100% Remote', 
                     data: [95000, 102000, 110000, 118000, 125000], 
                     color: '#2ecc71' 
                 }
@@ -131,7 +122,7 @@ const DashboardConfig = {
             colors: ['#9b59b6', '#3498db', '#2ecc71', '#f39c12', '#e74c3c']
         },
         company: {
-            labels: ['Startup (S)', 'Mediana (M)', 'Grande (L)'],
+            labels: ['Startup (S)', 'Medium (M)', 'Large (L)'],
             data: [95000, 125000, 155000],
             colors: ['#e74c3c', '#f39c12', '#2ecc71']
         },
@@ -152,19 +143,19 @@ const DashboardConfig = {
         }
     },
 
-    // Paleta de colores para gráficas
+    // Color palette for charts
     colorPalette: [
         '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444',
         '#8b5cf6', '#ec4899', '#84cc16', '#14b8a6', '#f43f5e',
         '#6366f1', '#a855f7', '#22d3ee', '#f97316', '#84cc16'
     ],
 
-    // Obtener configuración de sección por ID
+    // Get section configuration by ID
     getSectionById: function(sectionId) {
         return this.sections[sectionId] || null;
     },
 
-    // Obtener título formateado de sección
+    // Get formatted section title
     getSectionTitle: function(sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return '';
@@ -175,19 +166,19 @@ const DashboardConfig = {
         </h2>`;
     },
 
-    // Obtener todas las secciones
+    // Get all sections
     getAllSections: function() {
         return Object.values(this.sections);
     },
 
-    // Obtener secciones por tipo de gráfica
+    // Get sections by chart type
     getSectionsByChartType: function(chartType) {
         return Object.values(this.sections).filter(section => 
             section.chartType === chartType
         );
     },
 
-    // Validar si existen las columnas necesarias
+    // Validate if required columns exist
     validateRequiredColumns: function(availableColumns, sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return false;
@@ -197,7 +188,7 @@ const DashboardConfig = {
         );
     },
 
-    // Obtener columnas faltantes para una sección
+    // Get missing columns for a section
     getMissingColumns: function(availableColumns, sectionId) {
         const section = this.getSectionById(sectionId);
         if (!section) return [];
@@ -207,15 +198,15 @@ const DashboardConfig = {
         );
     },
 
-    // Obtener paleta de colores para gráficas
+    // Get color palette for charts
     getChartColorPalette: function() {
         return [...this.colorPalette];
     },
 
-    // Configuración de temas
+    // Theme configuration
     themes: {
         light: {
-            name: 'Claro',
+            name: 'Light',
             cssClass: '',
             chartColors: {
                 background: 'rgba(255, 255, 255, 0.9)',
@@ -224,7 +215,7 @@ const DashboardConfig = {
             }
         },
         dark: {
-            name: 'Oscuro',
+            name: 'Dark',
             cssClass: 'dark-theme',
             chartColors: {
                 background: 'rgba(31, 41, 55, 0.9)',
@@ -234,25 +225,25 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de tabs para secciones con múltiples vistas
+    // Tab configurations for sections with multiple views
     tabConfigs: {
         distributional: [
             {
-                title: 'Por Nivel',
+                title: 'By Level',
                 canvasId: 'salaryDistChart',
-                description: 'Distribución por nivel de experiencia'
+                description: 'Distribution by experience level'
             }
         ],
         geographic: [
             {
-                title: 'Por País',
+                title: 'By Country',
                 canvasId: 'geoChart',
-                description: 'Salarios promedio por ubicación geográfica'
+                description: 'Average salaries by geographic location'
             }
         ]
     },
 
-    // Utilidades para formateo
+    // Formatting utilities
     formatters: {
         currency: function(value) {
             if (value >= 1000000) {
@@ -268,7 +259,7 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de animaciones
+    // Animation configuration
     animations: {
         duration: 800,
         easing: 'easeOutCubic',
@@ -277,7 +268,7 @@ const DashboardConfig = {
         }
     },
 
-    // Configuración de tooltips globales
+    // Global tooltip configuration
     tooltipConfig: {
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -288,16 +279,16 @@ const DashboardConfig = {
         padding: 12
     },
 
-    // Inicializar configuración
+    // Initialize configuration
     init: function() {
-        console.log('📊 Dashboard Config inicializado');
-        console.log(`📋 Secciones disponibles: ${Object.keys(this.sections).length}`);
+        console.log('📊 Dashboard Config initialized');
+        console.log(`📋 Available sections: ${Object.keys(this.sections).length}`);
         return this;
     }
 };
 
-// Auto-inicializar cuando se carga el archivo
+// Auto-initialize when file loads
 DashboardConfig.init();
 
-// Hacer disponible globalmente
-window.DashboardConfig = DashboardConfig
+// Make available globally
+window.DashboardConfig = DashboardConfig;

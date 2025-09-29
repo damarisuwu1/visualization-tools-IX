@@ -14,17 +14,17 @@ const EngagementCharts = {
         {
             title: 'Completion Rate por Edad',
             canvasId: 'engagementChart1',
-            description: '📝 Esta gráfica muestra el porcentaje promedio de finalización por grupo etario, útil para identificar qué demografías son más comprometidas con el contenido.'
+            description: 'Esta gráfica muestra el porcentaje promedio de finalización por grupo etario, útil para identificar qué demografías son más comprometidas con el contenido.'
         },
         {
             title: 'Abandono por País',
             canvasId: 'engagementChart2',
-            description: '📝 Mapa de calor mostrando tasas de abandono por país, ayudando a identificar mercados con baja retención que necesitan estrategias específicas.'
+            description: 'Mapa de calor mostrando tasas de abandono por país, ayudando a identificar mercados con baja retención que necesitan estrategias específicas.'
         },
         {
             title: 'Engagement por Suscripción',
             canvasId: 'engagementChart3',
-            description: '📝 Comparación de tiempo promedio de sesión entre diferentes tipos de suscripción para evaluar el valor percibido por tier.'
+            description: 'Comparación de tiempo promedio de sesión entre diferentes tipos de suscripción para evaluar el valor percibido por tier.'
         }
     ],
 

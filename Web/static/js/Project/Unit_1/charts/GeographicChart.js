@@ -1,24 +1,82 @@
-// js/charts/GeographicChart.js - Gráfica de análisis geográfico
+// js/charts/GeographicChart.js - Geographic Salary Analysis Chart with API Integration
 
 class GeographicChart extends ChartBase {
     constructor() {
         super('geoChart');
         this.sectionConfig = {
             id: 'geographic-section',
-            title: 'Análisis Geográfico de Salarios',
-            description: 'Salarios promedio por país/región'
+            title: 'Geographic Salary Analysis',
+            description: 'Average salaries by country/region'
+        };
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
+        this.data = null;
+    }
+
+    // Fetch data from API
+    async fetchData() {
+        try {
+            console.log('Fetching geographic data from API...');
+            
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            if (apiData.status !== 'success') {
+                throw new Error('API returned error status');
+            }
+            
+            const geographicData = apiData.info?.geographic;
+            
+            if (!geographicData) {
+                console.warn('Geographic data not found in API response, using defaults');
+                this.setDefaultData();
+                return false;
+            }
+
+            this.data = {
+                labels: geographicData.labels || [],
+                data: geographicData.data || [],
+                colors: geographicData.colors || null
+            };
+
+            console.log('Geographic data fetched successfully:', this.data);
+            return true;
+
+        } catch (error) {
+            console.error('Error fetching geographic data:', error);
+            this.setDefaultData();
+            return false;
+        }
+    }
+
+    // Set default data in case of error
+    setDefaultData() {
+        console.log('Using default geographic data...');
+        this.data = {
+            labels: ['USA', 'UK', 'Germany', 'Canada', 'Australia'],
+            data: [0, 0, 0, 0, 0],
+            colors: null
         };
     }
 
-    // Preparar datos para la gráfica geográfica
+    // Prepare data for chart
     prepareData(rawData) {
-        const data = rawData || DashboardConfig.sampleData.geographic;
+        const data = rawData || this.data || DashboardConfig.sampleData.geographic;
         const colors = this.getColorPalette();
         
         return {
             labels: data.labels,
             datasets: [{
-                label: 'Salario Promedio (USD)',
+                label: 'Average Salary (USD)',
                 data: data.data,
                 backgroundColor: data.colors || colors.slice(0, data.labels.length),
                 borderColor: (data.colors || colors.slice(0, data.labels.length)).map(color => 
@@ -31,7 +89,7 @@ class GeographicChart extends ChartBase {
         };
     }
 
-    // Crear gráfica de barras horizontales
+    // Create horizontal bar chart
     createChart(data, baseOptions) {
         const options = {
             ...baseOptions,
@@ -40,7 +98,7 @@ class GeographicChart extends ChartBase {
                 ...baseOptions.plugins,
                 title: {
                     display: true,
-                    text: 'Salarios Promedio por País/Región',
+                    text: 'Average Salaries by Country/Region',
                     font: {
                         size: 16,
                         weight: 'bold'
@@ -66,7 +124,7 @@ class GeographicChart extends ChartBase {
                     },
                     title: {
                         display: true,
-                        text: 'Salario Anual (USD)',
+                        text: 'Annual Salary (USD)',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -86,7 +144,7 @@ class GeographicChart extends ChartBase {
                     },
                     title: {
                         display: true,
-                        text: 'País/Región',
+                        text: 'Country/Region',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -103,7 +161,7 @@ class GeographicChart extends ChartBase {
         });
     }
 
-    // Crear sección HTML
+    // Create HTML section
     static createSection() {
         const section = document.createElement('div');
         section.className = 'analysis-section';
@@ -115,45 +173,61 @@ class GeographicChart extends ChartBase {
         section.innerHTML = `
             ${title}
             <div class="columns-needed">
-                <div class="columns-title">Columnas Necesarias:</div>
+                <div class="columns-title">Required Columns:</div>
                 <div class="columns-list">${config.requiredColumns.join(', ')}</div>
             </div>
             <div class="chart-container">
                 <canvas id="geoChart"></canvas>
             </div>
             <div class="chart-description">
-                Esta gráfica presenta los salarios promedio por ubicación geográfica, 
-                permitiendo identificar las diferencias salariales entre países y regiones. 
-                Los datos muestran cómo la ubicación impacta significativamente en la compensación.
+                This chart presents average salaries by geographic location, 
+                allowing identification of salary differences between countries and regions. 
+                The data shows how location significantly impacts compensation.
             </div>
         `;
 
         return section;
     }
 
-    // Inicializar gráfica
-    static initializeChart() {
+    // Initialize chart with API data
+    static async initializeChart() {
         try {
             const chart = new GeographicChart();
-            const sampleData = DashboardConfig.sampleData.geographic;
+            
+            // Fetch data from API
+            await chart.fetchData();
             
             setTimeout(() => {
-                const success = chart.init(sampleData);
+                const success = chart.init(chart.data);
                 if (success) {
-                    console.log('✅ Gráfica geográfica inicializada');
+                    console.log('✅ Geographic chart initialized');
                 } else {
-                    console.error('❌ Error inicializando gráfica geográfica');
+                    console.error('❌ Error initializing geographic chart');
                 }
             }, 100);
             
             return chart;
         } catch (error) {
-            console.error('❌ Error creando gráfica geográfica:', error);
+            console.error('❌ Error creating geographic chart:', error);
             return null;
         }
     }
 
-    // Formatear tooltip personalizado
+    // Refresh data from API
+    async refreshData() {
+        console.log('Refreshing geographic data...');
+        
+        const success = await this.fetchData();
+        
+        if (success && this.chart) {
+            const preparedData = this.prepareData(this.data);
+            this.chart.data = preparedData;
+            this.chart.update();
+            console.log('Geographic data refreshed successfully');
+        }
+    }
+
+    // Format custom tooltip label
     formatTooltipLabel(context) {
         const value = context.parsed.x;
         const country = context.label;
@@ -161,5 +235,5 @@ class GeographicChart extends ChartBase {
     }
 }
 
-// Hacer disponible globalmente
+// Make available globally
 window.GeographicChart = GeographicChart;
