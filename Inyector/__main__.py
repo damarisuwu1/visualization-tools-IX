@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from Scripts.Portfolio.json_process import NoSQL_Process
 from Scripts.Portfolio.csv_process import SQL_Process
 from Scripts.Project.csv_process import SQL_Process_Proyecto
-from Scripts.Project.benchmarking import benchmark_class_methods
+from Scripts.Project.utils import benchmark_class_methods
 
 if __name__ == "__main__":
     
