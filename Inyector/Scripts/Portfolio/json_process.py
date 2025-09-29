@@ -1,7 +1,7 @@
 import os, json, requests, pandas as pd
 from dotenv import load_dotenv
 from typing import Literal
-from Scripts.utils import transform_types
+from Scripts.Portfolio.utils import transform_types
 
 URL_API = os.getenv('URL_API')
 
@@ -24,7 +24,7 @@ class NoSQL_Process:
         
         self.version = version.upper()
         self.data = data
-        self.location_path = os.path.dirname(os.path.dirname(__file__)) # Te deja en la ruta: Inyector/
+        self.location_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Te deja en la ruta: Inyector/
 
 
     # =============== METODOS PRIVADOS ===============

@@ -23,7 +23,7 @@ class SQL_Process:
         
         self.version = version.upper()
         self.table = table
-        self.location_path = os.path.dirname(os.path.dirname(__file__)) # Te deja en la ruta: Inyector/
+        self.location_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Te deja en la ruta: Inyector/
 
 
     # =============== METODOS PRIVADOS ===============
@@ -249,7 +249,7 @@ class SQL_Process:
         '''
         values = self.df_processed
         i = 0
-        chunk = values[i:(i+100)]
+        chunk = values[i:(i+500)]
         for cluster in values:
             cluster = chunk
             if cluster == []:
@@ -259,8 +259,8 @@ class SQL_Process:
             'data': cluster
             }
             yield payload_body
-            i = i+100
-            chunk = values[(i):(i+100)]
+            i = i+500
+            chunk = values[(i):(i+500)]
 
     def __enviar_info_version_D(self, dictionary: dict):
         '''

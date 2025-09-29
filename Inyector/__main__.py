@@ -2,25 +2,41 @@
 
 import os
 from dotenv import load_dotenv
-#from Scripts.Portfolio.json_process import NoSQL_Process
-#from Scripts.Portfolio.csv_process import SQL_Process
-from Scripts.Project.csv_process import SQL_Process
+from Scripts.Portfolio.json_process import NoSQL_Process
+from Scripts.Portfolio.csv_process import SQL_Process
+from Scripts.Project.csv_process import SQL_Process_Proyecto
 
 if __name__ == "__main__":
     
     load_dotenv()
 
+# =================== INSTANCIAS PARA SUBIDA DE DATOS PARA PORTAFOLIO Y PROYECTO =================== #
+    send_mongo_D1 = NoSQL_Process("D", "movies")
+    send_mongo_D2 = NoSQL_Process("D", "series")
+    send_postgres_D1 = SQL_Process("D", "users")
+    send_postgres_D2 = SQL_Process("D", "viewing_sessions")
+    send_postgres_proyecto_D = SQL_Process_Proyecto('D', 'tech_salaries')
+
+# --------------- ENVÍO
+    send_mongo_D1.procesar()
+    send_mongo_D2.procesar()
+    send_postgres_D1.procesar()
+    send_postgres_D2.procesar()
+    send_postgres_proyecto_D.procesar()
+
 # =================== SUBIDA DE DATOS PARA PROYECTO =================== #
 
     #send_postgres_proyecto_A = SQL_Process('A', 'tech_salaries')
-    send_postgres_proyecto_B = SQL_Process('B', 'tech_salaries')
+    #send_postgres_proyecto_B = SQL_Process('B', 'tech_salaries')
     #send_postgres_proyecto_C = SQL_Process('C', 'tech_salaries')
-    #send_postgres_proyecto_D = SQL_Process('D', 'tech_salaries')
+
 
     #send_postgres_proyecto_A.procesar()
-    send_postgres_proyecto_B.procesar()
+    #send_postgres_proyecto_B.procesar()
     #send_postgres_proyecto_C.procesar()
-    #send_postgres_proyecto_D.procesar()
+
+
+# =================== INSTANCIAS DE TODOS LOS METODOS DE DATOS PARA PROYECTO =================== #
 
     #send_postgres_A1 = SQL_Process("A", "users")
     #send_postgres_B1 = SQL_Process("B", "users")

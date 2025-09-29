@@ -4,7 +4,7 @@ from Scripts.Project.utils import transform_types
 
 URL_API = os.getenv('URL_API')
 
-class SQL_Process:
+class SQL_Process_Proyecto:
     # =============== CONSTRUCTOR ===============
     def __init__(self, version:Literal['A','B','C','D'], table:Literal['tech_salaries']):
         '''
@@ -160,10 +160,10 @@ class SQL_Process:
         if self.table == "tech_salaries":
             data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columns:
-                item = data_types.pop(0)
-                df = df.astype({column: item})
-            df_processed = df.to_json(orient='records')
-            self.df_processed = json.loads(df_processed)
+                data_type = data_types.pop(0)
+                df = df.astype({column : data_type})
+            df = df.to_json(orient='records')
+            self.df_processed = json.loads(df)
         else:
             raise "No se seleccionó una tabla valida"
 
@@ -230,7 +230,7 @@ class SQL_Process:
         '''
         values = self.df_processed
         i = 0
-        chunk = values[i:(i+100)]
+        chunk = values[i:(i+500)]
         for cluster in values:
             cluster = chunk
             if cluster == []:
@@ -240,8 +240,8 @@ class SQL_Process:
             'data': cluster
             }
             yield payload_body
-            i = i+100
-            chunk = values[(i):(i+100)]
+            i = i+500
+            chunk = values[(i):(i+500)]
 
     def __enviar_info_version_D(self, dictionary: dict):
         '''
