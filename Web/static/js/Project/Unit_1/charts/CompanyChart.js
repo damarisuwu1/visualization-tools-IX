@@ -8,7 +8,8 @@ class CompanyChart extends ChartBase {
             title: 'Company Size Analysis',
             description: 'Salary distribution by company size'
         };
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        // Usar variable de entorno en lugar de hardcodear
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
         this.data = null;
     }
 

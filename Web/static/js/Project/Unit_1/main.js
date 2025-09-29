@@ -1,4 +1,4 @@
-// js/main.js - Archivo principal de inicialización del dashboard
+// js/main.js - Main dashboard initialization file
 
 class DashboardManager {
     constructor() {
@@ -6,9 +6,9 @@ class DashboardManager {
         this.initialized = false;
         this.themeManager = null;
         this.tabManager = null;
-        this.themeSubscription = null; // Para evitar múltiples suscripciones
+        this.themeSubscription = null; // To avoid multiple subscriptions
         
-        // Configuración de inicialización
+        // Initialization configuration
         this.config = {
             autoInitCharts: true,
             showLoadingStates: true,
@@ -16,46 +16,46 @@ class DashboardManager {
             animationDelay: 100
         };
 
-        console.log('🚀 Dashboard Manager creado');
+        console.log('Dashboard Manager created');
     }
 
-    // Inicializar el dashboard completo
+    // Initialize the complete dashboard
     async init() {
         try {
-            console.log('📊 Inicializando Dashboard de Salarios...');
+            console.log('Initializing Salary Dashboard...');
 
-            // 1. Verificar dependencias
+            // 1. Check dependencies
             if (!this.checkDependencies()) {
-                throw new Error('Dependencias requeridas no encontradas');
+                throw new Error('Required dependencies not found');
             }
 
-            // 2. Inicializar gestor de temas
+            // 2. Initialize theme manager
             this.initThemeManager();
 
-            // 3. Crear estructura del dashboard
+            // 3. Create dashboard structure
             this.createDashboardStructure();
 
-            // 4. Inicializar gráficas
+            // 4. Initialize charts
             if (this.config.autoInitCharts) {
                 await this.initAllCharts();
             }
 
-            // 5. Configurar event listeners
+            // 5. Set up event listeners
             this.setupEventListeners();
 
             this.initialized = true;
-            console.log('✅ Dashboard inicializado correctamente');
+            console.log('Dashboard initialized successfully');
 
-            // Dispatch evento de inicialización completa
+            // Dispatch initialization complete event
             this.dispatchEvent('dashboardInitialized');
 
         } catch (error) {
-            console.error('❌ Error inicializando dashboard:', error);
-            this.showError('Error inicializando el dashboard: ' + error.message);
+            console.error('Error initializing dashboard:', error);
+            this.showError('Error initializing dashboard: ' + error.message);
         }
     }
 
-    // Verificar que todas las dependencias estén disponibles
+    // Check that all dependencies are available
     checkDependencies() {
         const required = [
             'Chart', 'DashboardConfig', 'ChartConfig', 
@@ -63,76 +63,76 @@ class DashboardManager {
             'RolesChart', 'CompanyChart', 'TemporalChart',
             'WorkModalitiesChart'
         ];
-        console.log('🔍 Verificando dependencias...');
+        console.log('Checking dependencies...');
         
-        // Verificar cada dependencia individualmente
+        // Check each dependency individually
         required.forEach(dep => {
             const exists = typeof window[dep] !== 'undefined';
-            console.log(`${exists ? '✅' : '❌'} ${dep}: ${exists ? 'disponible' : 'FALTANTE'}`);
+            console.log(`${exists ? '✓' : '✗'} ${dep}: ${exists ? 'available' : 'MISSING'}`);
         });
 
         const missing = required.filter(dep => typeof window[dep] === 'undefined');
         
         if (missing.length > 0) {
-            console.error('❌ Dependencias faltantes:', missing);
-            console.error('📋 Lista completa de dependencias faltantes:');
+            console.error('Missing dependencies:', missing);
+            console.error('Complete list of missing dependencies:');
             missing.forEach((dep, index) => {
                 console.error(`${index + 1}. ${dep}`);
             });
             return false;
         }
 
-        console.log('✅ Todas las dependencias están disponibles');
+        console.log('All dependencies are available');
         return true;
     }
 
-    // Inicializar el gestor de temas
+    // Initialize theme manager
     initThemeManager() {
         if (typeof window.themeManager !== 'undefined') {
             this.themeManager = window.themeManager;
             
-            // SOLO suscribirse una vez y evitar el tema inicial
+            // ONLY subscribe once and avoid initial theme
             if (!this.themeSubscription) {
                 this.themeSubscription = this.themeManager.subscribe((newTheme, oldTheme) => {
-                    // Solo procesar si realmente cambió el tema y no es la inicialización
+                    // Only process if theme actually changed and it's not initialization
                     if (newTheme !== oldTheme && oldTheme !== undefined) {
                         this.onThemeChange(newTheme);
                     }
                 });
             }
 
-            console.log('🎨 Gestor de temas inicializado');
+            console.log('Theme manager initialized');
         } else {
-            console.warn('⚠️ themeManager no encontrado, continuando sin gestión de temas');
+            console.warn('themeManager not found, continuing without theme management');
         }
     }
 
-    // Crear la estructura HTML del dashboard
+    // Create dashboard HTML structure
     createDashboardStructure() {
         const container = document.querySelector('.main-content');
         if (!container) {
-            console.error('❌ Contenedor principal no encontrado');
+            console.error('Main container not found');
             return;
         }
 
-        // Remover loading container
+        // Remove loading container
         const loadingContainer = container.querySelector('.loading-container');
         if (loadingContainer) {
             loadingContainer.remove();
         }
 
-        // Crear tabs principales
+        // Create main tabs
         const tabsContainer = this.createMainTabs();
         container.appendChild(tabsContainer);
 
-        // Crear secciones de análisis
+        // Create analysis sections
         const sectionsContainer = this.createAnalysisSections();
         container.appendChild(sectionsContainer);
 
-        console.log('🏗️ Estructura del dashboard creada');
+        console.log('Dashboard structure created');
     }
 
-    // Crear tabs principales del dashboard
+    // Create main dashboard tabs
     createMainTabs() {
         const tabsWrapper = document.createElement('div');
         tabsWrapper.className = 'main-tabs-wrapper';
@@ -145,7 +145,7 @@ class DashboardManager {
         sections.forEach((section, index) => {
             const tab = document.createElement('button');
             tab.className = `main-tab ${index === 0 ? 'active' : ''}`;
-            // Limpiar el título para mostrar solo el texto sin emojis
+            // Clean title to show only text without emojis
             const cleanTitle = section.title.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
             tab.textContent = cleanTitle || section.title;
             tab.dataset.sectionId = section.id;
@@ -161,7 +161,7 @@ class DashboardManager {
         return tabsWrapper;
     }
 
-    // Crear secciones de análisis
+    // Create analysis sections
     createAnalysisSections() {
         const sectionsContainer = document.createElement('div');
         sectionsContainer.className = 'analysis-sections';
@@ -169,16 +169,16 @@ class DashboardManager {
         const sections = DashboardConfig.getAllSections();
 
         sections.forEach((sectionConfig, index) => {
-            // Crear una sección básica si la clase específica no existe
+            // Create basic section if specific class doesn't exist
             const ChartClass = window[sectionConfig.chartClass];
             let section;
             
             if (ChartClass && typeof ChartClass.createSection === 'function') {
                 section = ChartClass.createSection();
             } else {
-                // Crear sección básica como fallback
+                // Create basic section as fallback
                 section = this.createBasicSection(sectionConfig);
-                console.warn(`⚠️ Usando sección básica para: ${sectionConfig.chartClass}`);
+                console.warn(`Using basic section for: ${sectionConfig.chartClass}`);
             }
             
             section.id = sectionConfig.id + '-section';
@@ -190,7 +190,7 @@ class DashboardManager {
         return sectionsContainer;
     }
 
-    // Crear sección básica como fallback
+    // Create basic section as fallback
     createBasicSection(config) {
         const section = document.createElement('div');
         section.innerHTML = `
@@ -205,28 +205,28 @@ class DashboardManager {
         return section;
     }
 
-    // Inicializar todas las gráficas
+    // Initialize all charts
     async initAllCharts() {
-        console.log('📈 Inicializando gráficas...');
+        console.log('Initializing charts...');
         
         const sections = DashboardConfig.getAllSections();
         
         for (const section of sections) {
             try {
                 await this.initChart(section);
-                // Pequeña pausa entre inicializaciones
+                // Small pause between initializations
                 await new Promise(resolve => setTimeout(resolve, this.config.animationDelay));
             } catch (error) {
-                console.error(`❌ Error inicializando gráfica ${section.id}:`, error);
-                // Crear gráfica básica como fallback
+                console.error(`Error initializing chart ${section.id}:`, error);
+                // Create basic chart as fallback
                 this.createFallbackChart(section);
             }
         }
 
-        console.log('✅ Inicialización de gráficas completada');
+        console.log('Chart initialization completed');
     }
 
-    // Crear gráfica básica como fallback
+    // Create basic chart as fallback
     createFallbackChart(sectionConfig) {
         const canvas = document.getElementById(sectionConfig.canvasId);
         if (!canvas) return;
@@ -240,7 +240,7 @@ class DashboardManager {
                 data: {
                     labels: sampleData.labels,
                     datasets: [{
-                        label: 'Datos de muestra',
+                        label: 'Sample data',
                         data: sampleData.data,
                         backgroundColor: sampleData.colors || DashboardConfig.colorPalette
                     }]
@@ -252,105 +252,104 @@ class DashboardManager {
             });
             
             this.charts[sectionConfig.id] = chart;
-            console.log(`✅ Gráfica fallback creada para ${sectionConfig.id}`);
+            console.log(`Fallback chart created for ${sectionConfig.id}`);
         }
     }
 
-    // Inicializar una gráfica específica
-    // Inicializar una gráfica específica
-async initChart(sectionConfig) {
-    const ChartClass = window[sectionConfig.chartClass];
-    
-    if (!ChartClass) {
-        throw new Error(`Clase de gráfica no encontrada: ${sectionConfig.chartClass}`);
-    }
+    // Initialize specific chart
+    async initChart(sectionConfig) {
+        const ChartClass = window[sectionConfig.chartClass];
+        
+        if (!ChartClass) {
+            throw new Error(`Chart class not found: ${sectionConfig.chartClass}`);
+        }
 
-    // Verificar que el canvas existe
-    const canvas = document.getElementById(sectionConfig.canvasId);
-    if (!canvas) {
-        console.warn(`Canvas no encontrado: ${sectionConfig.canvasId}, saltando inicialización`);
-        return;
-    }
-
-    try {
-        // Para WorkModalitiesChart, pasar el canvasId explícitamente
-        if (sectionConfig.chartClass === 'WorkModalitiesChart') {
-            const chart = new ChartClass(sectionConfig.canvasId);
-            if (chart) {
-                this.charts[sectionConfig.id] = chart;
-                console.log(`✅ Gráfica ${sectionConfig.id} inicializada con canvas: ${sectionConfig.canvasId}`);
-            }
+        // Check that canvas exists
+        const canvas = document.getElementById(sectionConfig.canvasId);
+        if (!canvas) {
+            console.warn(`Canvas not found: ${sectionConfig.canvasId}, skipping initialization`);
             return;
         }
 
-        // Para otras gráficas, usar el método original
-        if (typeof ChartClass.initializeChart === 'function') {
-            const chart = ChartClass.initializeChart();
-            if (chart) {
-                this.charts[sectionConfig.id] = chart;
-                console.log(`✅ Gráfica ${sectionConfig.id} inicializada`);
-            }
-        } else {
-            // Inicialización manual si no hay método estático
-            const chart = new ChartClass();
-            const sampleData = DashboardConfig.sampleData[sectionConfig.id];
-            
-            if (sampleData && chart.init) {
-                const success = chart.init(sampleData);
-                if (success) {
+        try {
+            // For WorkModalitiesChart, pass canvasId explicitly
+            if (sectionConfig.chartClass === 'WorkModalitiesChart') {
+                const chart = new ChartClass(sectionConfig.canvasId);
+                if (chart) {
                     this.charts[sectionConfig.id] = chart;
-                    console.log(`✅ Gráfica ${sectionConfig.id} inicializada manualmente`);
+                    console.log(`Chart ${sectionConfig.id} initialized with canvas: ${sectionConfig.canvasId}`);
+                }
+                return;
+            }
+
+            // For other charts, use original method
+            if (typeof ChartClass.initializeChart === 'function') {
+                const chart = ChartClass.initializeChart();
+                if (chart) {
+                    this.charts[sectionConfig.id] = chart;
+                    console.log(`Chart ${sectionConfig.id} initialized`);
+                }
+            } else {
+                // Manual initialization if no static method exists
+                const chart = new ChartClass();
+                const sampleData = DashboardConfig.sampleData[sectionConfig.id];
+                
+                if (sampleData && chart.init) {
+                    const success = chart.init(sampleData);
+                    if (success) {
+                        this.charts[sectionConfig.id] = chart;
+                        console.log(`Chart ${sectionConfig.id} initialized manually`);
+                    }
                 }
             }
+        } catch (error) {
+            console.error(`Error creating instance of ${sectionConfig.chartClass}:`, error);
+            this.createFallbackChart(sectionConfig);
         }
-    } catch (error) {
-        console.error(`❌ Error creando instancia de ${sectionConfig.chartClass}:`, error);
-        this.createFallbackChart(sectionConfig);
     }
-}
 
-    // Mostrar una sección específica
+    // Show specific section
     showSection(sectionId, tabElement) {
-        // Ocultar todas las secciones
+        // Hide all sections
         document.querySelectorAll('.analysis-section').forEach(section => {
             section.classList.remove('active');
             section.classList.add('hidden');
         });
 
-        // Mostrar sección seleccionada
+        // Show selected section
         const targetSection = document.getElementById(sectionId + '-section');
         if (targetSection) {
             targetSection.classList.remove('hidden');
             targetSection.classList.add('active');
         }
 
-        // Actualizar tabs
+        // Update tabs
         document.querySelectorAll('.main-tab').forEach(tab => {
             tab.classList.remove('active');
         });
         tabElement.classList.add('active');
 
-        // Redimensionar gráfica si es necesario
+        // Resize chart if necessary
         const chart = this.charts[sectionId];
         if (chart && chart.resize) {
             setTimeout(() => chart.resize(), 100);
         }
 
-        console.log(`📊 Sección ${sectionId} mostrada`);
+        console.log(`Section ${sectionId} shown`);
     }
 
-    // Configurar event listeners
+    // Set up event listeners
     setupEventListeners() {
-        // Redimensionar gráficas cuando cambie el tamaño de ventana
+        // Resize charts when window size changes
         window.addEventListener('resize', this.debounce(() => {
             this.resizeAllCharts();
         }, 250));
 
-        // NO agregar más listeners de tema aquí - ya está manejado en ThemeManager
-        console.log('👂 Event listeners configurados');
+        // DO NOT add more theme listeners here - already handled in ThemeManager
+        console.log('Event listeners configured');
     }
 
-    // Redimensionar todas las gráficas
+    // Resize all charts
     resizeAllCharts() {
         Object.values(this.charts).forEach(chart => {
             if (chart && chart.resize) {
@@ -359,11 +358,11 @@ async initChart(sectionConfig) {
         });
     }
 
-    // Manejar cambios de tema
+    // Handle theme changes
     onThemeChange(newTheme) {
-        console.log(`🎨 Tema cambiado a: ${newTheme}`);
+        console.log(`Theme changed to: ${newTheme}`);
         
-        // Actualizar gráficas existentes
+        // Update existing charts
         Object.values(this.charts).forEach(chart => {
             if (chart && chart.onThemeChange) {
                 chart.onThemeChange(newTheme);
@@ -371,7 +370,7 @@ async initChart(sectionConfig) {
         });
     }
 
-    // Actualizar datos de todas las gráficas
+    // Update data for all charts
     updateAllCharts(newData) {
         Object.keys(this.charts).forEach(sectionId => {
             const chart = this.charts[sectionId];
@@ -382,15 +381,15 @@ async initChart(sectionConfig) {
             }
         });
 
-        console.log('📊 Datos de gráficas actualizados');
+        console.log('Chart data updated');
     }
 
-    // Obtener una gráfica específica
+    // Get specific chart
     getChart(sectionId) {
         return this.charts[sectionId] || null;
     }
 
-    // Exportar todas las gráficas como imágenes
+    // Export all charts as images
     exportAllCharts(format = 'png') {
         const exports = {};
         
@@ -404,11 +403,11 @@ async initChart(sectionConfig) {
         return exports;
     }
 
-    // Mostrar mensaje de error
+    // Show error message
     showError(message) {
-        console.error('❌', message);
+        console.error('Error:', message);
         
-        // Crear notificación de error visual
+        // Create visual error notification
         const errorDiv = document.createElement('div');
         errorDiv.className = 'dashboard-error';
         errorDiv.innerHTML = `
@@ -419,19 +418,19 @@ async initChart(sectionConfig) {
 
         document.body.appendChild(errorDiv);
 
-        // Remover después de 5 segundos
+        // Remove after 5 seconds
         setTimeout(() => {
             errorDiv.remove();
         }, 5000);
     }
 
-    // Dispatch eventos personalizados
+    // Dispatch custom events
     dispatchEvent(eventName, detail = {}) {
         const event = new CustomEvent(eventName, { detail });
         document.dispatchEvent(event);
     }
 
-    // Utilidad: debounce
+    // Utility: debounce
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -444,15 +443,15 @@ async initChart(sectionConfig) {
         };
     }
 
-    // Destruir el dashboard
+    // Destroy dashboard
     destroy() {
-        // Limpiar suscripción de tema
+        // Clean up theme subscription
         if (this.themeSubscription) {
             this.themeSubscription();
             this.themeSubscription = null;
         }
 
-        // Destruir todas las gráficas
+        // Destroy all charts
         Object.values(this.charts).forEach(chart => {
             if (chart && chart.destroy) {
                 chart.destroy();
@@ -461,28 +460,28 @@ async initChart(sectionConfig) {
 
         this.charts = {};
         this.initialized = false;
-        console.log('🧹 Dashboard destruido');
+        console.log('Dashboard destroyed');
     }
 }
 
-// Instancia global del dashboard
+// Global dashboard instance
 let dashboardManager = null;
 
-// Inicialización cuando el DOM esté listo
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🌟 DOM cargado, inicializando dashboard...');
+    console.log('DOM loaded, initializing dashboard...');
     
     try {
-        // Crear y inicializar el dashboard
+        // Create and initialize dashboard
         dashboardManager = new DashboardManager();
         await dashboardManager.init();
         
-        // Hacer disponible globalmente para debugging
+        // Make globally available for debugging
         window.dashboardManager = dashboardManager;
     } catch (error) {
-        console.error('💥 Error crítico al inicializar:', error);
+        console.error('Critical error during initialization:', error);
     }
 });
 
-// Hacer clases disponibles globalmente
+// Make classes globally available
 window.DashboardManager = DashboardManager;

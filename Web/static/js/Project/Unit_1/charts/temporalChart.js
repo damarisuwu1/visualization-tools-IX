@@ -8,7 +8,7 @@ class TemporalChart extends ChartBase {
             title: 'Temporal Analysis',
             description: 'Salary trends by year and experience level'
         };
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
         this.data = null;
     }
 

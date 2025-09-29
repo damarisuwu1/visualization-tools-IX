@@ -8,7 +8,7 @@ class SalaryDistChart extends ChartBase {
             title: 'Salary Distribution Analysis',
             description: 'Salary distribution by experience level'
         };
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
         this.data = null;
     }
 

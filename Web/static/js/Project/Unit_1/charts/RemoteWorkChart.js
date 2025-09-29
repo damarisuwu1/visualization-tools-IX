@@ -8,7 +8,7 @@ class RemoteWorkChart extends ChartBase {
             title: 'Remote Work Analysis',
             description: 'Salary evolution by remote work modality'
         };
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;;
         this.data = null;
     }
 

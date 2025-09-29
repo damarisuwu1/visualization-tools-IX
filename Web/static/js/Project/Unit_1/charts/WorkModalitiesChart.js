@@ -7,7 +7,7 @@ class WorkModalitiesChart {
         this.canvasId = canvasId;
         this.data = data;
         this.chart = null;
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
         
         // Only 3 main modalities
         this.selectedLines = new Set(['hybrid', 'onsite', 'remote']);

@@ -8,7 +8,7 @@ class RolesChart extends ChartBase {
             title: 'Role Analysis',
             description: 'Top highest-paying roles with salary ranges'
         };
-        this.apiEndpoint = 'https://upy-homeworks.xpert-ia.com.mx/visualization-tools/api/unit-1/project';
+        this.apiEndpoint = window.ENV?.API_ENDPOINT;
         this.data = null;
     }
 
