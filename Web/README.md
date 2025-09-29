@@ -27,50 +27,6 @@ La información para poder llenar las gráficas se obtiene desde el microservici
                 "labels": ["Basic", "Standard", "Premium"],
                 "values": [..., ..., ...]
             }
-        },
-        "value":{
-            "basic": [
-                {"x": ..., "y": ..., "r": ...}, 
-                {"x": ..., "y": ..., "r": ...}
-            ],
-            "standard": [
-                {"x": ..., "y": ..., "r": ...},
-                {"x": ..., "y": ..., "r": ...}
-            ],
-            "premium": [
-                {"x": ..., "y": ..., "r": ...},
-                {"x": ..., "y": ..., "r": ...}
-            ]
-        },
-        "temporal":{
-            "labels": ["Mes 1", "Mes 2", "Mes 3", "Mes 4", "Mes 5", "Mes 6"],
-            "cohorts": {
-                "enero":   [..., ..., ..., ..., ..., ...],
-                "febrero": [..., ..., ..., ..., ..., ...],
-                "marzo":   [..., ..., ..., ..., ..., ...]
-            }
-        },
-        "technical":{
-            "labels": ["Mobile", "Desktop", "TV", "Tablet"],
-            "duration":   [..., ..., ..., ...],
-            "completion": [..., ..., ..., ...]
-        },
-        "segmentation":{
-            "heavyUsers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
-            ],
-            "regularUsers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
-            ],
-            "casualViewers": [
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...},
-                {"x": ..., "y": ...}
-            ]
         }
     }
 }
@@ -82,6 +38,66 @@ La información para poder llenar las gráficas se obtiene desde el microservici
 * Metodos aceptados: `GET`
 * Payload respuesta:
 ``` json
+{
+    "status":"success", // Puede ser 'success', 'error'
+    "info" : {
+        "distributional": {
+            "labels": ["Entry-level", "Mid-level", "Senior", "Executive"],
+            "data": [65000, 95000, 135000, 185000],
+            "colors": ["#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+        },
+        "geographic": {
+            "labels": ["Estados Unidos", "Reino Unido", "Canadá", "Alemania", "Australia"],
+            "data": [145000, 85000, 92000, 78000, 105000],
+            "colors": ["#9b59b6", "#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+        },
+        "remote": {
+            "labels": ["2020", "2021", "2022", "2023", "2024"],
+            "datasets": [
+                { 
+                    "label": "0% Remoto", 
+                    "data": [85000, 88000, 92000, 95000, 98000], 
+                    "color": "#e74c3c" 
+                },
+                { 
+                    "label": "50% Remoto", 
+                    "data": [90000, 95000, 100000, 105000, 108000], 
+                    "color": "#f39c12" 
+                },
+                { 
+                    "label": "100% Remoto", 
+                    "data": [95000, 102000, 110000, 118000, 125000], 
+                    "color": "#2ecc71" 
+                }
+            ]
+        },
+        "roles": {
+            "labels": ["ML Engineer", "Data Scientist", "Data Engineer", "Analytics Manager", "Data Analyst"],
+            "data": [155000, 145000, 135000, 125000, 85000],
+            "colors": ["#9b59b6", "#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+        },
+        "company": {
+            "labels": ["Startup (S)", "Mediana (M)", "Grande (L)"],
+            "data": [95000, 125000, 155000],
+            "colors": ["#e74c3c", "#f39c12", "#2ecc71"]
+        },
+        "temporal": {
+            "labels": ["2020", "2021", "2022", "2023", "2024"],
+            "datasets": [
+                { 
+                    "label": "Entry-level", 
+                    "data": [55000, 58000, 62000, 65000, 68000], 
+                    "color": "#3498db" 
+                },
+                { 
+                    "label": "Senior", 
+                    "data": [115000, 125000, 135000, 145000, 155000], 
+                    "color": "#e74c3c" 
+                }
+            ]
+        }
+    }
+}
 ```
 
 ## Author(s):

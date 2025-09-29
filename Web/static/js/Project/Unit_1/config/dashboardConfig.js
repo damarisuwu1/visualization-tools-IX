@@ -12,6 +12,15 @@ const DashboardConfig = {
             chartClass: 'SalaryDistChart',
             canvasId: 'salaryDistChart'
         },
+        workModalities: {
+            id: 'workModalities',
+            title: '📊 Evolución de Modalidades de Trabajo',
+            description: 'Evolución temporal de diferentes modalidades de trabajo y el impacto de la IA',
+            requiredColumns: ['work_year', 'remote_ratio', 'employment_type'],
+            chartType: 'line',
+            chartClass: 'WorkModalitiesChart',
+            canvasId: 'workModalitiesChart'
+        },
         geographic: {
             id: 'geographic',
             title: '🌍 Análisis Geográfico',
@@ -65,6 +74,31 @@ const DashboardConfig = {
             labels: ['Entry-level', 'Mid-level', 'Senior', 'Executive'],
             data: [65000, 95000, 135000, 185000],
             colors: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+        },
+        workModalities: {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                { 
+                    label: 'Híbrido', 
+                    data: [35, 32, 30, 45, 65, 85], 
+                    color: '#2ecc71' 
+                },
+                { 
+                    label: 'Presencial', 
+                    data: [35, 30, 15, 8, 5, 3], 
+                    color: '#e74c3c' 
+                },
+                { 
+                    label: 'Remoto', 
+                    data: [20, 25, 60, 30, 18, 18], 
+                    color: '#3498db' 
+                },
+                { 
+                    label: 'Boom IA (ChatGPT)', 
+                    data: [0, 0, 2, 25, 45, 72], 
+                    color: '#f39c12' 
+                }
+            ]
         },
         geographic: {
             labels: ['Estados Unidos', 'Reino Unido', 'Canadá', 'Alemania', 'Australia'],

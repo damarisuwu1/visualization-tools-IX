@@ -2,22 +2,33 @@
 
 .chart-container {
     position: relative;
-    height: 400px;
+    height: 550px;
+    min-height: 550px;
     margin: 20px 0;
     background: var(--theme-surface);
     backdrop-filter: var(--theme-backdrop-blur);
     -webkit-backdrop-filter: var(--theme-backdrop-blur);
     border: 1px solid var(--theme-border-light);
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px;
     box-shadow: 0 8px 32px var(--theme-shadow);
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-container:hover {
     background: var(--theme-surface-hover);
     box-shadow: 0 12px 40px var(--theme-shadow-strong);
     transform: translateY(-2px);
+}
+
+/* Área específica del canvas */
+.chart-container > canvas {
+    flex: 1;
+    min-height: 0;
+    width: 100% !important;
+    height: auto !important;
 }
 
 .chart-description {
@@ -48,15 +59,18 @@
 
 /* Estilos específicos para diferentes tipos de gráficas */
 .chart-container.small {
-    height: 300px;
+    height: 400px;
+    min-height: 400px;
 }
 
 .chart-container.medium {
-    height: 400px;
+    height: 550px;
+    min-height: 550px;
 }
 
 .chart-container.large {
-    height: 500px;
+    height: 650px;
+    min-height: 650px;
 }
 
 .chart-loading {
@@ -97,9 +111,11 @@
 
 /* Estilos para canvas de Chart.js */
 .chart-container canvas {
-    max-width: 100%;
-    max-height: 100%;
+    display: block;
+    box-sizing: border-box;
     border-radius: 8px;
+    cursor: default;
+    transition: cursor 0.2s ease;
 }
 
 /* Personalización de tooltips de Chart.js */
@@ -145,36 +161,386 @@ body.dark-theme .chart-error {
     color: var(--theme-danger);
 }
 
-/* Responsividad */
+/* ===== ESTILOS PARA MODALIDADES DE TRABAJO ===== */
+
+/* Controles de modalidades */
+.chart-controls {
+    margin-bottom: 20px;
+    padding: 18px;
+    background: var(--theme-surface-elevated);
+    backdrop-filter: var(--theme-backdrop-blur-light);
+    -webkit-backdrop-filter: var(--theme-backdrop-blur-light);
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--theme-shadow);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.chart-controls:hover {
+    background: var(--theme-surface-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--theme-shadow);
+}
+
+.modalities-controls h4 {
+    margin: 0 0 14px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--theme-text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modalities-controls h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--theme-primary);
+    border-radius: 2px;
+}
+
+.modality-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.modality-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border-light);
+    min-width: 130px;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.modality-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modality-toggle:hover::before {
+    opacity: 1;
+}
+
+.modality-toggle:hover {
+    background: var(--theme-surface-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--theme-shadow);
+    border-color: var(--theme-border);
+}
+
+.modality-toggle input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--theme-primary);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.modality-toggle input[type="checkbox"]:checked {
+    transform: scale(1.05);
+}
+
+.toggle-label {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--theme-text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.modality-toggle input[type="checkbox"]:not(:checked) + .toggle-label {
+    opacity: 0.6;
+    color: var(--theme-text-secondary);
+}
+
+.modality-toggle input[type="checkbox"]:checked + .toggle-label {
+    font-weight: 600;
+    color: var(--theme-text-primary);
+}
+
+/* Estilos específicos para iconos de Tabler */
+.modality-toggle .toggle-label i {
+    font-size: 16px;
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Colores específicos para cada modalidad */
+.modality-toggle[data-modality="hybrid"] {
+    border-left: 3px solid #2ecc71;
+}
+
+.modality-toggle[data-modality="hybrid"] .toggle-label i {
+    color: #2ecc71;
+}
+
+.modality-toggle[data-modality="presencial"] {
+    border-left: 3px solid #e74c3c;
+}
+
+.modality-toggle[data-modality="presencial"] .toggle-label i {
+    color: #e74c3c;
+}
+
+.modality-toggle[data-modality="remoto"] {
+    border-left: 3px solid #3498db;
+}
+
+.modality-toggle[data-modality="remoto"] .toggle-label i {
+    color: #3498db;
+}
+
+/* Estado desactivado */
+.modality-toggle input[type="checkbox"]:not(:checked) + .toggle-label i {
+    color: var(--theme-text-secondary) !important;
+    opacity: 0.5;
+}
+
+/* Información del boom de IA */
+.ai-boom-info {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-primary) 8%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-secondary) 8%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--theme-primary) 20%, transparent);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.ai-boom-info small {
+    color: var(--theme-text-secondary);
+    font-size: 11.5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ai-boom-info i {
+    color: var(--theme-primary);
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+/* Tema oscuro específico */
+body.dark-theme .chart-controls {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+}
+
+body.dark-theme .modality-toggle {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border-light);
+}
+
+body.dark-theme .modality-toggle:hover {
+    background: var(--theme-surface-hover);
+}
+
+body.dark-theme .modalities-controls h4 {
+    color: var(--theme-text-primary);
+}
+
+body.dark-theme .ai-boom-info {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--theme-primary) 12%, transparent) 0%, 
+        color-mix(in srgb, var(--theme-secondary) 12%, transparent) 100%
+    );
+}
+
+/* Animación para cambios de estado */
+.modality-toggle input[type="checkbox"] {
+    transition: transform 0.15s ease;
+}
+
+.modality-toggle input[type="checkbox"]:checked {
+    transform: scale(1.05);
+}
+
+/* Efecto de focus para accesibilidad */
+.modality-toggle input[type="checkbox"]:focus {
+    outline: 2px solid var(--theme-primary);
+    outline-offset: 2px;
+}
+
+.modality-toggle:focus-within {
+    outline: 2px solid var(--theme-primary);
+    outline-offset: 2px;
+}
+
+/* Mejor espaciado para WorkModalitiesChart */
+#workModalitiesChart {
+    min-height: 450px;
+}
+
+/* Animación para hover en iconos */
+.modality-toggle:hover .toggle-label i {
+    transform: scale(1.1);
+}
+
+.modality-toggle input[type="checkbox"]:checked + .toggle-label i {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Estilo adicional para el canvas cuando esté en modo hover */
+.chart-container canvas:hover {
+    cursor: crosshair !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsividad mejorada */
 @media (max-width: 768px) {
     .chart-container {
-        height: 300px;
+        height: 450px;
+        min-height: 450px;
         padding: 16px;
         margin: 16px 0;
     }
     
     .chart-container.large {
-        height: 350px;
+        height: 500px;
+        min-height: 500px;
     }
     
     .chart-description {
         font-size: 13px;
         padding: 12px;
     }
+    
+    .modality-toggles {
+        gap: 10px;
+        justify-content: flex-start;
+    }
+    
+    .chart-controls {
+        padding: 14px;
+    }
+    
+    .modalities-controls h4 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .modality-toggle {
+        padding: 7px 12px;
+        font-size: 12.5px;
+        min-width: 120px;
+    }
+    
+    .modality-toggle .toggle-label i {
+        font-size: 15px;
+        width: 16px;
+    }
+    
+    .ai-boom-info small {
+        font-size: 11px;
+    }
 }
 
 @media (max-width: 480px) {
     .chart-container {
-        height: 250px;
+        height: 400px;
+        min-height: 400px;
         padding: 12px;
     }
     
     .chart-container.large {
-        height: 300px;
+        height: 450px;
+        min-height: 450px;
     }
     
     .chart-description {
         font-size: 12px;
         padding: 10px;
+    }
+    
+    .modality-toggles {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .modality-toggle {
+        width: 100%;
+        justify-content: flex-start;
+        min-width: unset;
+        padding: 8px 12px;
+    }
+    
+    .modality-toggle input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        margin-right: 8px;
+    }
+    
+    .modality-toggle .toggle-label {
+        font-size: 12px;
+    }
+    
+    .modality-toggle .toggle-label i {
+        font-size: 14px;
+        width: 15px;
+    }
+    
+    .ai-boom-info {
+        margin-top: 10px;
+        padding: 8px;
+    }
+    
+    .ai-boom-info small {
+        font-size: 10.5px;
+        gap: 4px;
     }
 }

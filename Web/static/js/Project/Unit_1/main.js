@@ -60,9 +60,9 @@ class DashboardManager {
         const required = [
             'Chart', 'DashboardConfig', 'ChartConfig', 
             'ChartBase', 'SalaryDistChart', 'GeographicChart',
-            'RemoteWorkChart', 'RolesChart', 'CompanyChart', 'TemporalChart'
+            'RemoteWorkChart', 'RolesChart', 'CompanyChart', 'TemporalChart',
+            'WorkModalitiesChart'
         ];
-
         console.log('🔍 Verificando dependencias...');
         
         // Verificar cada dependencia individualmente
@@ -257,13 +257,33 @@ class DashboardManager {
     }
 
     // Inicializar una gráfica específica
-    async initChart(sectionConfig) {
-        const ChartClass = window[sectionConfig.chartClass];
-        
-        if (!ChartClass) {
-            throw new Error(`Clase de gráfica no encontrada: ${sectionConfig.chartClass}`);
+    // Inicializar una gráfica específica
+async initChart(sectionConfig) {
+    const ChartClass = window[sectionConfig.chartClass];
+    
+    if (!ChartClass) {
+        throw new Error(`Clase de gráfica no encontrada: ${sectionConfig.chartClass}`);
+    }
+
+    // Verificar que el canvas existe
+    const canvas = document.getElementById(sectionConfig.canvasId);
+    if (!canvas) {
+        console.warn(`Canvas no encontrado: ${sectionConfig.canvasId}, saltando inicialización`);
+        return;
+    }
+
+    try {
+        // Para WorkModalitiesChart, pasar el canvasId explícitamente
+        if (sectionConfig.chartClass === 'WorkModalitiesChart') {
+            const chart = new ChartClass(sectionConfig.canvasId);
+            if (chart) {
+                this.charts[sectionConfig.id] = chart;
+                console.log(`✅ Gráfica ${sectionConfig.id} inicializada con canvas: ${sectionConfig.canvasId}`);
+            }
+            return;
         }
 
+        // Para otras gráficas, usar el método original
         if (typeof ChartClass.initializeChart === 'function') {
             const chart = ChartClass.initializeChart();
             if (chart) {
@@ -283,7 +303,11 @@ class DashboardManager {
                 }
             }
         }
+    } catch (error) {
+        console.error(`❌ Error creando instancia de ${sectionConfig.chartClass}:`, error);
+        this.createFallbackChart(sectionConfig);
     }
+}
 
     // Mostrar una sección específica
     showSection(sectionId, tabElement) {
