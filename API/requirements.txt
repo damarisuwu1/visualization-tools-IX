@@ -2,6 +2,7 @@
 gunicorn
 python-dotenv
 bcrypt
+pandas
 
 # ===== Flask
 Flask-JWT-Extended
