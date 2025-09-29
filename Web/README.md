@@ -4,30 +4,30 @@
 
 Portfolio Visualization is a specialized data visualization microservice that integrates with analysis APIs to transform processed data into interactive dashboards. Its purpose is to provide an intuitive visual interface for analyzing:
 
-- *📈 Portfolio*: User engagement metrics and behavior on streaming platforms
-- *💼 Project*: Global technology job market trends and salary analysis
+- **📈 Portfolio**: User engagement metrics and behavior on streaming platforms
+- **💼 Project**: Global technology job market trends and salary analysis
 
 ## 🏗 Microservice Architecture
 
-
+```
 Frontend (Flask) ←→ Analysis APIs ←→ Databases
      │                   │                    │
      │              Complex Data         Raw Data
  Interactive        Processing           Storage
  Visualization
-
+```
 
 ## 🔌 API Integration
 
 ### 📡 Portfolio - Unit 1
 
-*API Endpoint*: GET /api/unidad-1/portfolio
+**API Endpoint**: `GET /api/unidad-1/portfolio`
 
-*Purpose*: User engagement and behavior metrics
+**Purpose**: User engagement and behavior metrics
 
-*API Response*:
+**API Response**:
 
-json
+```json
 {
     "status": "success",
     "info": {
@@ -47,20 +47,20 @@ json
         }
     }
 }
+```
 
-
-*Generated Visualizations*:
+**Generated Visualizations**:
 - Completion rate by age group chart
 - Abandonment map by country
 - Engagement by subscription type
 
 ### 🏢 Project - Unit 1
 
-*API Endpoint*: GET /api/unidad-1/project
+**API Endpoint**: `GET /api/unidad-1/project`
 
-*Purpose*: Technology job salary analysis and trends
+**Purpose**: Technology job salary analysis and trends
 
-*API Response*:
+**API Response**:
 
 ```json
 {
@@ -123,9 +123,9 @@ json
         }
     }
 }
+```
 
-
-*Generated Visualizations*:
+**Generated Visualizations**:
 - Salary distribution by experience level
 - Geographic salary comparison
 - Remote work evolution trends
@@ -135,7 +135,7 @@ json
 
 ## 🗂 Project Structure
 
-
+```
 Web/
 │
 ├── static/                  
@@ -183,7 +183,7 @@ Web/
 ├── Dockerfile               
 ├── requirements.txt         
 └── README.md                
-
+```
 
 ## 🔗 Microservice Routes
 
@@ -195,7 +195,7 @@ Web/
 
 ## 📊 Data Flow
 
-
+```
 [Frontend - HTTP Request] 
        │
        ▼ (Render Template)
@@ -212,7 +212,7 @@ Web/
        │
        ▼ (Chart.js/D3.js)
 [Interactive Dashboards]
-
+```
 
 ## 🛠 Setup and Execution
 
@@ -223,70 +223,70 @@ Web/
 
 ### Local Installation
 
-1. *Clone repository*
+1. **Clone repository**
 
-bash
+```bash
 git clone <repository-url>
 cd portfolio-visualization
+```
 
+2. **Configure environment variables**
 
-2. *Configure environment variables*
-
-bash
+```bash
 cp .env.example .env
 # Edit .env with API URLs
 API_PORTFOLIO_URL=http://api-service:8000/api
 API_PROJECT_URL=http://api-service:8000/api
+```
 
+3. **Install dependencies**
 
-3. *Install dependencies*
-
-bash
+```bash
 pip install -r requirements.txt
+```
 
+4. **Run microservice**
 
-4. *Run microservice*
-
-bash
+```bash
 python app.py
-
+```
 
 ### Docker Execution
 
-bash
+```bash
 docker build -t portfolio-visualization .
 docker run -p 5000:5000 --env-file .env portfolio-visualization
-
+```
 
 ### Access URLs
-- *Main Microservice*: http://localhost:5000
-- *Portfolio Unit 1*: http://localhost:5000/portfolio/unit1
-- *Project Unit 1*: http://localhost:5000/project/unit1
+- **Main Microservice**: http://localhost:5000
+- **Portfolio Unit 1**: http://localhost:5000/portfolio/unit1
+- **Project Unit 1**: http://localhost:5000/project/unit1
 
 ## 🔧 Technical Dependencies
 
 ### Backend (Python/Flask)
 
-python
+```python
 # requirements.txt
 Flask==2.3.3
 python-dotenv==1.0.0
 requests==2.31.0
 pandas==2.0.3
 gunicorn==21.2.0
-
+```
 
 ### Frontend (Included in Templates)
-- *Chart.js 4.x* - Main visualizations
-- *Bootstrap 5.x* - UI Framework
-- *Font Awesome 6.x* - Icons
-- *D3.js 7.x* - Advanced visualizations
+- **Chart.js 4.x** - Main visualizations
+- **Bootstrap 5.x** - UI Framework
+- **Font Awesome 6.x** - Icons
+- **D3.js 7.x** - Advanced visualizations
 
 ## 🔄 API Integration Mechanism
 
 ### API Configuration
 
-javascript
+```javascript
 // static/js/Portfolio/Unit_1/config/api.config.js
 const API_CONFIG = {
     PORTFOLIO: {
@@ -297,11 +297,11 @@ const API_CONFIG = {
     },
     BASE_URL: process.env.API_BASE_URL || 'http://localhost:8000'
 };
-
+```
 
 ### Data Loading
 
-javascript
+```javascript
 // static/js/utils/data.loader.js
 async function loadPortfolioData() {
     try {
@@ -318,22 +318,22 @@ async function loadPortfolioData() {
         showError('Could not load portfolio data');
     }
 }
-
+```
 
 ## 🎨 Visualization Features
 
 ### Portfolio Unit 1
-- *Completion by Age*: Comparative bar chart by age groups
-- *Abandonment by Country*: Heat map or bar chart by country
-- *Engagement by Subscription*: Pie chart or bar chart by subscription type
+- **Completion by Age**: Comparative bar chart by age groups
+- **Abandonment by Country**: Heat map or bar chart by country
+- **Engagement by Subscription**: Pie chart or bar chart by subscription type
 
 ### Project Unit 1
-- *Salary Distribution*: Bar chart for level distribution
-- *Geographic Analysis*: Interactive map or comparative bar chart
-- *Remote Work Trends*: Multi-line chart for temporal evolution
-- *Roles Comparison*: Horizontal bar chart for role comparison
-- *Company Size Impact*: Bar chart for company size analysis
-- *Temporal Evolution*: Line chart for temporal trends
+- **Salary Distribution**: Bar chart for level distribution
+- **Geographic Analysis**: Interactive map or comparative bar chart
+- **Remote Work Trends**: Multi-line chart for temporal evolution
+- **Roles Comparison**: Horizontal bar chart for role comparison
+- **Company Size Impact**: Bar chart for company size analysis
+- **Temporal Evolution**: Line chart for temporal trends
 
 ## 📈 Microservice Scalability
 
@@ -344,29 +344,29 @@ To add new units:
 3. Add route in app.py
 4. Create corresponding templates and assets
 
-*Example for Portfolio Unit 2*:
+**Example for Portfolio Unit 2**:
 
-python
+```python
 @app.route('/portfolio/unit2')
 def portfolio_unit2():
     return render_template('Portfolio/Unit_2/main.html')
-
+```
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-*API unavailable*
+**API unavailable**
 - Verify API connectivity
 - Check analysis service logs
 - Confirm URLs in environment variables
 
-*Inconsistent data*
+**Inconsistent data**
 - Validate API response format
 - Verify expected data structure
 - Check microservice logs
 
-*Visualization problems*
+**Visualization problems**
 - Check browser console for JS errors
 - Confirm Chart.js/D3.js loading correctly
 - Validate data structure for charts
