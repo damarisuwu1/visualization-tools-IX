@@ -1,6 +1,4 @@
-import time
-import functools
-import statistics
+import time, functools, statistics, pandas as pd, os
 
 def transform_types(dictionary: dict, list_1: list, list_2: list):
     for llave in list_1:
@@ -61,3 +59,10 @@ def benchmark_class_methods(instance, methods=None, repeat=5):
         results[method_name] = benchmark_method(method, repeat=repeat)
 
     return results
+
+def save_benchmark_data(list_1: list):
+    benchmarks = pd.json_normalize(list_1)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_dir, '../../Files/data/benchmarks.csv')
+    benchmarks = benchmarks.to_csv(file_path, index=False)
+    return benchmarks
