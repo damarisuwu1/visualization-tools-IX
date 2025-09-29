@@ -1,12 +1,12 @@
 import os, pandas as pd, requests, csv, json
 from typing import Literal
-from Scripts.utils import transform_types
+from Scripts.Project.utils import transform_types
 
 URL_API = os.getenv('URL_API')
 
 class SQL_Process:
     # =============== CONSTRUCTOR ===============
-    def __init__(self, version:Literal['A','B','C','D'], table:Literal['users','viewing_sessions']):
+    def __init__(self, version:Literal['A','B','C','D'], table:Literal['tech_salaries']):
         '''
         ## Parameters
         ### version:
@@ -14,16 +14,15 @@ class SQL_Process:
         - ```B```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico y luego procesar el dataframe fila por fila para subirlo al API
         - ```C```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subirlo al API con una sola llamada, subiendo todo el dataframe como lista dentro del payload.
         - ```D```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subir al API por bloques de 50 registros (por poner un ejemplo)
-        ### data:
-        - ```users```: Procesar los valores de la colección movies.
-        - ```viewing_sessions```: Procesar los valores de la colección series.
+        ### table:
+        - ```tech_salaries```: Procesar los valores de la colección salaries.
         ## Returns
         Nothing.
         '''
         
         self.version = version.upper()
         self.table = table
-        self.location_path = os.path.dirname(os.path.dirname(__file__)) # Te deja en la ruta: Inyector/
+        self.location_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Te deja en la ruta: Inyector/
 
 
     # =============== METODOS PRIVADOS ===============
@@ -41,21 +40,19 @@ class SQL_Process:
     def __parsear_archivo_version_A(self, dictionary: dict):
         '''
         '''
-        if self.table == "users":
-            columns = ['user_id', 'age', 'country', 'subscription_type', 'registration_date', 'total_watch_time_hours']
-            data_types = [str, int, str, str, str, float]
+        if self.table == "tech_salaries":
+            columns = ['work_year','experience_level','employment_type','job_title','salary','salary_currency','salary_in_usd','employee_residence','remote_ratio','company_location','company_size']
+            data_types = [int, str, str, str, int, str, int, str, int, str, str]
             self.processed_dict = transform_types(dictionary, columns, data_types)
         else:
-            columns = ['session_id','user_id', 'content_id', 'watch_date', 'watch_duration_minutes', 'completion_percentage', 'device_type', 'quality_level']
-            data_types = [str, str, str, str, int, float, str, str]
-            self.processed_dict = transform_types(dictionary, columns, data_types)
+            raise "No se seleccionó una tabla valida"
     
     def __preparar_payload_version_A(self, dictionary: dict):
         '''
         '''
         dictionary = self.processed_dict
         self.payload_body = {
-            'table':self. table,
+            'table':self.table,
             'data': dictionary
         }
 
@@ -99,25 +96,18 @@ class SQL_Process:
         '''
         '''
         df = self.df_csv
-        columns = list(df.columns)
-        if self.table == "users":
-            data_types = [str, int, str, str, str, float]
-            for column in columns:
-                data_type = data_types.pop(0)
-                df = df.astype({column : data_type})
-            df = df.to_json(orient='records')
-            df_processed = json.loads(df)
-            for dictionary in df_processed:
+        columnas = list(df.columns)
+        if self.table == "tech_salaries":
+            data_types = [int, str, str, str, int, str, int, str, int, str, str]
+            for column in columnas:
+                item = data_types.pop(0)
+                df = df.astype({column: item})
+            df_processed = df.to_json(orient='records')
+            json_processed = json.loads(df_processed)
+            for dictionary in json_processed:
                 yield dictionary
         else:
-            data_types = [str, str, str, str, int, float, str, str]
-            for column in columns:
-                data_type = data_types.pop(0)
-                df = df.astype({column : data_type})
-            df = df.to_json(orient='records')
-            df_processed = json.loads(df)
-            for dictionary in df_processed:
-                yield dictionary
+            raise "No se seleccionó una tabla valida"
 
     def __preparar_payload_version_B(self, dictionary: dict):
         '''
@@ -167,20 +157,16 @@ class SQL_Process:
         '''
         df = self.df_csv
         columns = list(df.columns)
-        if self.table == "users":
-            data_types = [str, int, str, str, str, float]
+        if self.table == "tech_salaries":
+            data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columns:
-                data_type = data_types.pop(0)
-                df = df.astype({column : data_type})
-            df = df.to_json(orient='records')
-            self.df_processed = json.loads(df)
+                item = data_types.pop(0)
+                df = df.astype({column: item})
+            df_processed = df.to_json(orient='records')
+            self.df_processed = json.loads(df_processed)
         else:
-            data_types = [str, str, str, str, int, float, str, str]
-            for column in columns:
-                data_type = data_types.pop(0)
-                df = df.astype({column : data_type})
-            df = df.to_json(orient='records')
-            self.df_processed = json.loads(df)
+            raise "No se seleccionó una tabla valida"
+
 
     def __preparar_payload_version_C(self):
         '''
@@ -229,20 +215,15 @@ class SQL_Process:
         '''
         df = self.df_csv
         columns = list(df.columns)
-        if self.table == "users":
-            data_types = [str, int, str, str, str, float]
+        if self.table == "tech_salaries":
+            data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columns:
                 data_type = data_types.pop(0)
                 df = df.astype({column : data_type})
             df = df.to_json(orient='records')
             self.df_processed = json.loads(df)
         else:
-            data_types = [str, str, str, str, int, float, str, str]
-            for column in columns:
-                data_type = data_types.pop(0)
-                df = df.astype({column : data_type})
-            df = df.to_json(orient='records')
-            self.df_processed = json.loads(df)
+            raise "No se seleccionó una tabla valida"
 
     def __preparar_payload_version_D(self):
         '''

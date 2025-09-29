@@ -1,6 +1,6 @@
 import os, pandas as pd, requests, csv, json
 from typing import Literal
-from Scripts.utils import transform_types
+from Scripts.Portfolio.utils import transform_types
 
 URL_API = os.getenv('URL_API')
 
