@@ -1,6 +1,7 @@
 # ==================================== Improved version =================================
 
 import os
+import timeit
 from dotenv import load_dotenv
 from Scripts.Portfolio.json_process import NoSQL_Process
 from Scripts.Portfolio.csv_process import SQL_Process
@@ -13,23 +14,39 @@ if __name__ == "__main__":
 
 # =================== INSTANCIAS PARA SUBIDA DE DATOS PARA PORTAFOLIO Y PROYECTO =================== #
     send_mongo_D1 = NoSQL_Process("D", "movies")
-    send_mongo_D2 = NoSQL_Process("D", "series")
+    send_mongo_A2 = NoSQL_Process("A", "series")
     send_postgres_D1 = SQL_Process("D", "users")
-    send_postgres_D2 = SQL_Process("D", "viewing_sessions")
+    #send_postgres_D2 = SQL_Process("D", "viewing_sessions")
+    #send_postgres_proyecto_B = SQL_Process_Proyecto('B', 'tech_salaries')
     send_postgres_proyecto_D = SQL_Process_Proyecto('D', 'tech_salaries')
 
-# --------------- ENVÍO
-    send_mongo_D1.procesar()
-    send_mongo_D2.procesar()
-    send_postgres_D1.procesar()
-    send_postgres_D2.procesar()
-    send_postgres_proyecto_D.procesar()
+    # ---------------- BENCHMARKING METHOD 1 
+    # Simple wrapper to benchmark .procesar() calls
+    def benchmark_instance(instance, repeat=3):
+        stmt = "instance.procesar()"
+        return timeit.timeit(stmt, globals={"instance": instance}, number=repeat)
 
-# --------------- BENCHMARKING
-    benchmark_mongo_D1 = benchmark_class_methods(send_mongo_D1, NoSQL_Process.procesar(), repeat=1)
-    benchmark_postgres_proyecto_D = benchmark_class_methods(send_mongo_D1, SQL_Process_Proyecto.procesar(), repeat=1)
+    print("Benchmark Results (seconds, total time for 3 runs):")
+    print(f"Mongo D1: {benchmark_instance(send_mongo_D1, repeat=3)}")
+    print(f"Mongo A2: {benchmark_instance(send_mongo_A2, repeat=3)}")
+    print(f"Postgres D1: {benchmark_instance(send_postgres_D1, repeat=3)}")
+    #print(f"Postgres D2: {benchmark_instance(send_postgres_D2, repeat=3)}")
+    #print(f"Postgres Proyecto B: {benchmark_instance(send_postgres_proyecto_B, repeat=3)}")
+    print(f"Postgres Proyecto D: {benchmark_instance(send_postgres_proyecto_D, repeat=3)}")
 
-    print(f"MongoDB benchmark metrics with method D is {benchmark_mongo_D1}\nPostgres benchmark metrics with method D is {benchmark_postgres_proyecto_D}")
+# --------------- BENCHMARKING METHOD 2
+    '''benchmark_mongo_A2 = benchmark_class_methods(send_mongo_A2, send_mongo_A2.procesar(), repeat=1)
+    print(f"MongoDB benchmark metrics with method A is {benchmark_mongo_A2}")
+    benchmark_mongo_D1 = benchmark_class_methods(send_mongo_D1, send_mongo_D1.procesar(), repeat=1)
+    print(f"MongoDB benchmark metrics with method D is {benchmark_mongo_D1}")
+    #benchmark_postgres_proyecto_B = benchmark_class_methods(send_postgres_proyecto_B, send_postgres_proyecto_B.procesar(), repeat=1)
+    benchmark_postgres_proyecto_D = benchmark_class_methods(send_postgres_proyecto_D, send_postgres_proyecto_D.procesar(), repeat=1)
+    print(f"Postgres benchmark metrics with method D is {benchmark_postgres_proyecto_D}")
+
+    print(f"MongoDB benchmark metrics with method A is {benchmark_mongo_A2}")
+    print(f"MongoDB benchmark metrics with method D is {benchmark_mongo_D1}")
+    #print(f"Postgres benchmark metrics with method B is {benchmark_postgres_proyecto_B}")
+    print(f"Postgres benchmark metrics with method D is {benchmark_postgres_proyecto_D}")'''
 
 # =================== SUBIDA DE DATOS PARA PROYECTO =================== #
 
