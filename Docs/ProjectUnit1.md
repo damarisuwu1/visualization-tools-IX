@@ -46,7 +46,6 @@ This document was created with assistance from AI tools. The following outlines 
   - Claude (Anthropic) - Sonnet 4 (Secondary)
 - **Overall Assistance Level:** 75%
 - **Primary Use Cases:**
-  - React component generation: 85%
   - Chart.js configuration: 80%
   - CSS styling and responsive design: 70%
   - API integration code: 65%
@@ -147,7 +146,9 @@ This document was created with assistance from AI tools. The following outlines 
   - Documentation walkthrough with fresh team member
   - Deployment dry runs from scratch
   - Security audit of exposed ports and credentials
-
+**Chat Reference:**
+- [https://g.co/gemini/share/67620ea3e4c4](https://g.co/gemini/share/67620ea3e4c4)
+- [ttps://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b](ttps://claude.ai/share/e1d6a38a-1e98-4d33-a2fb-f9ebe0a1b56b)
 ---
 
 **Academic Integrity Statement:** All AI-generated content has been reviewed, understood, verified, and customized by the authors. The team takes full responsibility for the accuracy, appropriateness, and functionality of all content in this document and associated codebase.
@@ -1188,7 +1189,6 @@ visualization-tools-IX/
 ├── .env
 ├── .gitignore
 ├── README.md
-├── template.md
 │
 ├── API/
 │   ├── Dockerfile
@@ -1199,6 +1199,13 @@ visualization-tools-IX/
 │       ├── mongo_connector.py
 │       ├── postgres_connector.py
 │       └── analytics.py
+
+├── Docs/
+│   ├── Organization/
+│       ├── Schedule.md
+│       ├── Team_Org.md
+│   ├── requirements.txt
+│   ├── ProjectUnit1.md
 │
 ├── Web/
 │   ├── Dockerfile
@@ -1251,7 +1258,7 @@ visualization-tools-IX/
 - Paulina Chiquete - Project Management & Testing
 - [Sergio Barrera](https://github.com/S3RG10-B4RR3R4) - Web Development & UI/UX
 
-**Academic Supervisor:** [Instructor Name]  
+**Academic Supervisor:** [Jorge Javier Pedrozo Romero]  
 **Submission Date:** September 28, 2025  
 **Course Code:** VMI-2025-IX
 
