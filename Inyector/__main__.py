@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from Scripts.Portfolio.json_process import NoSQL_Process
 from Scripts.Portfolio.csv_process import SQL_Process
 from Scripts.Project.csv_process import SQL_Process_Proyecto
+from Scripts.Project.benchmarking import benchmark_class_methods
 
 if __name__ == "__main__":
     
@@ -23,6 +24,12 @@ if __name__ == "__main__":
     send_postgres_D1.procesar()
     send_postgres_D2.procesar()
     send_postgres_proyecto_D.procesar()
+
+# --------------- BENCHMARKING
+    benchmark_mongo_D1 = benchmark_class_methods(send_mongo_D1, NoSQL_Process.procesar(), repeat=1)
+    benchmark_postgres_proyecto_D = benchmark_class_methods(send_mongo_D1, SQL_Process_Proyecto.procesar(), repeat=1)
+
+    print(f"MongoDB benchmark metrics with method D is {benchmark_mongo_D1}\nPostgres benchmark metrics with method D is {benchmark_postgres_proyecto_D}")
 
 # =================== SUBIDA DE DATOS PARA PROYECTO =================== #
 
