@@ -67,14 +67,57 @@ Frontend (Flask) ←→ Analysis APIs ←→ Databases
     "status": "success",
     "info": {
         "distributional": {
-            "labels": ["Entry-level", "Mid-level", "Senior", "Executive"],
-            "data": [65000, 95000, 135000, 185000],
-            "colors": ["#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+            "labels": ["Entry Level", "Junior", "Mid-Level", "Senior", "Lead", "Executive"],
+            "preAI": {
+                "label": "Pre-AI Era (2020-2022)",
+                "data": [52000, 68000, 95000, 128000, 165000, 210000],
+                "color": "#94a3b8"
+            },
+            "postAI": {
+                "label": "Post-AI Era (2023-2025)",
+                "data": [58000, 75000, 115000, 155000, 195000, 245000],
+                "color": "#3b82f6"
+            },
+            "growth": [11.5, 10.3, 21.1, 21.1, 18.2, 16.7]
+        },
+        "workModalities": {
+            "labels": ["2020", "2021", "2022", "2023", "2024", "2025"],
+            "datasets": [
+                { 
+                    "label": "Hybrid", 
+                    "data": [35, 32, 30, 45, 65, 85], 
+                    "color": "#2ecc71" 
+                },
+                { 
+                    "label": "On-site", 
+                    "data": [35, 30, 15, 8, 5, 3], 
+                    "color": "#e74c3c" 
+                },
+                { 
+                    "label": "Remote", 
+                    "data": [20, 25, 60, 30, 18, 18], 
+                    "color": "#3498db" 
+                },
+                { 
+                    "label": "AI Boom (ChatGPT)", 
+                    "data": [0, 0, 2, 25, 45, 72], 
+                    "color": "#f39c12" 
+                }
+            ]
         },
         "geographic": {
-            "labels": ["Estados Unidos", "Reino Unido", "Canadá", "Alemania", "Australia"],
-            "data": [145000, 85000, 92000, 78000, 105000],
-            "colors": ["#9b59b6", "#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+            "labels": ["United States", "United Kingdom", "Canada", "Germany", "Australia", "Netherlands"],
+            "preAI": {
+                "label": "Pre-AI Era (2020-2022)",
+                "data": [135000, 78000, 85000, 72000, 95000, 82000],
+                "color": "#94a3b8"
+            },
+            "postAI": {
+                "label": "Post-AI Era (2023-2025)",
+                "data": [155000, 92000, 98000, 84000, 115000, 95000],
+                "color": "#3b82f6"
+            },
+            "growth": [14.8, 17.9, 15.3, 16.7, 21.1, 15.9]
         },
         "remote": {
             "labels": ["2020", "2021", "2022", "2023", "2024"],
@@ -97,29 +140,67 @@ Frontend (Flask) ←→ Analysis APIs ←→ Databases
             ]
         },
         "roles": {
-            "labels": ["ML Engineer", "Data Scientist", "Data Engineer", "Analytics Manager", "Data Analyst"],
-            "data": [155000, 145000, 135000, 125000, 85000],
-            "colors": ["#9b59b6", "#3498db", "#2ecc71", "#f39c12", "#e74c3c"]
+            "labels": ["AI/ML Engineer", "Data Scientist", "Cloud Architect", "DevOps Engineer", "Data Engineer"],
+            "preAI": {
+                "label": "Pre-AI Era (2020-2022)",
+                "data": [125000, 115000, 135000, 120000, 110000],
+                "color": "#94a3b8"
+            },
+            "postAI": {
+                "label": "Post-AI Era (2023-2025)",
+                "data": [165000, 145000, 155000, 140000, 130000],
+                "color": "#3b82f6"
+            },
+            "growth": [32.0, 26.1, 14.8, 16.7, 18.2]
         },
         "company": {
-            "labels": ["Startup (S)", "Medium (M)", "Large (L)"],
-            "data": [95000, 125000, 155000],
-            "colors": ["#e74c3c", "#f39c12", "#2ecc71"]
+            "labels": ["Startup (S)", "Medium (M)", "Large (L)", "Enterprise (XL)"],
+            "data": [105000, 135000, 165000, 195000],
+            "colors": ["#ef4444", "#f59e0b", "#10b981", "#3b82f6"],
+            "description": "Post-AI Era (2023-2025)"
         },
-        "temporal": {
-            "labels": ["2020", "2021", "2022", "2023", "2024"],
+        "temporal":{
+            "labels": ["2020", "2021", "2022", "2023", "2024", "2025"],
             "datasets": [
-                { 
-                    "label": "Entry-level", 
-                    "data": [55000, 58000, 62000, 65000, 68000],
-                    "color": "#3498db" 
+                {
+                    "label": "Entry Level",
+                    "data": [48000, 52000, 56000, 58000, 62000, 65000],
+                    "color": "#3498db"
                 },
-                { 
-                    "label": "Senior", 
-                    "data": [115000, 125000, 135000, 145000, 155000], 
-                    "color": "#e74c3c" 
+                {
+                    "label": "Junior",
+                    "data": [62000, 65000, 68000, 75000, 78000, 82000],
+                    "color": "#2ecc71"
+                },
+                {
+                    "label": "Mid-Level",
+                    "data": [85000, 90000, 95000, 115000, 120000, 125000],
+                    "color": "#f39c12"
+                },
+                {
+                    "label": "Senior",
+                    "data": [120000, 128000, 135000, 155000, 165000, 175000],
+                    "color": "#e74c3c"
+                },
+                {
+                    "label": "Lead",
+                    "data": [150000, 160000, 165000, 195000, 205000, 215000],
+                    "color": "#9b59b6"
+                },
+                {
+                    "label": "Executive",
+                    "data": [195000, 205000, 210000, 245000, 255000, 265000],
+                    "color": "#34495e"
                 }
-            ]
+            ],
+            "growth": {
+                "Entry Level": [8.3, 7.7, 3.6, 6.9, 4.8],
+                "Junior": [4.8, 4.6, 10.3, 4.0, 5.1],
+                "Mid-Level": [5.9, 5.6, 21.1, 4.3, 4.2],
+                "Senior": [6.7, 5.5, 14.8, 6.5, 6.1],
+                "Lead": [6.7, 3.1, 18.2, 5.1, 4.9],
+                "Executive": [5.1, 2.4, 16.7, 4.1, 3.9]
+            }
         }
     }
 }
