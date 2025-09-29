@@ -37,8 +37,6 @@ services:
     container_name: gen_visualization
     env_file:
       - .env
-    depends_on:
-      - api_visualization
     networks:
       - visualization_net
 
@@ -48,8 +46,6 @@ services:
     container_name: inyector_visualization
     env_file:
       - .env
-    depends_on:
-      - api_visualization
     networks:
       - visualization_net
 
