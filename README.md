@@ -15,90 +15,234 @@ To design, implement, and deploy a multi-service data engineering solution that 
 
 ### [(Private) ML](./ML/README.md)
  
-### (Private) Mongo
+### (Private) Databse Architecture
 
-This service deploys a **MongoDB** database, which serves as the project's **NoSQL** database engine. It is responsible for storing data collections with flexible or semi-structured schemas, such as video content metadata (`content.json`) and other documents that do not fit well into a relational model. The `API` service directly consumes this data to feed the *endpoints*.
+This project implements a **hybrid database architecture** that combines both NoSQL (MongoDB) and SQL (PostgreSQL) databases to optimize data storage based on the nature and structure of each dataset.
 
+#### Database Selection Rationale
 
-#### Service Declaration
+##### MongoDB (NoSQL)
+Used for storing **semi-structured content metadata** that benefits from flexible schemas:
+- **Movies Collection**: Stores movie metadata with variable genre arrays
+- **Series Collection**: Stores series metadata with nested episode information per season
 
-The service is declared in the `docker-compose.yml` file under the name `mongo_visualization` and uses the official `mongo:6.0` image. The configuration is as follows:
+**Why MongoDB?**
+- Flexible schema allows easy addition of new fields without migrations
+- Native support for array fields (genres, episodes per season)
+- Optimized for read-heavy operations common in content catalogs
+- JSON-like documents match the natural structure of content metadata
 
-```yaml
-  mongo_visualization:
-    image: mongo:6.0
-    container_name: mongo_visualization
-    expose:
-      - "27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_DB}
-    volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - mongo_data:/data/db
-    networks:
-      - visualization_net
+##### PostgreSQL (SQL)
+Used for storing **structured relational data** with well-defined relationships:
+- **Users Table**: User profiles with subscription information
+- **Viewing Sessions Table**: User activity logs with foreign key relationships
+
+**Why PostgreSQL?**
+- ACID compliance ensures data integrity for user transactions
+- Strong support for complex queries and aggregations
+- Referential integrity through foreign keys
+- Optimized for analytical queries on viewing patterns
+
+#### Entity-Relationship Diagrams
+
+##### MongoDB Collections
+
+###### Movies Collection
+```mermaid
+erDiagram
+    MOVIES {
+        string _id PK "Format: M001, M002, etc."
+        string title
+        array genre "Multiple genres per movie"
+        int duration_minutes
+        int release_year
+        float rating "Scale 0-5"
+        int views_count
+        int production_budget
+    }
 ```
 
+**Key Characteristics:**
+- Primary Key: `_id` (string format: M###)
+- Genre stored as array for flexibility
+- Denormalized structure optimized for read performance
 
-#### Volumes 💾
-
-This service uses two volumes to manage initial configuration and data persistence:
-
-  * `./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro`: This volume mounts a local initialization script (`mongo-init.js`) into the container. The official Mongo image automatically executes any `.js` script found in the `/docker-entrypoint-initdb.d/` directory the first time the container starts. It is used to programmatically **create users, databases, and collections**.
-  * `mongo_data:/data/db`: This is a **named volume** that maps the `/data/db` directory inside the container (where Mongo stores all its data files) to a Docker-managed volume on the host machine. Its purpose is to ensure **data persistence**, so that information is not lost if the container is stopped, restarted, or removed.
-
-
-#### Networks 🌐
-
-The container connects to a single user-defined network to facilitate internal communication between services:
-
-  * `visualization_net`: This is a *bridge* network that allows `mongo_visualization` to communicate with other services, such as `api_visualization` and `inyector_visualization`. By being on the same network, other services can connect to the database using its service name (`mongo_visualization`) as a hostname, without needing to insecurely expose ports to the local network.
-
-
-### (Private) Postgres
-
-This service deploys a **PostgreSQL** database, which acts as the project's relational (SQL) database engine.
-
-#### Objective
-
-The objective of the `postgres_visualization` microservice is to serve as the main **SQL** database. It is responsible for storing and managing structured, relational data with well-defined schemas, such as user information (`users.csv`) and tech industry salaries (`tech_salaries.csv`). The `API` service connects to this database to perform complex queries and retrieve the data served through its *endpoints*.
-
-
-#### Service Declaration
-
-The service is defined in `docker-compose.yml` under the name `postgres_visualization`, using the official `postgres:15` image. The configuration is as follows:
-
-```yaml
-  postgres_visualization:
-    image: postgres:15
-    container_name: postgres_visualization
-    expose:
-      - "5432"
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - visualization_net
+###### Series Collection
+```mermaid
+erDiagram
+    SERIES {
+        string _id PK "Format: S001, S002, etc."
+        string title
+        array genre "Multiple genres per series"
+        int seasons
+        array episodes_per_season "Episode count per season"
+        int avg_episode_duration
+        float rating "Scale 0-5"
+        int total_views
+        int production_budget
+    }
 ```
 
+**Key Characteristics:**
+- Primary Key: `_id` (string format: S###)
+- Nested array structure for episodes per season
+- Self-contained documents with all series metadata
 
-#### Volumes 💾
+##### PostgreSQL Tables
 
-This service uses a named volume to ensure the persistence of the database's data:
+###### Users Table
+```mermaid
+erDiagram
+    USERS {
+        int id PK "Auto-increment"
+        string user_id UK "Format: U0001, U0002, etc."
+        int age
+        string country
+        string subscription_type "Basic, Standard, Premium"
+        date registration_date
+        float total_watch_time_hours
+        timestamp created_at
+        timestamp updated_at
+    }
+```
 
-  * `postgres_data:/var/lib/postgresql/data`: This is a **named volume** that maps the `/var/lib/postgresql/data` directory inside the container. This is the default path where PostgreSQL stores all its files, such as tables, indexes, and transaction logs. The main purpose of this volume is to ensure **data persistence**, preventing data loss if the container is stopped or removed.
+**Key Characteristics:**
+- Primary Key: `id` (integer, auto-increment)
+- Unique Key: `user_id` (used for external references)
+- Audit fields: `created_at`, `updated_at`
 
+###### Viewing Sessions Table
+```mermaid
+erDiagram
+    VIEWING_SESSIONS {
+        int id PK "Auto-increment"
+        string session_id UK "Format: S015554, S015555, etc."
+        string user_id FK "References users.user_id"
+        string content_id FK "References movies._id or series._id"
+        date watch_date
+        int watch_duration_minutes
+        float completion_percentage
+        string device_type "Mobile, Smart TV, Gaming Console"
+        string quality_level "SD, HD, 4K"
+        timestamp created_at
+        timestamp updated_at
+    }
+```
 
-#### Networks 🌐
+**Key Characteristics:**
+- Primary Key: `id` (integer, auto-increment)
+- Foreign Key: `user_id` → references `users.user_id`
+- Foreign Key: `content_id` → references either `movies._id` or `series._id`
+- Tracks user behavior and viewing metrics
 
-The container connects to a shared network to allow secure communication with other services:
+##### Complete System Architecture
+```mermaid
+erDiagram
+    USERS ||--o{ VIEWING_SESSIONS : "watches"
+    MOVIES ||--o{ VIEWING_SESSIONS : "is_watched_in"
+    SERIES ||--o{ VIEWING_SESSIONS : "is_watched_in"
+    
+    USERS {
+        int id PK
+        string user_id UK
+        int age
+        string country
+        string subscription_type
+        date registration_date
+        float total_watch_time_hours
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    VIEWING_SESSIONS {
+        int id PK
+        string session_id UK
+        string user_id FK
+        string content_id FK
+        date watch_date
+        int watch_duration_minutes
+        float completion_percentage
+        string device_type
+        string quality_level
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    MOVIES {
+        string _id PK
+        string title
+        array genre
+        int duration_minutes
+        int release_year
+        float rating
+        int views_count
+        int production_budget
+    }
+    
+    SERIES {
+        string _id PK
+        string title
+        array genre
+        int seasons
+        array episodes_per_season
+        int avg_episode_duration
+        float rating
+        int total_views
+        int production_budget
+    }
+```
 
-  * `visualization_net`: Like other services, it connects to this *bridge* network. This allows the `api_visualization` service to communicate with the database securely and efficiently, using the service name `postgres_visualization` as a hostname. This eliminates the need to expose the database to the local network beyond the standard port for development purposes.
+#### Cross-Database Relationships
+
+The system implements a **polyglot persistence pattern** where relationships span across different database technologies:
+
+##### Viewing Sessions Bridge
+The `viewing_sessions` table acts as a **bridge** between PostgreSQL and MongoDB:
+
+1. **User → Viewing Sessions** (PostgreSQL to PostgreSQL)
+   - Relationship: One-to-Many
+   - `users.user_id` → `viewing_sessions.user_id`
+   - A user can have multiple viewing sessions
+
+2. **Content → Viewing Sessions** (MongoDB to PostgreSQL)
+   - Relationship: One-to-Many (logical, not enforced)
+   - `movies._id` OR `series._id` → `viewing_sessions.content_id`
+   - The same content can be watched in multiple sessions
+   - **Note**: This is a logical relationship managed at the application level since MongoDB and PostgreSQL cannot enforce referential integrity across databases
+
+##### Content Type Discrimination
+The system uses a **prefix-based identification** to distinguish between movies and series:
+- Movie IDs start with `M` (e.g., M001, M139, M065)
+- Series IDs start with `S` (e.g., S001, S014)
+
+This allows the application layer to route queries to the appropriate database based on the `content_id` prefix.
+
+#### Important Notes
+
+1. **No Foreign Key Enforcement Across Databases**
+   - The relationship between `viewing_sessions.content_id` and MongoDB collections (`movies._id`, `series._id`) is **logical only**
+   - Application-level validation is required to maintain referential integrity
+   - The API service is responsible for ensuring valid content_id values
+
+2. **Denormalization in MongoDB**
+   - Content metadata is intentionally denormalized for read performance
+   - Duplicate titles across different series (e.g., "The Investigators" in the sample data) are allowed
+   - This is acceptable in a content catalog where reads vastly outnumber writes
+
+3. **Scalability Considerations**
+   - MongoDB collections can scale horizontally through sharding
+   - PostgreSQL can be optimized with indexing on `user_id` and `content_id`
+   - Consider partitioning `viewing_sessions` by date for large datasets
+
+4. **Data Consistency**
+   - Use transactions in PostgreSQL for user-related operations
+   - MongoDB operations are atomic at the document level
+   - Cross-database operations require eventual consistency patterns
+
+5. **Query Optimization**
+   - Index `viewing_sessions.user_id` for user activity queries
+   - Index `viewing_sessions.content_id` for content popularity analytics
+   - Create compound indexes for common query patterns (e.g., user_id + watch_date)
 
 
 ## Environment
