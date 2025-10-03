@@ -35,7 +35,9 @@ This document was created with assistance from AI tools. The following outlines 
   - Validated model performance metrics against holdout test sets
   - Peer review of all statistical conclusions by team members
 
-**Chat Reference:** [https://g.co/gemini/share/ec207c2d9ee8](https://g.co/gemini/share/ec207c2d9ee8)
+**Chat Reference:** 
+- [https://g.co/gemini/share/ec207c2d9ee8](https://g.co/gemini/share/ec207c2d9ee8)
+- [https://gemini.google.com/app/49d0e8aa681090b8?hl=es-MX](https://gemini.google.com/app/49d0e8aa681090b8?hl=es-MX)
 
 ---
 
@@ -1254,8 +1256,8 @@ visualization-tools-IX/
 - [Alan Valbuena](https://github.com/AlanVAal) - Web Development & Visualization
 - [Ariel Buenfil](https://github.com/areo-17) - Data Injection & ETL Pipelines
 - [Damaris Dzul](https://github.com/damarisuwu1) - Data Analysis & Documentation
-- [Diego Monroy](https://github.com/monroyminerodiego) - API Development & Architecture
-- Paulina Chiquete - Project Management & Testing
+- [Diego Monroy](https://github.com/monroyminerodiego) - Project Management & Architecture
+- [Paulina Chiquete](https://github.com/pauchiquete) -  & Testing
 - [Sergio Barrera](https://github.com/S3RG10-B4RR3R4) - Web Development & UI/UX
 
 **Academic Supervisor:** [Jorge Javier Pedrozo Romero]  
