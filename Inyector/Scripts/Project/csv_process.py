@@ -70,11 +70,15 @@ class SQL_Process_Proyecto:
     def __procesar_version_A(self):
         '''
         '''
+        i = 0
         for dictionary in self.__leer_archivo_version_A():
-            self.__parsear_archivo_version_A(dictionary)
-            self.__preparar_payload_version_A(dictionary)
-            self.__enviar_info_version_A(dictionary)
-
+            if i<= 1000:
+                self.__parsear_archivo_version_A(dictionary)
+                self.__preparar_payload_version_A(dictionary)
+                self.__enviar_info_version_A(dictionary)
+                i = i+1
+            else:
+                return print("1000 registros subidos")
 
 
 
@@ -130,10 +134,15 @@ class SQL_Process_Proyecto:
     def __procesar_version_B(self):
         '''
         '''
+        i = 0
         self.__leer_archivo_version_B()
         for dictionary in self.__parsear_archivo_version_B():
-            self.__preparar_payload_version_B(dictionary)
-            self.__enviar_info_version_B(dictionary)
+            if i <= 1000:
+                self.__preparar_payload_version_B(dictionary)
+                self.__enviar_info_version_B(dictionary)
+                i = i+1
+            else:
+                return print("1000 registros subidos")
 
 
 
@@ -230,7 +239,7 @@ class SQL_Process_Proyecto:
         '''
         values = self.df_processed
         i = 0
-        chunk = values[i:(i+500)]
+        chunk = values[i:(i+1500)]
         for cluster in values:
             cluster = chunk
             if cluster == []:
@@ -240,8 +249,8 @@ class SQL_Process_Proyecto:
             'data': cluster
             }
             yield payload_body
-            i = i+500
-            chunk = values[(i):(i+500)]
+            i = i+1500
+            chunk = values[(i):(i+1500)]
 
     def __enviar_info_version_D(self, dictionary: dict):
         '''

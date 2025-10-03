@@ -188,13 +188,14 @@ class WorkModalitiesChart {
             const descriptionContainer = document.createElement('div');
             descriptionContainer.className = 'chart-description';
             descriptionContainer.style.marginTop = '50px'; // Increased space to prevent overlap
+            
+            // AJUSTE CLAVE: La descripción ahora refleja los datos reales de la API.
             descriptionContainer.innerHTML = `
-                This line chart illustrates the evolution of work modalities from 2020 to 2025. 
-                The data shows a significant shift after 2022 (AI Boom), marked by the red dotted line, 
-                when remote work peaked during the pandemic. Since then, hybrid work has emerged as 
-                the dominant model, combining the flexibility of remote work with the collaboration 
-                benefits of on-site presence. Traditional on-site work continues to decline as 
-                organizations embrace more flexible arrangements.
+                Este gráfico de líneas ilustra la evolución de las modalidades de trabajo de 2020 a 2025.
+                Los datos muestran un cambio dramático después de 2022 (marcado por la línea de puntos roja como el "AI Boom").
+                El trabajo remoto, que alcanzó su punto máximo en 2022, ha disminuido considerablemente desde entonces.
+                Por el contrario, el trabajo presencial (On-site) ha resurgido con fuerza, convirtiéndose en el modelo dominante.
+                El trabajo híbrido ha desaparecido casi por completo en los últimos años.
             `;
             
             // Insert after the chart-container (not inside it)
@@ -266,14 +267,30 @@ class WorkModalitiesChart {
 
     processData(rawData) {
         console.log('📊 Processing real data for work modalities...');
-        
-        // Validate and normalize data to ensure percentages sum to 100%
+    
         if (rawData && rawData.labels && rawData.datasets) {
+            // AJUSTE CLAVE: Transformar los datos de la API al formato que espera el gráfico.
+            const transformedDatasets = rawData.datasets.map(dataset => ({
+                id: dataset.label, // 'onsite', 'remote', etc.
+                label: dataset.label.charAt(0).toUpperCase() + dataset.label.slice(1), // 'Onsite', 'Remote'
+                data: dataset.data,
+                borderColor: dataset.color,
+                backgroundColor: `${dataset.color}1A`, // Añadir transparencia para el fondo
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: dataset.color,
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                fill: false
+            }));
+    
             this.processedData = {
                 labels: rawData.labels,
-                datasets: this.normalizeDatasets(rawData.datasets)
+                datasets: this.normalizeDatasets(transformedDatasets)
             };
-            console.log('✅ Data processed and normalized');
+            console.log('✅ Data processed, transformed, and normalized');
         } else {
             console.warn('⚠️ Invalid data structure, using sample data');
             this.loadSampleData();
@@ -299,7 +316,7 @@ class WorkModalitiesChart {
                 }
             });
             
-            // If sum is not 100%, normalize the values
+            // If sum is not 100% (e.g., 99.0 due to rounding), normalize the values
             if (sum !== 100 && sum > 0) {
                 const factor = 100 / sum;
                 datasets.forEach(dataset => {
@@ -308,7 +325,7 @@ class WorkModalitiesChart {
                     }
                 });
                 
-                console.log(`📊 Year ${i}: Normalized from ${sum.toFixed(2)}% to 100%`);
+                console.log(`📊 Year index ${i}: Normalized from ${sum.toFixed(2)}% to 100%`);
             }
         }
         

@@ -31,23 +31,23 @@ services:
   
 
   # =============== Servicios Privados ===============
-  gen_visualization:
-    build:
-      context: ./Generator
-    container_name: gen_visualization
-    env_file:
-      - .env
-    networks:
-      - visualization_net
+  # gen_visualization:
+  #   build:
+  #     context: ./Generator
+  #   container_name: gen_visualization
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - visualization_net
 
-  inyector_visualization:
-    build:
-      context: ./Inyector
-    container_name: inyector_visualization
-    env_file:
-      - .env
-    networks:
-      - visualization_net
+  # inyector_visualization:
+  #   build:
+  #     context: ./Inyector
+  #   container_name: inyector_visualization
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - visualization_net
 
   mongo_visualization:
     image: mongo:6.0

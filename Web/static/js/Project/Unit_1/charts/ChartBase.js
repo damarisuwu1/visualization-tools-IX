@@ -41,7 +41,7 @@ class ChartBase {
 
     // Get base configuration adapted to theme
     getBaseOptions() {
-        const themeConfig = ChartConfig ? ChartConfig.getThemeAwareConfig('base') : this.defaultOptions;
+        const themeConfig = window.ChartConfig ? window.ChartConfig.getThemeAwareConfig('base') : this.defaultOptions;
         
         return {
             ...this.defaultOptions,
@@ -64,7 +64,11 @@ class ChartBase {
     // Format tooltip labels (can be overridden)
     formatTooltipLabel(context) {
         const value = context.parsed.y || context.parsed;
-        return `${context.dataset.label}: ${ChartConfig?.formatCurrency(value) || '$' + value}`;
+        // Use window.ChartConfig to access globally
+        if (window.ChartConfig && typeof window.ChartConfig.formatCurrency === 'function') {
+            return `${context.dataset.label}: ${window.ChartConfig.formatCurrency(value)}`;
+        }
+        return `${context.dataset.label}: $${value.toLocaleString()}`;
     }
 
     // Get color palette from current theme
@@ -74,8 +78,8 @@ class ChartBase {
 
     // Get color palette (main method)
     getChartColorPalette() {
-        if (DashboardConfig && typeof DashboardConfig.getChartColorPalette === 'function') {
-            return DashboardConfig.getChartColorPalette();
+        if (window.DashboardConfig && typeof window.DashboardConfig.getChartColorPalette === 'function') {
+            return window.DashboardConfig.getChartColorPalette();
         }
         
         return [
