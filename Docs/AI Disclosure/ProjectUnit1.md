@@ -1257,7 +1257,7 @@ visualization-tools-IX/
 - [Ariel Buenfil](https://github.com/areo-17) - Data Injection & ETL Pipelines
 - [Damaris Dzul](https://github.com/damarisuwu1) - Data Analysis & Documentation
 - [Diego Monroy](https://github.com/monroyminerodiego) - Project Management & Architecture
-- [Paulina Chiquete](https://github.com/pauchiquete) -  & Testing
+- [Paulina Chiquete](https://github.com/pauchiquete) -  Testing
 - [Sergio Barrera](https://github.com/S3RG10-B4RR3R4) - Web Development & UI/UX
 
 **Academic Supervisor:** [Jorge Javier Pedrozo Romero]  
