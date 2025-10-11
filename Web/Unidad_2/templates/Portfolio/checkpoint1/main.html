@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkpoint 1 - Statistical Foundations</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/themes.css">
+    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/main.css">
+    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/components.css">
+    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/charts.css">
+    
+    <!-- Chart.js (for future charts) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Tabler Icons -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" as="style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <!-- Back button -->
+            <button class="back-to-portfolio-btn" onclick="goToPortfolio()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Back to Portfolio</span>
+            </button>
+
+            <!-- Theme toggle button -->
+            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
+                <span class="theme-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="theme-text">Light Mode</span>
+            </button>
+
+            <div class="header-content">
+                <div class="checkpoint-badge">
+                    <span class="badge-number">01</span>
+                    <span class="badge-text">Checkpoint</span>
+                </div>
+                <h1>Statistical Foundations</h1>
+                <p class="subtitle">Exploration of statistical methods applied to data visualization</p>
+                
+                <!-- Checkpoint metadata -->
+                <div class="checkpoint-meta">
+                    <div class="meta-item">
+                        <i class="ti ti-calendar-check"></i>
+                        <span>Completed: Oct 15, 2024</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="ti ti-book"></i>
+                        <span>8 exercises</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="ti ti-clock"></i>
+                        <span>2 weeks duration</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <!-- Main navigation tabs -->
+            <div class="main-tabs-wrapper">
+                <div class="main-tabs">
+                    <button class="main-tab active" data-section="overview">
+                        <i class="ti ti-layout-dashboard"></i>
+                        Overview
+                    </button>
+                    <button class="main-tab" data-section="exercises">
+                        <i class="ti ti-code"></i>
+                        Exercises
+                    </button>
+                    <button class="main-tab" data-section="reflections">
+                        <i class="ti ti-bulb"></i>
+                        Reflections
+                    </button>
+                    <button class="main-tab" data-section="resources">
+                        <i class="ti ti-books"></i>
+                        Resources
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sections container -->
+            <div class="sections-container">
+                <!-- Overview Section -->
+                <section id="overview-section" class="content-section active">
+                    <div class="section-header">
+                        <h2>Checkpoint Overview</h2>
+                        <p>Complete summary of learning objectives and achievements</p>
+                    </div>
+
+                    <div class="cards-grid">
+                        <!-- Learning objectives card -->
+                        <div class="info-card">
+                            <div class="card-icon">
+                                <i class="ti ti-target"></i>
+                            </div>
+                            <h3>Learning Objectives</h3>
+                            <ul class="objectives-list">
+                                <li>Understand fundamental statistical concepts</li>
+                                <li>Apply descriptive statistics to datasets</li>
+                                <li>Analyze data distributions and patterns</li>
+                                <li>Perform correlation analysis</li>
+                                <li>Conduct basic hypothesis testing</li>
+                            </ul>
+                        </div>
+
+                        <!-- Topics covered card -->
+                        <div class="info-card">
+                            <div class="card-icon">
+                                <i class="ti ti-book-2"></i>
+                            </div>
+                            <h3>Topics Covered</h3>
+                            <div class="topics-tags">
+                                <span class="topic-tag">Descriptive Statistics</span>
+                                <span class="topic-tag">Data Distributions</span>
+                                <span class="topic-tag">Correlation Analysis</span>
+                                <span class="topic-tag">Hypothesis Testing</span>
+                                <span class="topic-tag">Statistical Inference</span>
+                                <span class="topic-tag">Data Visualization</span>
+                            </div>
+                        </div>
+
+                        <!-- Key achievements card -->
+                        <div class="info-card">
+                            <div class="card-icon">
+                                <i class="ti ti-trophy"></i>
+                            </div>
+                            <h3>Key Achievements</h3>
+                            <ul class="achievements-list">
+                                <li>✅ Completed all 8 exercises</li>
+                                <li>✅ Created 12 statistical visualizations</li>
+                                <li>✅ Analyzed 3 real-world datasets</li>
+                                <li>✅ Documented findings in detail</li>
+                            </ul>
+                        </div>
+
+                        <!-- Progress statistics card -->
+                        <div class="info-card stats-card">
+                            <div class="card-icon">
+                                <i class="ti ti-chart-bar"></i>
+                            </div>
+                            <h3>Progress Statistics</h3>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-value">100%</span>
+                                    <span class="stat-label">Completion</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">8/8</span>
+                                    <span class="stat-label">Exercises</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">45h</span>
+                                    <span class="stat-label">Time Invested</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">95%</span>
+                                    <span class="stat-label">Avg Score</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercises Section -->
+                <section id="exercises-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Practical Exercises</h2>
+                        <p>Hands-on practice and implementation</p>
+                    </div>
+
+                    <div class="exercises-list">
+                        <!-- Exercise items will be loaded dynamically -->
+                        <div class="exercise-placeholder">
+                            <i class="ti ti-loader" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
+                            <p>Exercise content will be loaded here...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reflections Section -->
+                <section id="reflections-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Learning Reflections</h2>
+                        <p>Critical analysis and personal insights</p>
+                    </div>
+
+                    <div class="reflections-container">
+                        <div class="reflection-placeholder">
+                            <i class="ti ti-message-circle" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
+                            <p>Reflection content will be loaded here...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resources Section -->
+                <section id="resources-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Learning Resources</h2>
+                        <p>Materials and references consulted</p>
+                    </div>
+
+                    <div class="resources-grid">
+                        <div class="resource-placeholder">
+                            <i class="ti ti-book-upload" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
+                            <p>Resource content will be loaded here...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                Checkpoint 1 - Statistical Foundations - 
+                <span id="current-year"></span> - 
+                Portfolio Unit 2
+            </p>
+        </footer>
+    </div>
+
+    <!-- Configuration Scripts -->
+    <script src="/unidad2/portafolio/static/js/checkpoint1/config/dashboardConfig.js"></script>
+    
+    <!-- Utility Scripts -->
+    <script src="/unidad2/portafolio/static/js/checkpoint1/utils/themeManager.js"></script>
+    <script src="/unidad2/portafolio/static/js/checkpoint1/utils/tabManager.js"></script>
+    
+    <!-- Main Script -->
+    <script src="/unidad2/portafolio/static/js/checkpoint1/main.js"></script>
+
+    <!-- Initialization Script -->
+    <script>
+        // Function to go back to portfolio
+        function goToPortfolio() {
+            window.location.href = '/portafolio/unidad2';
+        }
+
+        // Update current year
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+
+        // Global error handling
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+        });
+    </script>
+</body>
+</html>

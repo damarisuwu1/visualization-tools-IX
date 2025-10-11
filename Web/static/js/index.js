@@ -6,41 +6,22 @@
 // Route configuration (read from HTML)
 let routeConfig = {};
 
-// Units data (Only Unit 1 active)
+// Units data (Unit 1 and Unit 2 active)
 const unitsData = [
     {
         number: 1,
         title: "Visualization Fundamentals",
-        description: "Introduction to basic concepts of data visualization and fundamental tools for effective visual analysis."
-    }
-    // Other units commented to show only Unit 1
-    /*
+        description: "Introduction to basic concepts of data visualization and fundamental tools for effective visual analysis.",
+        projectEnabled: true,
+        portfolioEnabled: true
+    },
     {
         number: 2,
         title: "Statistical Analysis",
-        description: "Statistical methods applied to visualization and analysis of complex datasets."
-    },
-    {
-        number: 3,
-        title: "Interactive Visualization", 
-        description: "Creating interactive dashboards and dynamic visualizations with modern web technologies."
-    },
-    {
-        number: 4,
-        title: "Visual Machine Learning",
-        description: "Application of machine learning algorithms with emphasis on visual interpretation."
-    },
-    {
-        number: 5,
-        title: "Big Data Analytics",
-        description: "Processing and visualization of large data volumes using specialized tools."
-    },
-    {
-        number: 6,
-        title: "Final Project",
-        description: "Integration of all knowledge in a comprehensive analysis and visualization project."
+        description: "Statistical methods applied to visualization and analysis of complex datasets.",
+        projectEnabled: false,  // Project deshabilitado temporalmente
+        portfolioEnabled: true
     }
-    */
 ];
 
 // DOM elements
@@ -80,7 +61,6 @@ function loadRouteConfig() {
     const routeConfigElement = document.getElementById('route-config');
     if (routeConfigElement) {
         routeConfig = {
-            // Since we only have Unit 1, use specific routes
             projectBase: routeConfigElement.dataset.projectBase,
             portfolioBase: routeConfigElement.dataset.portfolioBase
         };
@@ -96,12 +76,11 @@ function initializeNavigationErrorHandling() {
     // Handle browser back/forward navigation
     window.addEventListener('popstate', function(event) {
         if (isNavigating) {
-            // Reset navigation state if user goes back
             resetNavigationState();
         }
     });
     
-    // Handle page visibility change (when user comes back from another tab)
+    // Handle page visibility change
     document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible' && isNavigating) {
             resetNavigationState();
@@ -143,9 +122,6 @@ function generateUnits() {
 
 /**
  * Create an individual unit card
- * @param {Object} unit - Unit data
- * @param {number} index - Index for staggered animation
- * @returns {HTMLElement} - Card element
  */
 function createUnitCard(unit, index) {
     const card = document.createElement('div');
@@ -177,8 +153,7 @@ function createUnitCard(unit, index) {
 }
 
 /**
- * Navigate to project using HTML route configuration
- * @param {number} unitNumber - Unit number
+ * Navigate to project - FIXED to use unit number correctly
  */
 function navigateToProject(unitNumber) {
     if (isNavigating) {
@@ -186,19 +161,16 @@ function navigateToProject(unitNumber) {
         return;
     }
     
-    const url = routeConfig.projectBase;
+    // Construct the correct URL using the unit number
+    const url = `/project/unit${unitNumber}`;
     
-    if (!url) {
-        console.error('Project URL not configured');
-        showErrorMessage('Navigation error: Project URL not found');
-        return;
-    }
+    console.log(`Navigating to project unit ${unitNumber}:`, url);
     
     // Set navigation state
     isNavigating = true;
     
     // Show visual feedback before navigation
-    showNavigationFeedback('Loading project...');
+    showNavigationFeedback(`Loading project Unit ${unitNumber}...`);
     
     // Set timeout for navigation
     navigationTimeout = setTimeout(() => {
@@ -213,8 +185,7 @@ function navigateToProject(unitNumber) {
 }
 
 /**
- * Navigate to portfolio using HTML route configuration
- * @param {number} unitNumber - Unit number
+ * Navigate to portfolio - FIXED to use unit number correctly
  */
 function navigateToPortfolio(unitNumber) {
     if (isNavigating) {
@@ -222,19 +193,16 @@ function navigateToPortfolio(unitNumber) {
         return;
     }
     
-    const url = routeConfig.portfolioBase;
+    // Construct the correct URL using the unit number
+    const url = `/portfolio/unit${unitNumber}`;
     
-    if (!url) {
-        console.error('Portfolio URL not configured');
-        showErrorMessage('Navigation error: Portfolio URL not found');
-        return;
-    }
+    console.log(`Navigating to portfolio unit ${unitNumber}:`, url);
     
     // Set navigation state
     isNavigating = true;
     
     // Show visual feedback before navigation
-    showNavigationFeedback('Loading portfolio...');
+    showNavigationFeedback(`Loading portfolio Unit ${unitNumber}...`);
     
     // Set timeout for navigation
     navigationTimeout = setTimeout(() => {
@@ -250,7 +218,6 @@ function navigateToPortfolio(unitNumber) {
 
 /**
  * Show visual feedback during navigation
- * @param {string} message - Message to display
  */
 function showNavigationFeedback(message) {
     // Remove any existing overlays
@@ -293,7 +260,6 @@ function showNavigationFeedback(message) {
 
 /**
  * Show error message
- * @param {string} message - Error message to display
  */
 function showErrorMessage(message) {
     const errorOverlay = document.createElement('div');
@@ -342,86 +308,6 @@ function showErrorMessage(message) {
 }
 
 /**
- * Legacy function to open modal (maintains compatibility)
- * @param {string} type - Modal type (project/portfolio)
- * @param {number} unitNumber - Unit number
- */
-function openModal(type, unitNumber) {
-    const unit = unitsData.find(u => u.number === unitNumber);
-    if (!unit) return;
-    
-    modalTitle.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} - Unit ${unitNumber}`;
-    
-    if (type === 'project') {
-        modalContent.innerHTML = createProjectModalContent(unit, unitNumber);
-    } else {
-        modalContent.innerHTML = createPortfolioModalContent(unit, unitNumber);
-    }
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-/**
- * Create project modal content
- * @param {Object} unit - Unit data
- * @param {number} unitNumber - Unit number
- * @returns {string} - Content HTML
- */
-function createProjectModalContent(unit, unitNumber) {
-    return `
-        <h4>${unit.title}</h4>
-        <p><strong>Description:</strong> ${unit.description}</p>
-        <br>
-        <p>This project includes:</p>
-        <ul>
-            <li>Exploratory analysis of specific data</li>
-            <li>Implementation of visualization techniques</li>
-            <li>Development of interactive graphics</li>
-            <li>Complete technical documentation</li>
-            <li>Evaluation of results and conclusions</li>
-        </ul>
-        <br>
-        <p><strong>Status:</strong> <span style="color: var(--accent-teal); font-weight: 600;">Available</span></p>
-        <br>
-        <button onclick="navigateToProject(${unitNumber}); closeModal();">
-            <i class="ti ti-arrow-right" style="margin-right: 8px;"></i>
-            Access Project
-        </button>
-    `;
-}
-
-/**
- * Create portfolio modal content
- * @param {Object} unit - Unit data
- * @param {number} unitNumber - Unit number
- * @returns {string} - Content HTML
- */
-function createPortfolioModalContent(unit, unitNumber) {
-    return `
-        <h4>${unit.title}</h4>
-        <p><strong>Description:</strong> ${unit.description}</p>
-        <br>
-        <p>The portfolio contains:</p>
-        <ul>
-            <li>Practical exercises developed</li>
-            <li>Reflections and critical analysis</li>
-            <li>Additional resources consulted</li>
-            <li>Progress self-assessment</li>
-            <li>Learning evidence</li>
-        </ul>
-        <br>
-        <p><strong>Status:</strong> <span style="color: var(--blue-primary); font-weight: 600;">In development</span></p>
-        <br>
-        <button onclick="navigateToPortfolio(${unitNumber}); closeModal();" 
-                style="background: linear-gradient(135deg, var(--accent-teal), var(--accent-indigo));">
-            <i class="ti ti-folder-open" style="margin-right: 8px;"></i>
-            View Portfolio
-        </button>
-    `;
-}
-
-/**
  * Close modal
  */
 function closeModal() {
@@ -433,13 +319,8 @@ function closeModal() {
  * Initialize animations and visual effects
  */
 function initializeAnimations() {
-    // Progressive entrance animation for cards
     animateOnScroll();
-    
-    // Subtle mouse parallax effect
     initializeMouseEffects();
-    
-    // Initialize dynamic glassmorphism effects
     initializeGlassmorphismEffects();
 }
 
@@ -459,27 +340,23 @@ function initializeMouseEffects() {
                 const xPercent = (x / rect.width) * 100;
                 const yPercent = (y / rect.height) * 100;
                 
-                // Subtle lighting effect
                 card.style.background = `
                     radial-gradient(circle at ${xPercent}% ${yPercent}%, 
                     rgba(37, 99, 235, 0.08) 0%, 
                     var(--glass-bg) 40%)
                 `;
                 
-                // Soft tilt effect
                 const tiltX = (yPercent - 50) / 20;
                 const tiltY = (50 - xPercent) / 20;
                 
                 card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-12px)`;
             } else {
-                // Restore original state
                 card.style.background = 'var(--glass-bg)';
                 card.style.transform = '';
             }
         });
     });
     
-    // Clear effects when mouse leaves container
     document.addEventListener('mouseleave', function() {
         const cards = document.querySelectorAll('.unit-card');
         cards.forEach(card => {
@@ -493,7 +370,6 @@ function initializeMouseEffects() {
  * Dynamic glassmorphism effects
  */
 function initializeGlassmorphismEffects() {
-    // Subtle breathing effect in header
     const headerContent = document.querySelector('.header-content');
     if (headerContent) {
         let breatheDirection = 1;
@@ -540,69 +416,6 @@ function animateOnScroll() {
     });
 }
 
-/**
- * Enhanced modal experience with advanced effects
- */
-function enhanceModalExperience() {
-    // Progressive blur effect when opening modal
-    modal.addEventListener('transitionstart', function() {
-        if (modal.classList.contains('active')) {
-            document.body.style.filter = 'blur(0px)';
-            setTimeout(() => {
-                document.body.style.filter = 'blur(2px)';
-            }, 100);
-        }
-    });
-    
-    // Restore blur when closing
-    modal.addEventListener('transitionend', function() {
-        if (!modal.classList.contains('active')) {
-            document.body.style.filter = 'none';
-        }
-    });
-}
-
-/**
- * Simulated haptic feedback for buttons (vibration on mobile)
- */
-function addHapticFeedback() {
-    const buttons = document.querySelectorAll('.btn');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Vibration on compatible devices
-            if ('vibrate' in navigator) {
-                navigator.vibrate(10);
-            }
-            
-            // Visual "pulse" effect
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 100);
-        });
-    });
-}
-
-/**
- * Performance optimization
- */
-function optimizePerformance() {
-    // Lazy loading for expensive animations
-    let animationsEnabled = true;
-    
-    // Disable animations if there are performance issues
-    if (window.performance && performance.now() > 100) {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        if (prefersReducedMotion.matches) {
-            animationsEnabled = false;
-            document.documentElement.style.setProperty('--transition', 'none');
-        }
-    }
-    
-    return animationsEnabled;
-}
-
 // Main event listeners
 closeBtn.addEventListener('click', closeModal);
 
@@ -618,21 +431,10 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Initialize additional enhancements when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Execute after units have been generated
-    setTimeout(() => {
-        enhanceModalExperience();
-        addHapticFeedback();
-        optimizePerformance();
-    }, 2000);
-});
-
 // Global error handling
 window.addEventListener('error', function(e) {
     console.warn('Error in Visualization Tools IX:', e.error);
     
-    // Silent fallback for navigation errors
     if (e.error && e.error.message.includes('navigation')) {
         showNavigationFeedback('Redirecting...');
     }
@@ -647,11 +449,9 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
         unitsData,
         navigateToProject,
         navigateToPortfolio,
-        openModal,
-        closeModal,
         resetNavigationState
     };
     
     console.log('🔧 Visualization Tools IX - Debug Mode Activated');
-    console.log('Configuration available at: window.VisualizationToolsDebug');
+    console.log('Available units:', unitsData.map(u => `Unit ${u.number}`).join(', '));
 }

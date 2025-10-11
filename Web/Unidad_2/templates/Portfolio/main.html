@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Unit 2 - Checkpoints</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    
+    <!-- CSS - Ruta corregida según app.py -->
+    <link rel="stylesheet" href="/unidad2/portafolio/css/index.css">
+    
+    <!-- Tabler Icons -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" as="style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+    <!-- Configuration for routes -->
+    <div id="route-config"
+         data-home-url="/"
+         data-checkpoint1-url="/portfolio/unit2/checkpoint1"
+         data-checkpoint2-url="/portfolio/unit2/checkpoint2"
+         data-checkpoint3-url="/portfolio/unit2/checkpoint3"
+         style="display: none;">
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <!-- Back button -->
+            <button class="back-to-home-btn" onclick="goToHome()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Back to Home</span>
+            </button>
+
+            <!-- Theme toggle button -->
+            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
+                <span class="theme-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="theme-text">Light Mode</span>
+            </button>
+
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="ti ti-notebook"></i>
+                </div>
+                <h1>Portfolio - Unit 2</h1>
+                <p class="subtitle">Statistical Analysis & Advanced Visualization</p>
+                <div class="progress-indicator">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 33%"></div>
+                    </div>
+                    <span class="progress-text">1 of 3 checkpoints completed</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="checkpoints-intro">
+                <h2>Learning Journey</h2>
+                <p>Track your progress through each checkpoint. Each section contains practical exercises, reflections, and evidence of learning.</p>
+            </div>
+
+            <div class="checkpoints-container" id="checkpointsContainer">
+                <!-- Checkpoints will be generated dynamically -->
+            </div>
+
+            <!-- Loading indicator -->
+            <div class="loading-container" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Loading checkpoints...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Portfolio Unit 2 - <span id="current-year"></span> - Visualization Tools IX</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript - Ruta corregida según app.py -->
+    <script src="/unidad2/portafolio/js/index.js"></script>
+
+    <!-- Initialization Script -->
+    <script>
+        // Update current year
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+
+        // Function to go back to home
+        function goToHome() {
+            window.location.href = '/';
+        }
+
+        // Global error handling
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+        });
+    </script>
+</body>
+</html>
