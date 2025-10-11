@@ -1,4 +1,4 @@
-# 📊 Portfolio Visualization Microservice
+# 📊 WEB Visualization Microservice
 
 ## 🎯 Microservice Objective
 
