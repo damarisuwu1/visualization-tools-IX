@@ -70,6 +70,13 @@ def unidad2_portafolio_static(filename):
     static_dir = os.path.join(os.path.dirname(__file__), 'Unidad_2', 'static', 'Portfolio')
     return send_from_directory(static_dir, filename)
 
+# =============== NUEVAS RUTAS PARA ARCHIVOS ESTÁTICOS DE CHECKPOINTS ===============
+@app.route('/unidad2/portafolio/checkpoint1/<path:filename>')
+def unidad2_portafolio_checkpoint1_static(filename):
+    """Servir archivos estáticos de Checkpoint 1 - Unidad 2"""
+    static_dir = os.path.join(os.path.dirname(__file__), 'Unidad_2', 'static', 'Portfolio', 'checkpoint1')
+    return send_from_directory(static_dir, filename)
+
 # =============== Rutas de páginas ===============
 # ===== Home =====
 @app.route('/')
@@ -119,6 +126,34 @@ def portfolio_unit2():
         app.logger.error(f"Error cargando portafolio unidad 2: {e}")
         return f"Ocurrió un error al cargar el portafolio de la unidad 2: <pre>{error}</pre>", 500
 
+# ===== Checkpoints Unit 2 =====
+@app.route('/portfolio/unit2/checkpoint1')
+def checkpoint1_unit2():
+    try:
+        return render_template('unidad2/Portfolio/checkpoint1/main.html', api_endpoint=API_ENDPOINT_UNIT2)
+    except Exception as e:
+        error = traceback.format_exc()
+        app.logger.error(f"Error cargando checkpoint 1 unidad 2: {e}")
+        return f"Ocurrió un error al cargar el checkpoint 1 de la unidad 2: <pre>{error}</pre>", 500
+
+@app.route('/portfolio/unit2/checkpoint2')
+def checkpoint2_unit2():
+    try:
+        return render_template('unidad2/Portfolio/checkpoint2/main.html', api_endpoint=API_ENDPOINT_UNIT2)
+    except Exception as e:
+        error = traceback.format_exc()
+        app.logger.error(f"Error cargando checkpoint 2 unidad 2: {e}")
+        return f"Ocurrió un error al cargar el checkpoint 2 de la unidad 2: <pre>{error}</pre>", 500
+
+@app.route('/portfolio/unit2/checkpoint3')
+def checkpoint3_unit2():
+    try:
+        return render_template('unidad2/Portfolio/checkpoint3/main.html', api_endpoint=API_ENDPOINT_UNIT2)
+    except Exception as e:
+        error = traceback.format_exc()
+        app.logger.error(f"Error cargando checkpoint 3 unidad 2: {e}")
+        return f"Ocurrió un error al cargar el checkpoint 3 de la unidad 2: <pre>{error}</pre>", 500
+
 # Ejecutar la aplicación solo si este archivo se ejecuta directamente
 if __name__ == '__main__':
     print("\n=== FLASK INICIADO CORRECTAMENTE ===")
@@ -128,6 +163,9 @@ if __name__ == '__main__':
     print("• Portafolio Unidad 1: http://127.0.0.1:502/portfolio/unit1")
     print("• Proyecto Unidad 2: http://127.0.0.1:502/project/unit2")
     print("• Portafolio Unidad 2: http://127.0.0.1:502/portfolio/unit2")
+    print("• Checkpoint 1 Unidad 2: http://127.0.0.1:502/portfolio/unit2/checkpoint1")
+    print("• Checkpoint 2 Unidad 2: http://127.0.0.1:502/portfolio/unit2/checkpoint2")
+    print("• Checkpoint 3 Unidad 2: http://127.0.0.1:502/portfolio/unit2/checkpoint3")
     print(f"• API Endpoint Unit 1: {API_ENDPOINT_UNIT1}")
     print(f"• API Endpoint Unit 2: {API_ENDPOINT_UNIT2}")
     print("\n📁 Rutas estáticas configuradas:")
@@ -135,5 +173,6 @@ if __name__ == '__main__':
     print("  • /unidad1/portafolio/")
     print("  • /unidad2/proyecto/")
     print("  • /unidad2/portafolio/")
+    print("  • /unidad2/portafolio/checkpoint1/")
     print("====================================\n")
     app.run(debug=True, host='127.0.0.1', port=502)

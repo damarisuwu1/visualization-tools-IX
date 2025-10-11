@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkpoint 1 - Statistical Foundations</title>
+    <title>Cryptocurrency Spatio-Temporal Dashboard</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     
     <!-- CSS Styles -->
-    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/themes.css">
-    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/main.css">
-    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/components.css">
-    <link rel="stylesheet" href="/unidad2/portafolio/static/CSS/Checkpoint1/charts.css">
+    <link rel="stylesheet" href="/unidad2/portafolio/css/checkpoint1/main.css">
     
-    <!-- Chart.js (for future charts) -->
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
     <!-- Tabler Icons -->
@@ -25,7 +26,6 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <!-- Back button -->
             <button class="back-to-portfolio-btn" onclick="goToPortfolio()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -33,7 +33,6 @@
                 <span>Back to Portfolio</span>
             </button>
 
-            <!-- Theme toggle button -->
             <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
                 <span class="theme-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,180 +44,220 @@
 
             <div class="header-content">
                 <div class="checkpoint-badge">
-                    <span class="badge-number">01</span>
-                    <span class="badge-text">Checkpoint</span>
+                    <span class="badge-number">
+                        <i class="ti ti-currency-bitcoin"></i>
+                    </span>
+                    <span class="badge-text">Crypto Dashboard</span>
                 </div>
-                <h1>Statistical Foundations</h1>
-                <p class="subtitle">Exploration of statistical methods applied to data visualization</p>
+                <h1>Cryptocurrency Spatio-Temporal Analysis</h1>
+                <p class="subtitle">Interactive visualization of global cryptocurrency market dynamics</p>
                 
-                <!-- Checkpoint metadata -->
                 <div class="checkpoint-meta">
                     <div class="meta-item">
-                        <i class="ti ti-calendar-check"></i>
-                        <span>Completed: Oct 15, 2024</span>
+                        <i class="ti ti-world"></i>
+                        <span>Global Coverage</span>
                     </div>
                     <div class="meta-item">
-                        <i class="ti ti-book"></i>
-                        <span>8 exercises</span>
+                        <i class="ti ti-chart-line"></i>
+                        <span>Real-time Data</span>
                     </div>
                     <div class="meta-item">
-                        <i class="ti ti-clock"></i>
-                        <span>2 weeks duration</span>
+                        <i class="ti ti-database"></i>
+                        <span id="data-count">0 Cryptocurrencies</span>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Main content -->
-        <main class="main-content">
-            <!-- Main navigation tabs -->
-            <div class="main-tabs-wrapper">
-                <div class="main-tabs">
-                    <button class="main-tab active" data-section="overview">
-                        <i class="ti ti-layout-dashboard"></i>
-                        Overview
-                    </button>
-                    <button class="main-tab" data-section="exercises">
-                        <i class="ti ti-code"></i>
-                        Exercises
-                    </button>
-                    <button class="main-tab" data-section="reflections">
-                        <i class="ti ti-bulb"></i>
-                        Reflections
-                    </button>
-                    <button class="main-tab" data-section="resources">
-                        <i class="ti ti-books"></i>
-                        Resources
-                    </button>
+        <main class="main-content dashboard-main">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="control-group">
+                    <label for="crypto-select">Select Cryptocurrency:</label>
+                    <select id="crypto-select">
+                        <option value="all">All Cryptocurrencies</option>
+                        <option value="bitcoin">Bitcoin (BTC)</option>
+                        <option value="ethereum">Ethereum (ETH)</option>
+                        <option value="ripple">Ripple (XRP)</option>
+                        <option value="litecoin">Litecoin (LTC)</option>
+                    </select>
                 </div>
+
+                <div class="control-group">
+                    <label for="time-range">Time Range:</label>
+                    <select id="time-range">
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d">Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="1y">Last Year</option>
+                    </select>
+                </div>
+
+                <button class="refresh-btn" onclick="refreshData()">
+                    <i class="ti ti-refresh"></i>
+                    Refresh Data
+                </button>
             </div>
 
             <!-- Sections container -->
-            <div class="sections-container">
-                <!-- Overview Section -->
-                <section id="overview-section" class="content-section active">
-                    <div class="section-header">
-                        <h2>Checkpoint Overview</h2>
-                        <p>Complete summary of learning objectives and achievements</p>
-                    </div>
-
-                    <div class="cards-grid">
-                        <!-- Learning objectives card -->
-                        <div class="info-card">
-                            <div class="card-icon">
-                                <i class="ti ti-target"></i>
+            <div class="dashboard-grid">
+                <!-- KPI Cards -->
+                <section class="dashboard-section full-width">
+                    <h2 class="section-title">Key Performance Indicators</h2>
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="ti ti-coin"></i>
                             </div>
-                            <h3>Learning Objectives</h3>
-                            <ul class="objectives-list">
-                                <li>Understand fundamental statistical concepts</li>
-                                <li>Apply descriptive statistics to datasets</li>
-                                <li>Analyze data distributions and patterns</li>
-                                <li>Perform correlation analysis</li>
-                                <li>Conduct basic hypothesis testing</li>
-                            </ul>
-                        </div>
-
-                        <!-- Topics covered card -->
-                        <div class="info-card">
-                            <div class="card-icon">
-                                <i class="ti ti-book-2"></i>
-                            </div>
-                            <h3>Topics Covered</h3>
-                            <div class="topics-tags">
-                                <span class="topic-tag">Descriptive Statistics</span>
-                                <span class="topic-tag">Data Distributions</span>
-                                <span class="topic-tag">Correlation Analysis</span>
-                                <span class="topic-tag">Hypothesis Testing</span>
-                                <span class="topic-tag">Statistical Inference</span>
-                                <span class="topic-tag">Data Visualization</span>
+                            <div class="kpi-content">
+                                <p class="kpi-label">Total Market Cap</p>
+                                <p class="kpi-value" id="market-cap">$2.15T</p>
+                                <p class="kpi-change positive">
+                                    <i class="ti ti-trending-up"></i>
+                                    +12.5%
+                                </p>
                             </div>
                         </div>
 
-                        <!-- Key achievements card -->
-                        <div class="info-card">
-                            <div class="card-icon">
-                                <i class="ti ti-trophy"></i>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="ti ti-chart-candle"></i>
                             </div>
-                            <h3>Key Achievements</h3>
-                            <ul class="achievements-list">
-                                <li>✅ Completed all 8 exercises</li>
-                                <li>✅ Created 12 statistical visualizations</li>
-                                <li>✅ Analyzed 3 real-world datasets</li>
-                                <li>✅ Documented findings in detail</li>
-                            </ul>
+                            <div class="kpi-content">
+                                <p class="kpi-label">24h Trading Volume</p>
+                                <p class="kpi-value" id="volume-24h">$98.2B</p>
+                                <p class="kpi-change positive">
+                                    <i class="ti ti-trending-up"></i>
+                                    +8.3%
+                                </p>
+                            </div>
                         </div>
 
-                        <!-- Progress statistics card -->
-                        <div class="info-card stats-card">
-                            <div class="card-icon">
-                                <i class="ti ti-chart-bar"></i>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="ti ti-world"></i>
                             </div>
-                            <h3>Progress Statistics</h3>
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <span class="stat-value">100%</span>
-                                    <span class="stat-label">Completion</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-value">8/8</span>
-                                    <span class="stat-label">Exercises</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-value">45h</span>
-                                    <span class="stat-label">Time Invested</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-value">95%</span>
-                                    <span class="stat-label">Avg Score</span>
-                                </div>
+                            <div class="kpi-content">
+                                <p class="kpi-label">Dominant Currency</p>
+                                <p class="kpi-value" id="dominant-currency">Bitcoin</p>
+                                <p class="kpi-change">
+                                    <i class="ti ti-info-circle"></i>
+                                    42% Market Share
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="ti ti-users"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <p class="kpi-label">Active Wallets</p>
+                                <p class="kpi-value" id="active-wallets">42.3M</p>
+                                <p class="kpi-change positive">
+                                    <i class="ti ti-trending-up"></i>
+                                    +2.1%
+                                </p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Exercises Section -->
-                <section id="exercises-section" class="content-section">
-                    <div class="section-header">
-                        <h2>Practical Exercises</h2>
-                        <p>Hands-on practice and implementation</p>
+                <!-- World Map -->
+                <section class="dashboard-section full-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-world"></i>
+                        Global Cryptocurrency Distribution
+                    </h2>
+                    <div id="world-map-container" class="map-container">
+                        <svg id="world-map"></svg>
                     </div>
-
-                    <div class="exercises-list">
-                        <!-- Exercise items will be loaded dynamically -->
-                        <div class="exercise-placeholder">
-                            <i class="ti ti-loader" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
-                            <p>Exercise content will be loaded here...</p>
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #fee5d9;"></span>
+                            <span>Low Activity</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #fcae91;"></span>
+                            <span>Medium Activity</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #fb6a4a;"></span>
+                            <span>High Activity</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #cb181d;"></span>
+                            <span>Very High Activity</span>
                         </div>
                     </div>
                 </section>
 
-                <!-- Reflections Section -->
-                <section id="reflections-section" class="content-section">
-                    <div class="section-header">
-                        <h2>Learning Reflections</h2>
-                        <p>Critical analysis and personal insights</p>
-                    </div>
-
-                    <div class="reflections-container">
-                        <div class="reflection-placeholder">
-                            <i class="ti ti-message-circle" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
-                            <p>Reflection content will be loaded here...</p>
-                        </div>
+                <!-- Price Trend Chart -->
+                <section class="dashboard-section half-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-chart-line"></i>
+                        Price Trends (30 Days)
+                    </h2>
+                    <div class="chart-container">
+                        <canvas id="price-chart"></canvas>
                     </div>
                 </section>
 
-                <!-- Resources Section -->
-                <section id="resources-section" class="content-section">
-                    <div class="section-header">
-                        <h2>Learning Resources</h2>
-                        <p>Materials and references consulted</p>
+                <!-- Market Share Pie Chart -->
+                <section class="dashboard-section half-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-chart-pie"></i>
+                        Market Share Distribution
+                    </h2>
+                    <div class="chart-container">
+                        <canvas id="market-share-chart"></canvas>
                     </div>
+                </section>
 
-                    <div class="resources-grid">
-                        <div class="resource-placeholder">
-                            <i class="ti ti-book-upload" style="font-size: 3rem; color: var(--portfolio-primary);"></i>
-                            <p>Resource content will be loaded here...</p>
-                        </div>
+                <!-- Volume Analysis -->
+                <section class="dashboard-section half-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-chart-histogram"></i>
+                        Trading Volume by Region
+                    </h2>
+                    <div class="chart-container">
+                        <canvas id="volume-chart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Volatility Heatmap -->
+                <section class="dashboard-section half-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-flame"></i>
+                        Market Volatility
+                    </h2>
+                    <div id="volatility-heatmap" class="heatmap-container"></div>
+                </section>
+
+                <!-- Top Cryptocurrencies Table -->
+                <section class="dashboard-section full-width">
+                    <h2 class="section-title">
+                        <i class="ti ti-table"></i>
+                        Top 10 Cryptocurrencies by Market Cap
+                    </h2>
+                    <div class="table-responsive">
+                        <table id="crypto-table" class="crypto-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Name</th>
+                                    <th>Symbol</th>
+                                    <th>Price</th>
+                                    <th>Market Cap</th>
+                                    <th>24h Change</th>
+                                    <th>Volume</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crypto-table-body">
+                                <!-- Data populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>
@@ -227,42 +266,14 @@
         <!-- Footer -->
         <footer class="footer">
             <p>
-                Checkpoint 1 - Statistical Foundations - 
+                Cryptocurrency Spatio-Temporal Dashboard - 
                 <span id="current-year"></span> - 
-                Portfolio Unit 2
+                Data Updated: <span id="last-update">Just now</span>
             </p>
         </footer>
     </div>
 
-    <!-- Configuration Scripts -->
-    <script src="/unidad2/portafolio/static/js/checkpoint1/config/dashboardConfig.js"></script>
-    
-    <!-- Utility Scripts -->
-    <script src="/unidad2/portafolio/static/js/checkpoint1/utils/themeManager.js"></script>
-    <script src="/unidad2/portafolio/static/js/checkpoint1/utils/tabManager.js"></script>
-    
-    <!-- Main Script -->
-    <script src="/unidad2/portafolio/static/js/checkpoint1/main.js"></script>
-
-    <!-- Initialization Script -->
-    <script>
-        // Function to go back to portfolio
-        function goToPortfolio() {
-            window.location.href = '/portafolio/unidad2';
-        }
-
-        // Update current year
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearElement = document.getElementById('current-year');
-            if (yearElement) {
-                yearElement.textContent = new Date().getFullYear();
-            }
-        });
-
-        // Global error handling
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-        });
-    </script>
+    <!-- JavaScript Files -->
+    <script src="/unidad2/portafolio/js/checkpoint1/main.js"></script>
 </body>
 </html>
