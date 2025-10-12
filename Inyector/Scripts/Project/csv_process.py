@@ -6,7 +6,7 @@ URL_API = os.getenv('URL_API')
 
 class SQL_Process_Proyecto:
     # =============== CONSTRUCTOR ===============
-    def __init__(self, version:Literal['A','B','C','D'], table:Literal['tech_salaries']):
+    def __init__(self, version:Literal['A','B','C','D'], table:Literal['tech_salaries_v2']):
         '''
         ## Parameters
         ### version:
@@ -15,7 +15,7 @@ class SQL_Process_Proyecto:
         - ```C```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subirlo al API con una sola llamada, subiendo todo el dataframe como lista dentro del payload.
         - ```D```: Procesar el dataset como un dataframe, convertir la columna a un tipo de dato especifico, subir al API por bloques de 50 registros (por poner un ejemplo)
         ### table:
-        - ```tech_salaries```: Procesar los valores de la colección salaries.
+        - ```tech_salaries_v2```: Procesar los valores de la colección salaries.
         ## Returns
         Nothing.
         '''
@@ -40,7 +40,7 @@ class SQL_Process_Proyecto:
     def __parsear_archivo_version_A(self, dictionary: dict):
         '''
         '''
-        if self.table == "tech_salaries":
+        if self.table == "tech_salaries_v2":
             columns = ['work_year','experience_level','employment_type','job_title','salary','salary_currency','salary_in_usd','employee_residence','remote_ratio','company_location','company_size']
             data_types = [int, str, str, str, int, str, int, str, int, str, str]
             self.processed_dict = transform_types(dictionary, columns, data_types)
@@ -101,7 +101,7 @@ class SQL_Process_Proyecto:
         '''
         df = self.df_csv
         columnas = list(df.columns)
-        if self.table == "tech_salaries":
+        if self.table == "tech_salaries_v2":
             data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columnas:
                 item = data_types.pop(0)
@@ -166,7 +166,7 @@ class SQL_Process_Proyecto:
         '''
         df = self.df_csv
         columns = list(df.columns)
-        if self.table == "tech_salaries":
+        if self.table == "tech_salaries_v2":
             data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columns:
                 data_type = data_types.pop(0)
@@ -224,7 +224,7 @@ class SQL_Process_Proyecto:
         '''
         df = self.df_csv
         columns = list(df.columns)
-        if self.table == "tech_salaries":
+        if self.table == "tech_salaries_v2":
             data_types = [int, str, str, str, int, str, int, str, int, str, str]
             for column in columns:
                 data_type = data_types.pop(0)
