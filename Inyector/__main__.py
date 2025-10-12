@@ -13,6 +13,16 @@ if __name__ == "__main__":
     
     load_dotenv()
 
+    send_postgres_proyecto_A = SQL_Process_Proyecto('A', 'tech_salaries_v2')
+    send_postgres_proyecto_B = SQL_Process_Proyecto('B', 'tech_salaries_v2')
+    send_postgres_proyecto_C = SQL_Process_Proyecto('C', 'tech_salaries_v2')
+    send_postgres_proyecto_D = SQL_Process_Proyecto('D', 'tech_salaries_v2')cd v
+    send_postgres_proyecto_A.procesar()
+    send_postgres_proyecto_B.procesar()
+    send_postgres_proyecto_C.procesar()
+    send_postgres_proyecto_D.procesar()
+    print("¡Registros subidos!")
+
 # =================== INSTANCIAS PARA SUBIDA DE DATOS PARA PROYECTO  =================== #
     '''send_postgres_proyecto_A = SQL_Process_Proyecto('A', 'tech_salaries_reduced')
     send_postgres_proyecto_B = SQL_Process_Proyecto('B', 'tech_salaries_reduced')
@@ -54,15 +64,7 @@ if __name__ == "__main__":
 
 # =================== SUBIDA DE DATOS PARA PROYECTO =================== #
 
-    #send_postgres_proyecto_A = SQL_Process('A', 'tech_salaries')
-    #send_postgres_proyecto_B = SQL_Process('B', 'tech_salaries')
-    send_postgres_proyecto_D = SQL_Process_Proyecto('D', 'tech_salaries')
 
-
-    #send_postgres_proyecto_A.procesar()
-    #send_postgres_proyecto_B.procesar()
-    send_postgres_proyecto_D.procesar()
-    print("¡Registros subidos!")
 
 
 # =================== INSTANCIAS DE TODOS LOS METODOS DE DATOS PARA PROYECTO =================== #
