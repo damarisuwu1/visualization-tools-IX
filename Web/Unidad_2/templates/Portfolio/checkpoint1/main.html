@@ -17,6 +17,44 @@
     
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    
+    <style>
+        /* Additional styles for better chart proportions */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .full-width {
+            grid-column: span 12;
+        }
+        
+        .two-thirds {
+            grid-column: span 8;
+        }
+        
+        .one-third {
+            grid-column: span 4;
+        }
+        
+        .half {
+            grid-column: span 6;
+        }
+        
+        .chart-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .two-thirds, .one-third, .half {
+                grid-column: span 12;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -85,14 +123,14 @@
                     <div class="chart-header">
                         <h2 class="chart-title">
                             <i class="ti ti-world"></i>
-                            Global Engagement Map
+                            Global Cryptocurrency Engagement Map
                         </h2>
                         <div class="chart-info">
                             <i class="ti ti-info-circle"></i>
                         </div>
                     </div>
                     <p class="chart-description">
-                        Geographic distribution of engagement across major markets. Color intensity represents search volume and user interest in cryptocurrency markets.
+                        This interactive world map visualizes the geographic distribution of cryptocurrency engagement across 10 major global markets. The color intensity represents the relative search volume and user interest levels in cryptocurrency-related topics, ranging from light yellow (lower engagement) to deep purple (highest engagement). Japan demonstrates the highest engagement score at 15,000, followed by Brazil and South Korea at 11,000. The data reveals significant regional variations in cryptocurrency adoption and interest, with Asian markets showing particularly strong engagement patterns. Hover over any country to view detailed engagement metrics.
                     </p>
                     <div class="chart-container" id="world-map-chart"></div>
                 </section>
@@ -102,65 +140,65 @@
                     <div class="chart-header">
                         <h2 class="chart-title">
                             <i class="ti ti-arrows-compare"></i>
-                            Cross-Correlation Analysis
+                            Cross-Correlation Analysis: Search Interest vs Market Volatility
                         </h2>
                         <div class="chart-info">
                             <i class="ti ti-info-circle"></i>
                         </div>
                     </div>
                     <p class="chart-description">
-                        Relationship between search interest and volatility across different time lags. Positive correlations suggest interest predicts market movements.
+                        This correlation plot examines the temporal relationship between cryptocurrency search interest and market volatility across a 104-week window (-52 to +52 weeks). The analysis reveals two significant correlation peaks at -16 weeks and +20 weeks (both at 0.23), suggesting that search interest may both predict and follow market volatility events. The red dashed lines represent the 95% confidence bounds (±0.15), beyond which correlations are considered statistically significant. Notable findings include a moderate negative correlation (-0.12) at -24 weeks and negative correlation at present (0 weeks), indicating inverse relationships at specific time lags. This pattern suggests that public interest tends to spike during periods of market instability, with delayed effects observable in both directions.
                     </p>
                     <div class="chart-container" id="correlation-chart"></div>
                 </section>
 
                 <!-- Chart 3: Mexico Temporal -->
-                <section class="chart-card two-thirds">
+                <section class="chart-card full-width">
                     <div class="chart-header">
                         <h2 class="chart-title">
                             <i class="ti ti-trending-up"></i>
-                            Mexico: Interest vs BTC Price
+                            Mexico: Search Interest vs Bitcoin Price Evolution (2020-2025)
                         </h2>
                         <div class="chart-info">
                             <i class="ti ti-info-circle"></i>
                         </div>
                     </div>
                     <p class="chart-description">
-                        5-year trend showing Mexico's search interest correlation with Bitcoin price movements.
+                        This dual-axis time series chart tracks the 5-year relationship between Mexican cryptocurrency search interest (solid cyan line, 0-100 scale) and Bitcoin price movements (dashed gray line, normalized). The visualization reveals several key market cycles: the 2021 bull run peak (April-July) where interest reached 85 coinciding with price highs, followed by the 2022 crypto winter showing declining interest and prices, and the recent 2024-2025 recovery period where Bitcoin prices surged to 95 (normalized) while search interest remained relatively modest at 15-35. This divergence in late 2025 suggests that price appreciation may be driven more by institutional adoption than retail interest in the Mexican market. The data highlights how public attention correlates strongly with market peaks but tends to lag during recovery phases.
                     </p>
                     <div class="chart-container" id="temporal-chart"></div>
                 </section>
 
                 <!-- Chart 4: Scatter Plot -->
-                <section class="chart-card one-third">
+                <section class="chart-card full-width">
                     <div class="chart-header">
                         <h2 class="chart-title">
                             <i class="ti ti-chart-scatter"></i>
-                            Engagement vs Preference
+                            Engagement vs Volatility Preference by Country
                         </h2>
                         <div class="chart-info">
                             <i class="ti ti-info-circle"></i>
                         </div>
                     </div>
                     <p class="chart-description">
-                        Scatter analysis showing relationship between engagement levels and volatility preferences.
+                        This scatter plot analyzes the relationship between total engagement scores (x-axis) and volatility preference percentages (y-axis) across 10 countries. Bubble size represents relative market importance. Key insights: India (100% volatility preference, 6K engagement) and Brazil (100% preference, 11K engagement) show the highest risk tolerance, while Japan (95.5% preference, 15K engagement) demonstrates the largest market with moderate risk preference. The clustering of most countries between 97-100% preference suggests a universal appetite for high-volatility cryptocurrencies across global markets, regardless of engagement levels.
                     </p>
                     <div class="chart-container" id="scatter-chart"></div>
                 </section>
 
                 <!-- Chart 5: Volatility Comparison -->
-                <section class="chart-card one-third">
+                <section class="chart-card full-width">
                     <div class="chart-header">
                         <h2 class="chart-title">
                             <i class="ti ti-flame"></i>
-                            30-Day Volatility
+                            30-Day Rolling Volatility Comparison Across Major Cryptocurrencies
                         </h2>
                         <div class="chart-info">
                             <i class="ti ti-info-circle"></i>
                         </div>
                     </div>
                     <p class="chart-description">
-                        Current volatility comparison across major cryptocurrencies.
+                        This horizontal bar chart compares the 30-day rolling volatility (annualized standard deviation) across five major cryptocurrency assets. DOGE-USD leads with the highest volatility at 6.53%, reflecting its meme-driven, speculative nature. SOL-USD follows at 5.63%, demonstrating the characteristic volatility of newer Layer-1 platforms. ETH-USD shows 3.87% volatility, while BTC-USD exhibits the lowest volatility among non-stablecoins at 2.92%, indicating its relative maturity and institutional adoption. USDT-USD serves as the baseline with 0.04% volatility, fulfilling its function as a stable store of value. The color-coded visualization clearly illustrates the risk spectrum across different cryptocurrency classes.
                     </p>
                     <div class="chart-container" id="volatility-chart"></div>
                 </section>
