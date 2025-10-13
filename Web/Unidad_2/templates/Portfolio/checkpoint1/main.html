@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptocurrency Volatility Dashboard</title>
+    <title>Cryptocurrency Analytics Dashboard</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
@@ -43,10 +43,10 @@
                     <span class="badge-number">
                         <i class="ti ti-chart-line"></i>
                     </span>
-                    <span class="badge-text">Volatility Analysis</span>
+                    <span class="badge-text">Analytics</span>
                 </div>
-                <h1>Cryptocurrency Volatility Dashboard</h1>
-                <p class="subtitle">Advanced spatio-temporal analysis of cryptocurrency market volatility</p>
+                <h1>Cryptocurrency Analytics Dashboard</h1>
+                <p class="subtitle">Global market insights and volatility analysis</p>
                 
                 <div class="checkpoint-meta">
                     <div class="meta-item">
@@ -58,151 +58,121 @@
                         <span>Real-time Metrics</span>
                     </div>
                     <div class="meta-item">
-                        <i class="ti ti-activity"></i>
-                        <span id="data-count">5 Cryptocurrencies</span>
+                        <i class="ti ti-world"></i>
+                        <span>Global Coverage</span>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Tabs Navigation -->
-        <nav class="tabs-nav">
-            <button class="tab-btn active" data-tab="volatility">
-                <i class="ti ti-flame"></i>
-                <span>Volatility Analysis</span>
-            </button>
-            <button class="tab-btn" data-tab="markets">
-                <i class="ti ti-world"></i>
-                <span>Global Markets</span>
-            </button>
-            <button class="tab-btn" data-tab="comparison">
-                <i class="ti ti-arrows-compare"></i>
-                <span>Comparison</span>
-            </button>
-        </nav>
-
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Volatility Analysis Tab -->
-            <div class="tab-content active" id="volatility-tab">
-                <!-- Control Panel -->
-                <div class="control-panel">
-                    <div class="control-group">
-                        <label for="crypto-selector">
-                            <i class="ti ti-currency-bitcoin"></i>
-                            Select Cryptocurrency:
-                        </label>
-                        <select id="crypto-selector">
-                            <option value="BTC-USD">Bitcoin (BTC)</option>
-                            <option value="ETH-USD">Ethereum (ETH)</option>
-                            <option value="DOGE-USD">Dogecoin (DOGE)</option>
-                            <option value="SOL-USD">Solana (SOL)</option>
-                            <option value="USDT-USD">Tether (USDT)</option>
-                        </select>
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <button class="refresh-btn" onclick="refreshDashboard()">
+                    <i class="ti ti-refresh"></i>
+                    Refresh Data
+                </button>
+                <div class="control-info">
+                    <span>Last Updated: <span id="last-update">Just now</span></span>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Chart 1: World Map -->
+                <section class="chart-card full-width">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="ti ti-world"></i>
+                            Global Engagement Map
+                        </h2>
+                        <div class="chart-info">
+                            <i class="ti ti-info-circle"></i>
+                        </div>
                     </div>
-                    <button class="refresh-btn" onclick="refreshCharts()">
-                        <i class="ti ti-refresh"></i>
-                        Refresh
-                    </button>
-                </div>
+                    <p class="chart-description">
+                        Geographic distribution of engagement across major markets. Color intensity represents search volume and user interest in cryptocurrency markets.
+                    </p>
+                    <div class="chart-container" id="world-map-chart"></div>
+                </section>
 
-                <!-- Charts Grid -->
-                <div class="charts-grid">
-                    <!-- Volatility Regimes Chart -->
-                    <section class="chart-card full-width">
-                        <div class="chart-header">
-                            <h2 class="chart-title">
-                                <i class="ti ti-timeline"></i>
-                                Volatility with Regimes
-                            </h2>
-                            <div class="chart-info">
-                                <i class="ti ti-info-circle"></i>
-                            </div>
+                <!-- Chart 2: Cross-Correlation -->
+                <section class="chart-card full-width">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="ti ti-arrows-compare"></i>
+                            Cross-Correlation Analysis
+                        </h2>
+                        <div class="chart-info">
+                            <i class="ti ti-info-circle"></i>
                         </div>
-                        <p class="chart-description">
-                            This chart shows the temporal evolution of <strong>realized volatility</strong> classified into three regimes: <span class="regime-low">Low</span>, <span class="regime-medium">Medium</span>, and <span class="regime-high">High</span>. Thresholds are calculated using the 33rd and 67th percentiles, allowing identification of <strong>market stress periods</strong> and structural changes in asset behavior.
-                        </p>
-                        <div class="chart-container" id="regime-chart"></div>
-                    </section>
+                    </div>
+                    <p class="chart-description">
+                        Relationship between search interest and volatility across different time lags. Positive correlations suggest interest predicts market movements.
+                    </p>
+                    <div class="chart-container" id="correlation-chart"></div>
+                </section>
 
-                    <!-- ACF Chart -->
-                    <section class="chart-card half-width">
-                        <div class="chart-header">
-                            <h2 class="chart-title">
-                                <i class="ti ti-chart-dots"></i>
-                                Autocorrelation Function (ACF)
-                            </h2>
-                            <div class="chart-info">
-                                <i class="ti ti-info-circle"></i>
-                            </div>
+                <!-- Chart 3: Mexico Temporal -->
+                <section class="chart-card two-thirds">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="ti ti-trending-up"></i>
+                            Mexico: Interest vs BTC Price
+                        </h2>
+                        <div class="chart-info">
+                            <i class="ti ti-info-circle"></i>
                         </div>
-                        <p class="chart-description">
-                            The <strong>Autocorrelation Function (ACF)</strong> measures volatility persistence over time. Bars exceeding the gray zone (95% confidence intervals) indicate <strong>significant autocorrelation</strong>. High ACF in early lags suggests volatility clustering.
-                        </p>
-                        <div class="chart-container" id="acf-chart"></div>
-                    </section>
+                    </div>
+                    <p class="chart-description">
+                        5-year trend showing Mexico's search interest correlation with Bitcoin price movements.
+                    </p>
+                    <div class="chart-container" id="temporal-chart"></div>
+                </section>
 
-                    <!-- Returns vs Volatility Chart -->
-                    <section class="chart-card half-width">
-                        <div class="chart-header">
-                            <h2 class="chart-title">
-                                <i class="ti ti-trending-up"></i>
-                                Absolute Returns vs Rolling Volatility
-                            </h2>
-                            <div class="chart-info">
-                                <i class="ti ti-info-circle"></i>
-                            </div>
+                <!-- Chart 4: Scatter Plot -->
+                <section class="chart-card one-third">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="ti ti-chart-scatter"></i>
+                            Engagement vs Preference
+                        </h2>
+                        <div class="chart-info">
+                            <i class="ti ti-info-circle"></i>
                         </div>
-                        <p class="chart-description">
-                            This visualization overlays <strong>absolute returns</strong> (bars) with <strong>rolling volatility</strong> (red line), showing how sharp price movements relate to increases in measured volatility.
-                        </p>
-                        <div class="chart-container" id="returns-vol-chart"></div>
-                    </section>
+                    </div>
+                    <p class="chart-description">
+                        Scatter analysis showing relationship between engagement levels and volatility preferences.
+                    </p>
+                    <div class="chart-container" id="scatter-chart"></div>
+                </section>
 
-                    <!-- Scatter Chart -->
-                    <section class="chart-card full-width">
-                        <div class="chart-header">
-                            <h2 class="chart-title">
-                                <i class="ti ti-chart-scatter"></i>
-                                Volatility vs Trading Volume
-                            </h2>
-                            <div class="chart-info">
-                                <i class="ti ti-info-circle"></i>
-                            </div>
+                <!-- Chart 5: Volatility Comparison -->
+                <section class="chart-card one-third">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="ti ti-flame"></i>
+                            30-Day Volatility
+                        </h2>
+                        <div class="chart-info">
+                            <i class="ti ti-info-circle"></i>
                         </div>
-                        <p class="chart-description">
-                            The <strong>scatter plot</strong> examines the relationship between trading volume and volatility. The correlation coefficient (ρ) quantifies this relationship: positive values indicate that <strong>higher trading activity is associated with higher volatility</strong>.
-                        </p>
-                        <div class="chart-container" id="scatter-chart"></div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- Global Markets Tab (Placeholder) -->
-            <div class="tab-content" id="markets-tab">
-                <div class="placeholder-content">
-                    <i class="ti ti-world"></i>
-                    <h2>Global Markets</h2>
-                    <p>This section is under development. Stay tuned for geographic distribution analysis.</p>
-                </div>
-            </div>
-
-            <!-- Comparison Tab (Placeholder) -->
-            <div class="tab-content" id="comparison-tab">
-                <div class="placeholder-content">
-                    <i class="ti ti-arrows-compare"></i>
-                    <h2>Comparative Analysis</h2>
-                    <p>This section is under development. Stay tuned for cross-asset comparison tools.</p>
-                </div>
+                    </div>
+                    <p class="chart-description">
+                        Current volatility comparison across major cryptocurrencies.
+                    </p>
+                    <div class="chart-container" id="volatility-chart"></div>
+                </section>
             </div>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
             <p>
-                Cryptocurrency Volatility Dashboard - 
+                Cryptocurrency Analytics Dashboard - 
                 <span id="current-year"></span> - 
-                Last Updated: <span id="last-update">Just now</span>
+                Last Updated: <span id="last-update-footer">Just now</span>
             </p>
         </footer>
     </div>

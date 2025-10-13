@@ -1,8 +1,7 @@
 /* ============================================
-   CRYPTO VOLATILITY DASHBOARD - APPLE STYLE
+   ROOT VARIABLES & THEME
    ============================================ */
 
-/* Root Variables */
 :root {
     /* Primary Colors */
     --primary: #007AFF;
@@ -76,7 +75,10 @@
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* Reset */
+/* ============================================
+   RESET & GLOBAL STYLES
+   ============================================ */
+
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -86,6 +88,7 @@
 html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -98,7 +101,10 @@ body {
     transition: var(--transition);
 }
 
-/* Container */
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
 .container {
     max-width: 1600px;
     margin: 0 auto;
@@ -107,6 +113,9 @@ body {
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* ============================================
@@ -137,6 +146,15 @@ body {
     0%, 100% { transform: translate(0, 0); }
     50% { transform: translate(10%, 10%); }
 }
+
+.header-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   HEADER BUTTONS
+   ============================================ */
 
 .back-to-portfolio-btn,
 .theme-toggle-btn {
@@ -179,10 +197,9 @@ body {
     transform: translateY(0);
 }
 
-.header-content {
-    position: relative;
-    z-index: 1;
-}
+/* ============================================
+   HEADER CONTENT
+   ============================================ */
 
 .checkpoint-badge {
     display: inline-flex;
@@ -196,6 +213,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 14px;
     font-weight: 500;
+}
+
+.badge-number,
+.badge-text {
+    display: flex;
+    align-items: center;
 }
 
 .badge-number i {
@@ -239,6 +262,19 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 14px;
     font-weight: 500;
+}
+
+.meta-item i {
+    font-size: 16px;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+
+.main-content {
+    flex: 1;
+    padding: var(--spacing-xl);
 }
 
 /* ============================================
@@ -296,12 +332,8 @@ body {
 }
 
 /* ============================================
-   MAIN CONTENT
+   TAB CONTENT
    ============================================ */
-
-.main-content {
-    padding: var(--spacing-xl);
-}
 
 .tab-content {
     display: none;
@@ -382,6 +414,21 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
+.control-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.control-info span {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   REFRESH BUTTON
+   ============================================ */
+
 .refresh-btn {
     display: flex;
     align-items: center;
@@ -450,9 +497,27 @@ body {
     grid-column: 1 / -1;
 }
 
-.chart-card.half-width {
+.chart-card.two-thirds {
     grid-column: span 1;
 }
+
+.chart-card.one-third {
+    grid-column: span 1;
+}
+
+@media (min-width: 1200px) {
+    .chart-card.two-thirds {
+        grid-column: span 1;
+    }
+    
+    .chart-card.one-third {
+        grid-column: span 1;
+    }
+}
+
+/* ============================================
+   CHART HEADER
+   ============================================ */
 
 .chart-header {
     display: flex;
@@ -493,6 +558,10 @@ body {
     color: white;
 }
 
+/* ============================================
+   CHART DESCRIPTION
+   ============================================ */
+
 .chart-description {
     font-size: 14px;
     line-height: 1.6;
@@ -524,12 +593,17 @@ body {
     font-weight: 600;
 }
 
+/* ============================================
+   CHART CONTAINER
+   ============================================ */
+
 .chart-container {
     position: relative;
     min-height: 350px;
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
     padding: var(--spacing-lg);
+    overflow: auto;
 }
 
 /* ============================================
@@ -550,56 +624,13 @@ body {
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(10px);
     line-height: 1.4;
+    max-width: 250px;
 }
 
 .tooltip strong {
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
-}
-
-/* ============================================
-   PLACEHOLDER CONTENT
-   ============================================ */
-
-.placeholder-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    text-align: center;
-    color: var(--text-secondary);
-}
-
-.placeholder-content i {
-    font-size: 64px;
-    margin-bottom: var(--spacing-lg);
-    opacity: 0.3;
-}
-
-.placeholder-content h2 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-}
-
-.placeholder-content p {
-    font-size: 16px;
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-
-.footer {
-    padding: var(--spacing-lg);
-    background: var(--bg-secondary);
-    text-align: center;
-    color: var(--text-secondary);
-    border-top: 1px solid var(--border-light);
-    font-size: 14px;
 }
 
 /* ============================================
@@ -633,6 +664,20 @@ svg {
 }
 
 /* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    text-align: center;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-light);
+    font-size: 14px;
+    margin-top: auto;
+}
+
+/* ============================================
    RESPONSIVE DESIGN
    ============================================ */
 
@@ -647,6 +692,11 @@ svg {
     
     .chart-card {
         padding: var(--spacing-lg);
+    }
+    
+    .chart-card.two-thirds,
+    .chart-card.one-third {
+        grid-column: span 1 !important;
     }
     
     .control-panel {
@@ -748,6 +798,11 @@ svg {
     .chart-container {
         min-height: 250px;
     }
+    
+    .control-panel {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
 }
 
 /* ============================================
@@ -762,6 +817,7 @@ svg {
     
     .container {
         box-shadow: none;
+        border-radius: 0;
     }
     
     .back-to-portfolio-btn,
@@ -778,5 +834,7 @@ svg {
     
     .chart-card {
         page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
     }
 }
