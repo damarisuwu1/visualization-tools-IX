@@ -999,7 +999,7 @@ function drawVolatilityChart() {
 // ============================================
 
 function goToPortfolio() {
-    window.location.href = '/unidad2/portafolio';
+    window.location.href = '/portfolio/unit2';
 }
 
 // Handle window resize
