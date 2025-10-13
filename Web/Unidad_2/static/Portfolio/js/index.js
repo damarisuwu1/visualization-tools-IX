@@ -7,33 +7,33 @@
 const checkpointsData = [
     {
         number: 1,
-        title: "Statistical Foundations",
-        description: "Exploration of statistical methods applied to data visualization, including descriptive statistics, distributions, and correlation analysis.",
+        title: "Time Series Analysis",
+        description: "We studied the fundamental characteristics of time series data and their statistical properties, with Python implementation. The chapter covered core concepts for analyzing data observed over time, where adjacent observations are typically correlated.",
         status: "completed",
-        completionDate: "2024-10-15",
+        completionDate: "2024-10-13",
         exercises: 8,
-        duration: "2 weeks",
-        topics: ["Descriptive Statistics", "Data Distributions", "Correlation", "Hypothesis Testing"]
+        duration: "1 week",
+        topics: ["Spatial Visualizations", "Temporal Visualizations", "Interactive Dashboard"]
     },
     {
         number: 2,
-        title: "Advanced Visualization Techniques",
-        description: "Implementation of advanced visualization techniques including heat maps, violin plots, and interactive multi-dimensional visualizations.",
+        title: "*****",
+        description: "****",
         status: "in-progress",
         completionDate: null,
         exercises: 6,
-        duration: "2 weeks",
-        topics: ["Heat Maps", "Violin Plots", "Multi-dimensional Viz", "Interactive Charts"]
+        duration: "1 week",
+        topics: ["****"]
     },
     {
         number: 3,
-        title: "Statistical Inference & Modeling",
-        description: "Application of statistical inference techniques and predictive modeling with visual interpretation of results.",
+        title: "****",
+        description: "****",
         status: "pending",
         completionDate: null,
         exercises: 10,
-        duration: "3 weeks",
-        topics: ["Regression Analysis", "Confidence Intervals", "Predictive Models", "Model Validation"]
+        duration: "1 week",
+        topics: ["****"]
     }
 ];
 
