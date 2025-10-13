@@ -220,6 +220,10 @@ function drawAllCharts() {
 // CHART 1: WORLD MAP
 // ============================================
 
+// ============================================
+// CHART 1: WORLD MAP (Updated with TopoJSON)
+// ============================================
+
 function drawWorldMap() {
     const container = d3.select('#world-map-chart');
     container.html('');
@@ -234,7 +238,192 @@ function drawWorldMap() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
-    // Create simple country boxes (since we can't load topojson in this context)
+    // Map ISO3 codes to numeric IDs (from world-atlas)
+    const iso3ToId = {
+        'USA': 840, 'CHN': 156, 'JPN': 392, 'BRA': 76, 'DEU': 276,
+        'MEX': 484, 'IND': 356, 'KOR': 410, 'SGP': 702, 'GBR': 826
+    };
+    
+    // Create engagement map for quick lookup
+    const engagementMap = new Map();
+    worldMapData.countries.forEach(d => {
+        const numericId = iso3ToId[d.code];
+        if (numericId) {
+            engagementMap.set(numericId.toString(), d);
+        }
+    });
+    
+    // Color scale
+    const maxEngagement = d3.max(worldMapData.countries, d => d.engagement);
+    const colorScale = d3.scaleLinear()
+        .domain([0, maxEngagement])
+        .range(['#fef3c7', '#a855f7']);
+    
+    // Create projection
+    const projection = d3.geoMercator()
+        .scale(width / 6.5)
+        .translate([width / 2, height / 1.5]);
+    
+    const path = d3.geoPath().projection(projection);
+    
+    // Load and render the world map
+    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+        .then(world => {
+            const countries = topojson.feature(world, world.objects.countries);
+            
+            // Draw countries
+            svg.selectAll('path')
+                .data(countries.features)
+                .enter()
+                .append('path')
+                .attr('d', path)
+                .attr('fill', d => {
+                    const countryData = engagementMap.get(d.id);
+                    return countryData ? colorScale(countryData.engagement) : '#e5e7eb';
+                })
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 0.5)
+                .attr('class', 'country')
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    const countryData = engagementMap.get(d.id);
+                    
+                    if (countryData) {
+                        d3.select(this)
+                            .attr('stroke', '#000')
+                            .attr('stroke-width', 2);
+                        
+                        const tooltip = d3.select('#tooltip');
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${countryData.name}</strong><br/>Engagement: ${countryData.engagement.toLocaleString()}`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    }
+                })
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .attr('stroke', '#ffffff')
+                        .attr('stroke-width', 0.5);
+                    d3.select('#tooltip').style('opacity', 0);
+                });
+            
+            // Add country labels for highlighted countries
+            worldMapData.countries.forEach(country => {
+                const numericId = iso3ToId[country.code];
+                const feature = countries.features.find(f => f.id === numericId.toString());
+                
+                if (feature) {
+                    const centroid = d3.geoCentroid(feature);
+                    const projected = projection(centroid);
+                    
+                    if (projected && !isNaN(projected[0]) && !isNaN(projected[1])) {
+                        svg.append('text')
+                            .attr('x', projected[0])
+                            .attr('y', projected[1])
+                            .attr('text-anchor', 'middle')
+                            .attr('dominant-baseline', 'middle')
+                            .attr('font-weight', 'bold')
+                            .attr('font-size', '11px')
+                            .attr('fill', '#000')
+                            .attr('stroke', '#fff')
+                            .attr('stroke-width', 3)
+                            .attr('paint-order', 'stroke')
+                            .style('pointer-events', 'none')
+                            .text(country.code);
+                    }
+                }
+            });
+            
+            // Add legend
+            addLegend(svg, colorScale, width, height);
+            
+            console.log('✅ World map with TopoJSON drawn');
+        })
+        .catch(error => {
+            console.error('Error loading world map:', error);
+            // Fallback to simple visualization
+            drawSimpleWorldMap(svg, width, height);
+        });
+}
+
+// Helper function to get center of country
+function getCenterOfCountry(features, countryData) {
+    const feature = features.find(f => 
+        f.properties.name === countryData.name || 
+        f.id === countryData.code
+    );
+    
+    if (!feature) return null;
+    
+    const projection = d3.geoMercator()
+        .scale(container.node().getBoundingClientRect().width / 6.5)
+        .translate([container.node().getBoundingClientRect().width / 2, 250]);
+    
+    const centroid = d3.geoCentroid(feature);
+    return projection(centroid);
+}
+
+// Add color legend
+function addLegend(svg, colorScale, width, height) {
+    const legendWidth = 200;
+    const legendHeight = 10;
+    const legendX = width - legendWidth - 20;
+    const legendY = height - 40;
+    
+    const legend = svg.append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${legendX},${legendY})`);
+    
+    // Create gradient
+    const defs = svg.append('defs');
+    const gradient = defs.append('linearGradient')
+        .attr('id', 'legend-gradient')
+        .attr('x1', '0%')
+        .attr('x2', '100%');
+    
+    gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', '#fef3c7');
+    
+    gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', '#a855f7');
+    
+    // Draw legend rectangle
+    legend.append('rect')
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#legend-gradient)')
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1);
+    
+    // Add legend labels
+    legend.append('text')
+        .attr('x', 0)
+        .attr('y', -5)
+        .style('font-size', '10px')
+        .attr('fill', getThemeColor('--text-secondary'))
+        .text('Low');
+    
+    legend.append('text')
+        .attr('x', legendWidth)
+        .attr('y', -5)
+        .attr('text-anchor', 'end')
+        .style('font-size', '10px')
+        .attr('fill', getThemeColor('--text-secondary'))
+        .text('High');
+    
+    legend.append('text')
+        .attr('x', legendWidth / 2)
+        .attr('y', legendHeight + 15)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '10px')
+        .attr('fill', getThemeColor('--text-secondary'))
+        .text('Engagement Level');
+}
+
+// Fallback visualization if TopoJSON fails
+function drawSimpleWorldMap(svg, width, height) {
     const countryBoxes = worldMapData.countries.map((d, i) => ({
         ...d,
         x: (i % 5) * (width / 5),
@@ -287,7 +476,7 @@ function drawWorldMap() {
         })
         .text(d => d.code);
     
-    console.log('✅ World map drawn');
+    console.log('✅ Simple world map drawn (fallback)');
 }
 
 // ============================================
@@ -398,14 +587,14 @@ function drawCorrelationChart() {
 }
 
 // ============================================
-// CHART 3: MEXICO TEMPORAL
+// CHART 3: MEXICO TEMPORAL (Enhanced with Legend)
 // ============================================
 
 function drawTemporalChart() {
     const container = d3.select('#temporal-chart');
     container.html('');
     
-    const margin = { top: 20, right: 60, bottom: 60, left: 60 };
+    const margin = { top: 40, right: 80, bottom: 60, left: 60 };
     const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
     const height = 450 - margin.top - margin.bottom;
     
@@ -430,6 +619,7 @@ function drawTemporalChart() {
     // Grid
     svg.append('g')
         .attr('class', 'grid')
+        .attr('opacity', 0.1)
         .call(d3.axisLeft(y1).tickSize(-width).tickFormat(''));
     
     // Axes
@@ -446,18 +636,42 @@ function drawTemporalChart() {
         .call(d3.axisLeft(y1))
         .append('text')
         .attr('transform', 'rotate(-90)')
-        .attr('y', 0 - margin.left)
-        .attr('x', 0 - (height / 2))
+        .attr('y', -45)
+        .attr('x', -(height / 2))
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .attr('fill', getThemeColor('--text-secondary'))
-        .text('Interest (0-100)');
+        .style('font-weight', 'bold')
+        .attr('fill', '#06b6d4')
+        .text('Search Interest (0-100)');
     
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(${width},0)`)
-        .call(d3.axisRight(y2));
+        .call(d3.axisRight(y2))
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 45)
+        .attr('x', -(height / 2))
+        .attr('dy', '1em')
+        .style('text-anchor', 'middle')
+        .style('font-size', '12px')
+        .style('font-weight', 'bold')
+        .attr('fill', '#6b7280')
+        .text('BTC Price (Normalized)');
+    
+    // Area under interest line
+    const area = d3.area()
+        .x(d => x(d.date))
+        .y0(height)
+        .y1(d => y1(d.interest))
+        .curve(d3.curveMonotoneX);
+    
+    svg.append('path')
+        .datum(mexicoTemporalData)
+        .attr('fill', '#06b6d4')
+        .attr('fill-opacity', 0.2)
+        .attr('d', area);
     
     // Line - Interest
     const line1 = d3.line()
@@ -482,11 +696,127 @@ function drawTemporalChart() {
         .datum(mexicoTemporalData)
         .attr('fill', 'none')
         .attr('stroke', '#6b7280')
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '5,5')
+        .attr('stroke-width', 2.5)
+        .attr('stroke-dasharray', '8,4')
         .attr('d', line2);
     
-    console.log('✅ Temporal chart drawn');
+    // Add data points for interest
+    svg.selectAll('.point-interest')
+        .data(mexicoTemporalData)
+        .enter()
+        .append('circle')
+        .attr('class', 'point-interest')
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y1(d.interest))
+        .attr('r', 4)
+        .attr('fill', '#06b6d4')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .on('mouseover', function(event, d) {
+            d3.select(this).attr('r', 6);
+            const tooltip = d3.select('#tooltip');
+            tooltip.style('opacity', 1)
+                .html(`<strong>${d3.timeFormat('%B %Y')(d.date)}</strong><br/>Search Interest: ${d.interest}<br/>BTC Price (Norm): ${d.btcPrice}`)
+                .style('left', (event.pageX + 10) + 'px')
+                .style('top', (event.pageY - 10) + 'px');
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('r', 4);
+            d3.select('#tooltip').style('opacity', 0);
+        });
+    
+    // Add data points for BTC price
+    svg.selectAll('.point-btc')
+        .data(mexicoTemporalData)
+        .enter()
+        .append('circle')
+        .attr('class', 'point-btc')
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y2(d.btcPrice))
+        .attr('r', 3)
+        .attr('fill', '#6b7280')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .on('mouseover', function(event, d) {
+            d3.select(this).attr('r', 5);
+            const tooltip = d3.select('#tooltip');
+            tooltip.style('opacity', 1)
+                .html(`<strong>${d3.timeFormat('%B %Y')(d.date)}</strong><br/>Search Interest: ${d.interest}<br/>BTC Price (Norm): ${d.btcPrice}`)
+                .style('left', (event.pageX + 10) + 'px')
+                .style('top', (event.pageY - 10) + 'px');
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('r', 3);
+            d3.select('#tooltip').style('opacity', 0);
+        });
+    
+    // Add legend
+    const legend = svg.append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${width - 200}, -20)`);
+    
+    // Search Interest legend item
+    const legendItem1 = legend.append('g')
+        .attr('transform', 'translate(0, 0)');
+    
+    legendItem1.append('line')
+        .attr('x1', 0)
+        .attr('x2', 30)
+        .attr('y1', 0)
+        .attr('y2', 0)
+        .attr('stroke', '#06b6d4')
+        .attr('stroke-width', 3);
+    
+    legendItem1.append('circle')
+        .attr('cx', 15)
+        .attr('cy', 0)
+        .attr('r', 4)
+        .attr('fill', '#06b6d4')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2);
+    
+    legendItem1.append('text')
+        .attr('x', 40)
+        .attr('y', 0)
+        .attr('dy', '0.35em')
+        .style('font-size', '12px')
+        .style('font-weight', '600')
+        .attr('fill', getThemeColor('--text-primary'))
+        .text('Search Interest');
+    
+    // BTC Price legend item
+    const legendItem2 = legend.append('g')
+        .attr('transform', 'translate(0, 20)');
+    
+    legendItem2.append('line')
+        .attr('x1', 0)
+        .attr('x2', 30)
+        .attr('y1', 0)
+        .attr('y2', 0)
+        .attr('stroke', '#6b7280')
+        .attr('stroke-width', 2.5)
+        .attr('stroke-dasharray', '8,4');
+    
+    legendItem2.append('circle')
+        .attr('cx', 15)
+        .attr('cy', 0)
+        .attr('r', 3)
+        .attr('fill', '#6b7280')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2);
+    
+    legendItem2.append('text')
+        .attr('x', 40)
+        .attr('y', 0)
+        .attr('dy', '0.35em')
+        .style('font-size', '12px')
+        .style('font-weight', '600')
+        .attr('fill', getThemeColor('--text-primary'))
+        .text('BTC Price');
+    
+    console.log('✅ Temporal chart with legend drawn');
 }
 
 // ============================================
