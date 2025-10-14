@@ -1,224 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptocurrency Analytics Dashboard</title>
+    <title>Crypto Analytics Dashboard</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="/unidad2/portafolio/css/checkpoint1/main.css">
-    
     <!-- D3.js -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     
-    <!-- Tabler Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    
-    <style>
-        /* Additional styles for better chart proportions */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .full-width {
-            grid-column: span 12;
-        }
-        
-        .two-thirds {
-            grid-column: span 8;
-        }
-        
-        .one-third {
-            grid-column: span 4;
-        }
-        
-        .half {
-            grid-column: span 6;
-        }
-        
-        .chart-description {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-        
-        @media (max-width: 1024px) {
-            .two-thirds, .one-third, .half {
-                grid-column: span 12;
-            }
-        }
-    </style>
+    <!-- CSS - Ruta relativa desde templates hacia static -->
+    <link rel="stylesheet" href="../../../static/Portfolio/css/checkpoint1/main.css">
 </head>
 <body>
-    <div class="container">
+    <div class="dashboard">
         <!-- Header -->
-        <header class="header">
-            <button class="back-to-portfolio-btn" onclick="goToPortfolio()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Back to Portfolio</span>
+        <div class="header">
+            <h1>📊 Cryptocurrency Analytics Dashboard</h1>
+            <p>Análisis Avanzado de Volatilidad y Engagement en Mercados Cripto</p>
+        </div>
+
+        <!-- 
+        ═══════════════════════════════════════════════════════════════════
+        SISTEMA DE PESTAÑAS (TABS)
+        ═══════════════════════════════════════════════════════════════════
+        
+        CÓMO AGREGAR UNA NUEVA PESTAÑA:
+        1. Agrega un nuevo botón aquí con:
+           - data-tab="nombre-unico" (identificador único)
+           - onclick="changeTab('nombre-unico')"
+        
+        2. Crea una sección correspondiente abajo con:
+           - id="nombre-unico" (mismo que data-tab)
+           - class="tab-content"
+        
+        3. Agrega el contenido de tus gráficas dentro de esa sección
+        
+        CÓMO ELIMINAR UNA PESTAÑA:
+        1. Elimina el botón correspondiente de aquí
+        2. Elimina la sección .tab-content correspondiente
+        3. Elimina las funciones de dibujo relacionadas en dashboard.js
+        -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="overview" onclick="changeTab('overview')">
+                🌍 Overview Global
             </button>
-
-            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
-                <span class="theme-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-                    </svg>
-                </span>
-                <span class="theme-text">Light Mode</span>
+            <button class="tab-button" data-tab="volatilidad" onclick="changeTab('volatilidad')">
+                🔥 Análisis de Volatilidad
             </button>
+            <button class="tab-button" data-tab="detalle" onclick="changeTab('detalle')">
+                📈 Detalle por Crypto
+            </button>
+        </div>
 
-            <div class="header-content">
-                <div class="checkpoint-badge">
-                    <span class="badge-number">
-                        <i class="ti ti-chart-line"></i>
-                    </span>
-                    <span class="badge-text">Analytics</span>
-                </div>
-                <h1>Cryptocurrency Analytics Dashboard</h1>
-                <p class="subtitle">Global market insights and volatility analysis</p>
-                
-                <div class="checkpoint-meta">
-                    <div class="meta-item">
-                        <i class="ti ti-database"></i>
-                        <span>5 Years Data</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="ti ti-chart-dots"></i>
-                        <span>Real-time Metrics</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="ti ti-world"></i>
-                        <span>Global Coverage</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Control Panel -->
-            <div class="control-panel">
-                <button class="refresh-btn" onclick="refreshDashboard()">
-                    <i class="ti ti-refresh"></i>
-                    Refresh Data
-                </button>
-                <div class="control-info">
-                    <span>Last Updated: <span id="last-update">Just now</span></span>
-                </div>
+        <!-- 
+        ═══════════════════════════════════════════════════════════════════
+        PESTAÑA 1: OVERVIEW GLOBAL
+        ═══════════════════════════════════════════════════════════════════
+        Esta pestaña contiene el mapa mundial de engagement
+        -->
+        <div id="overview" class="tab-content active">
+            <!-- Selector de visualización (opcional) -->
+            <div class="selector-container">
+                <label for="map-metric-selector">Métrica a visualizar:</label>
+                <select id="map-metric-selector" onchange="updateOverviewCharts()">
+                    <option value="engagement">Engagement Score</option>
+                    <option value="volatility">Volatilidad</option>
+                </select>
             </div>
 
-            <!-- Charts Grid -->
-            <div class="charts-grid">
-                <!-- Chart 1: World Map -->
-                <section class="chart-card full-width">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="ti ti-world"></i>
-                            Global Cryptocurrency Engagement Map
-                        </h2>
-                        <div class="chart-info">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                    </div>
-                    <p class="chart-description">
-                        This interactive world map visualizes the geographic distribution of cryptocurrency engagement across 10 major global markets. The color intensity represents the relative search volume and user interest levels in cryptocurrency-related topics, ranging from light yellow (lower engagement) to deep purple (highest engagement). Japan demonstrates the highest engagement score at 15,000, followed by Brazil and South Korea at 11,000. The data reveals significant regional variations in cryptocurrency adoption and interest, with Asian markets showing particularly strong engagement patterns. Hover over any country to view detailed engagement metrics.
-                    </p>
-                    <div class="chart-container" id="world-map-chart"></div>
-                </section>
-
-                <!-- Chart 2: Cross-Correlation -->
-                <section class="chart-card full-width">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="ti ti-arrows-compare"></i>
-                            Cross-Correlation Analysis: Search Interest vs Market Volatility
-                        </h2>
-                        <div class="chart-info">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                    </div>
-                    <p class="chart-description">
-                        This correlation plot examines the temporal relationship between cryptocurrency search interest and market volatility across a 104-week window (-52 to +52 weeks). The analysis reveals two significant correlation peaks at -16 weeks and +20 weeks (both at 0.23), suggesting that search interest may both predict and follow market volatility events. The red dashed lines represent the 95% confidence bounds (±0.15), beyond which correlations are considered statistically significant. Notable findings include a moderate negative correlation (-0.12) at -24 weeks and negative correlation at present (0 weeks), indicating inverse relationships at specific time lags. This pattern suggests that public interest tends to spike during periods of market instability, with delayed effects observable in both directions.
-                    </p>
-                    <div class="chart-container" id="correlation-chart"></div>
-                </section>
-
-                <!-- Chart 3: Mexico Temporal -->
-                <section class="chart-card full-width">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="ti ti-trending-up"></i>
-                            Mexico: Search Interest vs Bitcoin Price Evolution (2020-2025)
-                        </h2>
-                        <div class="chart-info">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                    </div>
-                    <p class="chart-description">
-                        This dual-axis time series chart tracks the 5-year relationship between Mexican cryptocurrency search interest (solid cyan line, 0-100 scale) and Bitcoin price movements (dashed gray line, normalized). The visualization reveals several key market cycles: the 2021 bull run peak (April-July) where interest reached 85 coinciding with price highs, followed by the 2022 crypto winter showing declining interest and prices, and the recent 2024-2025 recovery period where Bitcoin prices surged to 95 (normalized) while search interest remained relatively modest at 15-35. This divergence in late 2025 suggests that price appreciation may be driven more by institutional adoption than retail interest in the Mexican market. The data highlights how public attention correlates strongly with market peaks but tends to lag during recovery phases.
-                    </p>
-                    <div class="chart-container" id="temporal-chart"></div>
-                </section>
-
-                <!-- Chart 4: Scatter Plot -->
-                <section class="chart-card full-width">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="ti ti-chart-scatter"></i>
-                            Engagement vs Volatility Preference by Country
-                        </h2>
-                        <div class="chart-info">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                    </div>
-                    <p class="chart-description">
-                        This scatter plot analyzes the relationship between total engagement scores (x-axis) and volatility preference percentages (y-axis) across 10 countries. Bubble size represents relative market importance. Key insights: India (100% volatility preference, 6K engagement) and Brazil (100% preference, 11K engagement) show the highest risk tolerance, while Japan (95.5% preference, 15K engagement) demonstrates the largest market with moderate risk preference. The clustering of most countries between 97-100% preference suggests a universal appetite for high-volatility cryptocurrencies across global markets, regardless of engagement levels.
-                    </p>
-                    <div class="chart-container" id="scatter-chart"></div>
-                </section>
-
-                <!-- Chart 5: Volatility Comparison -->
-                <section class="chart-card full-width">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="ti ti-flame"></i>
-                            30-Day Rolling Volatility Comparison Across Major Cryptocurrencies
-                        </h2>
-                        <div class="chart-info">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                    </div>
-                    <p class="chart-description">
-                        This horizontal bar chart compares the 30-day rolling volatility (annualized standard deviation) across five major cryptocurrency assets. DOGE-USD leads with the highest volatility at 6.53%, reflecting its meme-driven, speculative nature. SOL-USD follows at 5.63%, demonstrating the characteristic volatility of newer Layer-1 platforms. ETH-USD shows 3.87% volatility, while BTC-USD exhibits the lowest volatility among non-stablecoins at 2.92%, indicating its relative maturity and institutional adoption. USDT-USD serves as the baseline with 0.04% volatility, fulfilling its function as a stable store of value. The color-coded visualization clearly illustrates the risk spectrum across different cryptocurrency classes.
-                    </p>
-                    <div class="chart-container" id="volatility-chart"></div>
-                </section>
+            <!-- Contenedor para el mapa mundial -->
+            <div class="chart-container">
+                <div class="chart-title">Mapa de Engagement Global</div>
+                <div class="chart-description">
+                    Este mapa interactivo visualiza la <strong>distribución geográfica</strong> del engagement 
+                    con criptomonedas a nivel mundial. La intensidad del color representa el nivel de interés 
+                    relativo en cada país. <strong>Japón</strong> lidera con 15,000 puntos de engagement, 
+                    seguido por Brasil y Corea del Sur. Pasa el cursor sobre cada país para ver métricas detalladas.
+                </div>
+                <div id="world-map-chart"></div>
             </div>
-        </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>
-                Cryptocurrency Analytics Dashboard - 
-                <span id="current-year"></span> - 
-                Last Updated: <span id="last-update-footer">Just now</span>
-            </p>
-        </footer>
+            <!-- Puedes agregar más gráficas aquí -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Top 10 Países por Engagement</div>
+                    <div class="chart-description">
+                        Ranking de los 10 países con mayor engagement en el ecosistema cripto.
+                    </div>
+                    <div id="top-countries-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Distribución Regional</div>
+                    <div class="chart-description">
+                        Análisis de la distribución del engagement por regiones continentales.
+                    </div>
+                    <div id="regional-distribution-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 
+        ═══════════════════════════════════════════════════════════════════
+        PESTAÑA 2: ANÁLISIS DE VOLATILIDAD
+        ═══════════════════════════════════════════════════════════════════
+        Contiene gráficas comparativas de volatilidad entre cryptos
+        -->
+        <div id="volatilidad" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">Comparación de Volatilidad 30 días</div>
+                <div class="chart-description">
+                    Comparación de la <strong>volatilidad rolling de 30 días</strong> entre las principales 
+                    criptomonedas. DOGE-USD lidera con 6.53%, mientras que USDT-USD mantiene la estabilidad 
+                    esperada con 0.04%. Esta métrica es crucial para evaluar el <strong>riesgo</strong> de cada activo.
+                </div>
+                <div id="volatility-comparison-chart"></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Cross-Correlation Analysis</div>
+                    <div class="chart-description">
+                        Análisis de <strong>correlación cruzada</strong> entre interés de búsqueda y volatilidad 
+                        del mercado en una ventana de ±52 semanas. Picos significativos en -16 y +20 semanas 
+                        sugieren que el interés público predice y sigue eventos de volatilidad.
+                    </div>
+                    <div id="correlation-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Scatter: Engagement vs Volatilidad</div>
+                    <div class="chart-description">
+                        Relación entre <strong>engagement total</strong> y <strong>preferencia por volatilidad</strong> 
+                        por país. El tamaño de las burbujas representa la importancia relativa del mercado.
+                    </div>
+                    <div id="scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 
+        ═══════════════════════════════════════════════════════════════════
+        PESTAÑA 3: DETALLE POR CRIPTOMONEDA
+        ═══════════════════════════════════════════════════════════════════
+        Análisis detallado por criptomoneda seleccionada
+        -->
+        <div id="detalle" class="tab-content">
+            <!-- 
+            SELECTOR DE CRIPTOMONEDA
+            - Permite cambiar entre diferentes cryptos
+            - Para agregar una nueva: añade un <option> con value="SYMBOL-USD"
+            - Asegúrate de tener datos para esa crypto en dashboard.js
+            -->
+            <div class="selector-container">
+                <label for="crypto-selector">Seleccionar Criptomoneda:</label>
+                <select id="crypto-selector" onchange="updateDetailCharts()">
+                    <option value="BTC-USD">Bitcoin (BTC)</option>
+                    <option value="ETH-USD">Ethereum (ETH)</option>
+                    <option value="DOGE-USD">Dogecoin (DOGE)</option>
+                    <option value="SOL-USD">Solana (SOL)</option>
+                    <option value="USDT-USD">Tether (USDT)</option>
+                </select>
+            </div>
+
+            <!-- 
+            GRID DE GRÁFICAS
+            - Usa .chart-grid para layout automático
+            - Cada .chart-container es una gráfica independiente
+            
+            PARA AGREGAR UNA NUEVA GRÁFICA:
+            1. Copia uno de estos bloques .chart-container
+            2. Cambia el ID del div interno (ej: id="mi-nueva-grafica")
+            3. Actualiza título y descripción
+            4. Crea la función drawMiNuevaGrafica() en dashboard.js
+            5. Llámala en updateDetailCharts()
+            
+            PARA ELIMINAR UNA GRÁFICA:
+            1. Elimina el bloque .chart-container completo
+            2. Elimina la función draw correspondiente en dashboard.js
+            3. Quita la llamada de updateDetailCharts()
+            -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Volatilidad con Regímenes</div>
+                    <div class="chart-description">
+                        Evolución temporal de la <strong>volatilidad realizada</strong> clasificada en tres 
+                        regímenes: <span style="color: #28a745;">Bajo</span>, <span style="color: #ffc107;">Medio</span> 
+                        y <span style="color: #dc3545;">Alto</span>. Los umbrales se calculan usando percentiles 33 y 67.
+                    </div>
+                    <div id="regime-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">ACF de Volatilidad</div>
+                    <div class="chart-description">
+                        La <strong>Función de Autocorrelación (ACF)</strong> mide la persistencia de la volatilidad. 
+                        Barras fuera de la zona gris indican <strong>autocorrelación significativa</strong> 
+                        (clustering de volatilidad).
+                    </div>
+                    <div id="acf-chart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Returns Absolutos vs Volatilidad Rolling</div>
+                <div class="chart-description">
+                    Superposición de <strong>returns absolutos</strong> (barras) con <strong>volatilidad rolling</strong> 
+                    (línea roja). Permite identificar eventos de mercado que generaron movimientos extremos.
+                </div>
+                <div id="returns-vol-chart"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Volatilidad vs Volumen de Transacciones</div>
+                <div class="chart-description">
+                    <strong>Diagrama de dispersión</strong> que examina la relación entre volumen de trading 
+                    y volatilidad. El coeficiente ρ cuantifica esta relación. Útil para entender la 
+                    <strong>microestructura del mercado</strong>.
+                </div>
+                <div id="scatter-vol-chart"></div>
+            </div>
+
+            <!-- EJEMPLO: Cómo agregar una nueva gráfica -->
+            <!--
+            <div class="chart-container">
+                <div class="chart-title">Mi Nueva Gráfica</div>
+                <div class="chart-description">
+                    Descripción de lo que muestra esta gráfica.
+                </div>
+                <div id="mi-nueva-grafica"></div>
+            </div>
+            -->
+        </div>
+
+        <!-- 
+        ═══════════════════════════════════════════════════════════════════
+        PLANTILLA PARA NUEVA PESTAÑA
+        ═══════════════════════════════════════════════════════════════════
+        Descomenta y modifica esto para agregar una pestaña nueva:
+        
+        <div id="mi-nueva-pestana" class="tab-content">
+            <div class="selector-container">
+                <label for="mi-selector">Opciones:</label>
+                <select id="mi-selector" onchange="updateMisPestanaCharts()">
+                    <option value="opcion1">Opción 1</option>
+                    <option value="opcion2">Opción 2</option>
+                </select>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Título de Mi Gráfica</div>
+                <div class="chart-description">
+                    Descripción detallada de la gráfica.
+                </div>
+                <div id="mi-grafica-1"></div>
+            </div>
+        </div>
+        -->
     </div>
 
-    <!-- Tooltip -->
+    <!-- Tooltip global para todas las gráficas -->
     <div class="tooltip" id="tooltip"></div>
 
-    <!-- JavaScript -->
-    <script src="/unidad2/portafolio/js/checkpoint1/main.js"></script>
+    <!-- JavaScript - Ruta relativa desde templates hacia static -->
+    <script src="../../../static/Portfolio/js/checkpoint1/main.js"></script>
 </body>
 </html>
