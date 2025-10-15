@@ -1,14 +1,11 @@
 /**
  * ═══════════════════════════════════════════════════════════════════
- * CRYPTOCURRENCY ANALYTICS DASHBOARD - STYLES
+ * CRYPTOCURRENCY ANALYTICS DASHBOARD - APPLE STYLE
  * ═══════════════════════════════════════════════════════════════════
- * 
- * Este archivo contiene todos los estilos del dashboard.
- * Está organizado en secciones para fácil navegación.
  */
 
 /* ═══════════════════════════════════════════════════════════════════
-   RESET Y VARIABLES GLOBALES
+   RESET & GLOBAL VARIABLES
    ═══════════════════════════════════════════════════════════════════ */
 
 * {
@@ -18,166 +15,197 @@
 }
 
 :root {
-    /* Colores principales */
-    --primary-gradient-start: #667eea;
-    --primary-gradient-end: #764ba2;
-    --background-light: #ffffff;
-    --background-gray: #f8f9fa;
+    /* Apple Colors */
+    --apple-blue: #007AFF;
+    --apple-blue-hover: #0051D5;
+    --apple-bg: #F5F5F7;
+    --apple-white: #FFFFFF;
+    --apple-gray-light: #F9F9F9;
+    --apple-gray: #E5E5EA;
+    --apple-gray-dark: #8E8E93;
+    --apple-text: #1D1D1F;
+    --apple-text-secondary: #6E6E73;
     
-    /* Colores de texto */
-    --text-primary: #333333;
-    --text-secondary: #555555;
-    --text-muted: #666666;
+    /* Status Colors */
+    --regime-low: #34C759;
+    --regime-medium: #FF9500;
+    --regime-high: #FF3B30;
     
-    /* Colores de régimen */
-    --regime-low: #28a745;
-    --regime-medium: #ffc107;
-    --regime-high: #dc3545;
+    /* Shadows - Apple Style */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
     
-    /* Sombras */
-    --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
-    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.15);
-    --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.3);
+    /* Border Radius - Apple Style */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
     
-    /* Bordes */
-    --border-radius-small: 5px;
-    --border-radius-medium: 10px;
-    --border-radius-large: 15px;
-    --border-radius-xlarge: 20px;
-    
-    /* Transiciones */
-    --transition-fast: 0.2s ease;
-    --transition-medium: 0.3s ease;
+    /* Transitions */
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ESTILOS BASE DEL BODY Y CONTENEDORES PRINCIPALES
+   BASE STYLES
    ═══════════════════════════════════════════════════════════════════ */
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: var(--apple-bg);
+    color: var(--apple-text);
     padding: 20px;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .dashboard {
     max-width: 1400px;
     margin: 0 auto;
-    background: var(--background-light);
-    border-radius: var(--border-radius-xlarge);
-    box-shadow: var(--shadow-heavy);
+    background: var(--apple-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
     overflow: hidden;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   BACK BUTTON - Inside Header
+   ═══════════════════════════════════════════════════════════════════ */
+
+.back-button {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: white;
+    transition: all var(--transition);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 16px;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.back-button:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.back-button i {
+    font-size: 18px;
+}
 /* ═══════════════════════════════════════════════════════════════════
    HEADER
    ═══════════════════════════════════════════════════════════════════ */
 
 .header {
-    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    background: linear-gradient(135deg, var(--apple-blue) 0%, #0051D5 100%);
     color: white;
-    padding: 40px 30px;
+    padding: 48px 30px;
     text-align: center;
 }
 
 .header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 2.8em;
+    margin-bottom: 8px;
     font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .header p {
     font-size: 1.1em;
-    opacity: 0.95;
-    font-weight: 300;
-    letter-spacing: 0.5px;
+    opacity: 0.9;
+    font-weight: 400;
+    letter-spacing: 0.3px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SISTEMA DE PESTAÑAS (TABS)
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES:
-   - Cada pestaña es un .tab-button
-   - La pestaña activa tiene la clase .active
-   - Los estilos se ajustan automáticamente al contenido
+   TABS - Apple Style
    ═══════════════════════════════════════════════════════════════════ */
 
 .tabs {
     display: flex;
-    background: var(--background-gray);
-    border-bottom: 2px solid #e0e0e0;
+    background: var(--apple-gray-light);
+    border-bottom: 1px solid var(--apple-gray);
     padding: 0;
-    flex-wrap: wrap; /* Permite que las pestañas se ajusten en pantallas pequeñas */
+    flex-wrap: wrap;
 }
 
 .tab-button {
     flex: 1;
-    padding: 18px 24px;
+    padding: 16px 24px;
     background: transparent;
     border: none;
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    color: var(--text-muted);
-    transition: all var(--transition-medium);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--apple-text-secondary);
+    transition: all var(--transition);
     position: relative;
-    min-width: 150px; /* Ancho mínimo para legibilidad */
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-/* Efecto hover en pestañas */
+.tab-button i {
+    font-size: 18px;
+}
+
 .tab-button:hover {
-    background: rgba(102, 126, 234, 0.05);
-    color: var(--primary-gradient-start);
+    background: rgba(0, 122, 255, 0.05);
+    color: var(--apple-blue);
 }
 
-/* Pestaña activa */
 .tab-button.active {
-    color: var(--primary-gradient-start);
-    border-bottom-color: var(--primary-gradient-start);
-    background: white;
+    color: var(--apple-blue);
+    background: var(--apple-white);
+    border-bottom-color: var(--apple-blue);
 }
 
-/* Indicador visual de pestaña activa */
 .tab-button.active::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -1px;
     left: 0;
     right: 0;
-    height: 3px;
-    background: var(--primary-gradient-start);
+    height: 2px;
+    background: var(--apple-blue);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   CONTENIDO DE PESTAÑAS
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES:
-   - Por defecto, todas las pestañas están ocultas (display: none)
-   - Solo la pestaña con clase .active se muestra
-   - Esto se controla con JavaScript en changeTab()
+   TAB CONTENT
    ═══════════════════════════════════════════════════════════════════ */
 
 .tab-content {
-    display: none; /* Oculto por defecto */
+    display: none;
     padding: 30px;
-    animation: fadeIn 0.3s ease-in;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tab-content.active {
-    display: block; /* Solo la pestaña activa se muestra */
+    display: block;
 }
 
-/* Animación de aparición */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -186,75 +214,63 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   CONTENEDORES DE GRÁFICAS
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES PARA AGREGAR/MODIFICAR GRÁFICAS:
-   
-   1. Para una gráfica de ancho completo:
-      <div class="chart-container">...</div>
-   
-   2. Para gráficas en grid (2 columnas):
-      <div class="chart-grid">
-          <div class="chart-container">Gráfica 1</div>
-          <div class="chart-container">Gráfica 2</div>
-      </div>
-   
-   3. La estructura interna de cada gráfica debe ser:
-      <div class="chart-container">
-          <div class="chart-title">Título</div>
-          <div class="chart-description">Descripción</div>
-          <div id="nombre-grafica"></div>
-      </div>
+   CHART CONTAINERS
    ═══════════════════════════════════════════════════════════════════ */
 
 .chart-container {
-    background: white;
-    border-radius: var(--border-radius-large);
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: var(--shadow-light);
-    transition: box-shadow var(--transition-medium);
+    background: var(--apple-white);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--apple-gray);
+    transition: all var(--transition);
+    overflow: hidden;
 }
 
 .chart-container:hover {
-    box-shadow: var(--shadow-medium);
+    border-color: var(--apple-gray-dark);
+    box-shadow: var(--shadow-md);
 }
 
 .chart-title {
-    font-size: 1.5em;
+    font-size: 1.4em;
     font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--primary-gradient-start);
+    margin-bottom: 8px;
+    color: var(--apple-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.3px;
+}
+
+.chart-title i {
+    font-size: 22px;
+    color: var(--apple-blue);
 }
 
 .chart-description {
     font-size: 0.95em;
-    color: var(--text-secondary);
+    color: var(--apple-text-secondary);
     line-height: 1.6;
     margin-bottom: 20px;
-    padding: 15px;
-    background: var(--background-gray);
-    border-left: 4px solid var(--primary-gradient-start);
-    border-radius: var(--border-radius-small);
+    padding: 14px;
+    background: var(--apple-gray-light);
+    border-left: 3px solid var(--apple-blue);
+    border-radius: var(--radius-sm);
 }
 
 .chart-description strong {
-    color: var(--text-primary);
+    color: var(--apple-text);
     font-weight: 600;
 }
 
-/* Grid de 2 columnas para gráficas lado a lado */
 .chart-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 24px;
+    margin-bottom: 24px;
 }
 
-/* Responsive: una columna en pantallas pequeñas */
 @media (max-width: 1100px) {
     .chart-grid {
         grid-template-columns: 1fr;
@@ -262,119 +278,139 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SELECTORES Y CONTROLES
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES:
-   - Usa .selector-container para agrupar controles
-   - Los <select> heredan estos estilos automáticamente
+   CHART DIMENSIONS
+   ═══════════════════════════════════════════════════════════════════ */
+
+#world-map-chart {
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+#top-countries-chart,
+#regional-distribution-chart,
+#volatility-comparison-chart,
+#correlation-chart,
+#scatter-chart,
+#regime-chart,
+#acf-chart,
+#returns-vol-chart,
+#scatter-vol-chart {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SELECTORS - Apple Style
    ═══════════════════════════════════════════════════════════════════ */
 
 .selector-container {
-    margin-bottom: 25px;
-    padding: 20px;
-    background: var(--background-gray);
-    border-radius: var(--border-radius-medium);
+    margin-bottom: 24px;
+    padding: 18px;
+    background: var(--apple-gray-light);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
+    border: 1px solid var(--apple-gray);
 }
 
 .selector-container label {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 1em;
+    font-weight: 500;
+    color: var(--apple-text);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selector-container label i {
+    font-size: 18px;
+    color: var(--apple-blue);
 }
 
 .selector-container select {
-    padding: 10px 20px;
-    border-radius: var(--border-radius-small);
-    border: 2px solid var(--primary-gradient-start);
-    font-size: 1em;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--apple-gray);
+    font-size: 15px;
     cursor: pointer;
-    background: white;
-    color: var(--text-primary);
-    transition: all var(--transition-fast);
+    background: var(--apple-white);
+    color: var(--apple-text);
+    transition: all var(--transition);
     min-width: 200px;
+    font-weight: 500;
 }
 
 .selector-container select:hover {
-    border-color: var(--primary-gradient-end);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
 .selector-container select:focus {
     outline: none;
-    border-color: var(--primary-gradient-end);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TOOLTIP
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES:
-   - Solo debe haber UN tooltip en todo el HTML: <div id="tooltip"></div>
-   - Se controla con JavaScript mostrando/ocultando con opacity
-   - El contenido HTML se inyecta dinámicamente
+   TOOLTIP - Apple Style
    ═══════════════════════════════════════════════════════════════════ */
 
 .tooltip {
-    position: fixed; /* Cambiado a fixed para mejor posicionamiento */
-    background: rgba(0, 0, 0, 0.95);
+    position: fixed;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     color: white;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     pointer-events: none;
     opacity: 0;
-    transition: opacity var(--transition-fast);
-    font-size: 0.9em;
+    transition: opacity var(--transition);
+    font-size: 14px;
     z-index: 10000;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-lg);
     max-width: 300px;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .tooltip strong {
     display: block;
-    margin-bottom: 5px;
-    font-size: 1.05em;
-    color: #fff;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ESTILOS PARA ELEMENTOS SVG Y D3
-   ═══════════════════════════════════════════════════════════════════
-   
-   INSTRUCCIONES:
-   - Estos estilos se aplican a todos los gráficos D3
-   - Modificar con cuidado para mantener consistencia visual
+   SVG & D3 STYLES
    ═══════════════════════════════════════════════════════════════════ */
 
 svg {
-    overflow: visible;
+    display: block;
     max-width: 100%;
     height: auto;
 }
 
-/* Ejes de gráficas */
 .axis path,
 .axis line {
-    stroke: #ddd;
+    stroke: var(--apple-gray);
     stroke-width: 1;
 }
 
 .axis text {
     font-size: 12px;
-    fill: var(--text-muted);
-    font-family: 'Segoe UI', sans-serif;
+    fill: var(--apple-text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 }
 
-/* Grillas de fondo */
 .grid line {
-    stroke: #e9ecef;
-    stroke-opacity: 0.7;
+    stroke: var(--apple-gray);
+    stroke-opacity: 0.5;
     shape-rendering: crispEdges;
 }
 
@@ -382,34 +418,30 @@ svg {
     stroke-width: 0;
 }
 
-/* Países en el mapa */
 .country {
-    stroke: #ffffff;
+    stroke: var(--apple-white);
     stroke-width: 0.5;
-    transition: all var(--transition-fast);
+    transition: all var(--transition);
 }
 
 .country:hover {
-    stroke: #000000;
+    stroke: var(--apple-blue);
     stroke-width: 2;
     filter: brightness(1.1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   UTILIDADES Y CLASES AUXILIARES
+   UTILITIES
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Ocultar elemento */
 .hidden {
     display: none !important;
 }
 
-/* Centrar texto */
 .text-center {
     text-align: center;
 }
 
-/* Espaciado adicional */
 .mt-1 { margin-top: 10px; }
 .mt-2 { margin-top: 20px; }
 .mt-3 { margin-top: 30px; }
@@ -427,8 +459,19 @@ svg {
         padding: 10px;
     }
     
+    .back-button {
+        top: 10px;
+        left: 10px;
+        padding: 8px 14px;
+        font-size: 14px;
+    }
+    
+    .header {
+        padding: 32px 20px;
+    }
+    
     .header h1 {
-        font-size: 1.8em;
+        font-size: 2em;
     }
     
     .header p {
@@ -437,8 +480,14 @@ svg {
     
     .tab-button {
         padding: 12px 16px;
-        font-size: 0.9em;
+        font-size: 14px;
         min-width: 120px;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .tab-button span {
+        font-size: 12px;
     }
     
     .tab-content {
@@ -446,7 +495,7 @@ svg {
     }
     
     .chart-container {
-        padding: 15px;
+        padding: 16px;
     }
     
     .chart-title {
@@ -455,7 +504,7 @@ svg {
     
     .chart-description {
         font-size: 0.85em;
-        padding: 10px;
+        padding: 12px;
     }
     
     .selector-container {
@@ -466,11 +515,27 @@ svg {
     .selector-container select {
         width: 100%;
     }
+    
+    #world-map-chart {
+        height: 400px;
+    }
+    
+    #top-countries-chart,
+    #regional-distribution-chart,
+    #volatility-comparison-chart,
+    #correlation-chart,
+    #scatter-chart,
+    #regime-chart,
+    #acf-chart,
+    #returns-vol-chart,
+    #scatter-vol-chart {
+        height: 350px;
+    }
 }
 
 @media (max-width: 480px) {
     .header h1 {
-        font-size: 1.5em;
+        font-size: 1.6em;
     }
     
     .tabs {
@@ -479,12 +544,30 @@ svg {
     
     .tab-button {
         width: 100%;
-        text-align: left;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 14px 20px;
+    }
+    
+    #world-map-chart {
+        height: 350px;
+    }
+    
+    #top-countries-chart,
+    #regional-distribution-chart,
+    #volatility-comparison-chart,
+    #correlation-chart,
+    #scatter-chart,
+    #regime-chart,
+    #acf-chart,
+    #returns-vol-chart,
+    #scatter-vol-chart {
+        height: 300px;
     }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ANIMACIONES ADICIONALES
+   ANIMATIONS
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes pulse {
@@ -496,11 +579,6 @@ svg {
     }
 }
 
-/* Clase para elementos que están cargando */
 .loading {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   FIN DE ESTILOS
-   ═══════════════════════════════════════════════════════════════════ */

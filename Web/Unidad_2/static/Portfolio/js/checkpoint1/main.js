@@ -3,28 +3,16 @@
  * CRYPTOCURRENCY ANALYTICS DASHBOARD - JAVASCRIPT
  * ═══════════════════════════════════════════════════════════════════
  * 
- * ESTRUCTURA DEL ARCHIVO:
- * 1. Configuración de colores y constantes
- * 2. Datos de las gráficas
- * 3. Sistema de pestañas
- * 4. Funciones de inicialización
- * 5. Funciones de dibujo de gráficas (una por cada gráfica)
- * 6. Funciones auxiliares
- * 
- * INSTRUCCIONES PARA MODIFICAR:
- * - Cada sección está claramente marcada
- * - Lee los comentarios antes de hacer cambios
- * - Las funciones están organizadas por pestaña
+ * CAMBIOS PRINCIPALES:
+ * - Tooltips funcionando en TODAS las gráficas
+ * - Posicionamiento inteligente del tooltip junto al cursor
+ * - Sistema de tooltip mejorado y consistente
  */
 
 // ═══════════════════════════════════════════════════════════════════
 // 1. CONFIGURACIÓN DE COLORES Y CONSTANTES
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * COLORES POR CRIPTOMONEDA
- * Para agregar una nueva crypto, añade su color aquí
- */
 const cryptoColors = {
     'BTC-USD': '#F7931A',
     'ETH-USD': '#627EEA',
@@ -33,9 +21,6 @@ const cryptoColors = {
     'USDT-USD': '#26A17B'
 };
 
-/**
- * COLORES PARA REGÍMENES DE VOLATILIDAD
- */
 const regimeColors = {
     'Bajo': '#28a745',
     'Medio': '#ffc107',
@@ -46,12 +31,6 @@ const regimeColors = {
 // 2. DATOS DE LAS GRÁFICAS
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * DATOS DEL MAPA MUNDIAL
- * Para agregar un país:
- * 1. Añade el objeto con { name, code (ISO3), engagement }
- * 2. Asegúrate de usar el código ISO3 correcto (ej: USA, JPN, MEX)
- */
 const worldMapData = {
     countries: [
         { name: 'United States', code: 'USA', engagement: 9200 },
@@ -67,19 +46,11 @@ const worldMapData = {
     ]
 };
 
-/**
- * MAPEO DE CÓDIGOS ISO3 A IDs NUMÉRICOS
- * Necesario para TopoJSON
- */
 const iso3ToId = {
     'USA': 840, 'CHN': 156, 'JPN': 392, 'BRA': 76, 'DEU': 276,
     'MEX': 484, 'IND': 356, 'KOR': 410, 'SGP': 702, 'GBR': 826
 };
 
-/**
- * DATOS DE CORRELACIÓN CRUZADA
- * Análisis de correlación entre interés y volatilidad
- */
 const correlationData = [
     { lag: -52, value: 0.10 }, { lag: -48, value: -0.06 }, { lag: -44, value: -0.02 },
     { lag: -40, value: 0.14 }, { lag: -36, value: 0.10 }, { lag: -32, value: 0.08 },
@@ -92,9 +63,6 @@ const correlationData = [
     { lag: 44, value: -0.07 }, { lag: 48, value: 0.03 }, { lag: 52, value: 0.11 }
 ];
 
-/**
- * DATOS SCATTER: ENGAGEMENT VS VOLATILIDAD
- */
 const scatterData = [
     { country: 'IN', engagement: 6000, preference: 100.0, size: 15 },
     { country: 'SG', engagement: 7000, preference: 99.1, size: 12 },
@@ -108,10 +76,6 @@ const scatterData = [
     { country: 'JP', engagement: 15000, preference: 95.5, size: 20 }
 ];
 
-/**
- * DATOS DE VOLATILIDAD COMPARATIVA
- * Para agregar una nueva crypto, añade un objeto aquí
- */
 const volatilityData = [
     { asset: 'DOGE-USD', volatility: 6.53, color: '#fb923c' },
     { asset: 'SOL-USD', volatility: 5.63, color: '#818cf8' },
@@ -120,21 +84,10 @@ const volatilityData = [
     { asset: 'USDT-USD', volatility: 0.04, color: '#06b6d4' }
 ];
 
-/**
- * DATOS DETALLADOS POR CRIPTOMONEDA
- * Esta estructura contiene TODOS los datos para la pestaña "Detalle"
- * 
- * PARA AGREGAR UNA NUEVA CRIPTOMONEDA:
- * 1. Copia todo el bloque de una crypto existente (ej: 'BTC-USD')
- * 2. Cambia el nombre de la clave (ej: 'ADA-USD')
- * 3. Actualiza todos los valores de datos
- * 4. Añade el color en cryptoColors arriba
- * 5. Añade la opción en el <select> del HTML
- */
 const realData = {
     'BTC-USD': {
-        volatilityData: [],      // Se genera automáticamente
-        acfData: [               // Datos de Autocorrelación
+        volatilityData: [],
+        acfData: [
             { lag: 1, value: 0.1022 }, { lag: 2, value: 0.0831 }, { lag: 3, value: 0.0765 },
             { lag: 4, value: 0.0899 }, { lag: 5, value: 0.0772 }, { lag: 6, value: 0.0654 },
             { lag: 7, value: 0.0712 }, { lag: 8, value: 0.0632 }, { lag: 9, value: 0.0543 },
@@ -143,10 +96,10 @@ const realData = {
             { lag: 16, value: 0.0765 }, { lag: 17, value: 0.0654 }, { lag: 18, value: 0.0543 },
             { lag: 19, value: 0.0432 }, { lag: 20, value: 0.0422 }
         ],
-        returnsVolData: [],      // Se genera automáticamente
-        scatterData: [],         // Se genera automáticamente
-        regimeThresholds: { p33: 45.31, p67: 63.39 },  // Umbrales de régimen
-        correlation: 0.194646    // Correlación volumen-volatilidad
+        returnsVolData: [],
+        scatterData: [],
+        regimeThresholds: { p33: 45.31, p67: 63.39 },
+        correlation: 0.194646
     },
     'ETH-USD': {
         volatilityData: [],
@@ -215,92 +168,100 @@ const realData = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. SISTEMA DE PESTAÑAS
+// 3. SISTEMA DE TOOLTIPS MEJORADO
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * FUNCIÓN PRINCIPAL PARA CAMBIAR DE PESTAÑA
- * Esta función se llama desde el HTML con onclick="changeTab('nombre')"
- * 
- * @param {string} tabName - El nombre de la pestaña a activar
- * 
- * PARA AGREGAR UNA NUEVA PESTAÑA:
- * 1. Agregar el botón en el HTML con data-tab="mi-pestana"
- * 2. Agregar la sección con id="mi-pestana" y class="tab-content"
- * 3. Agregar un case en el switch de abajo con las funciones a ejecutar
- */
+function showTooltip(event, html) {
+    const tooltip = d3.select('#tooltip');
+    
+    // Actualizar contenido
+    tooltip.html(html);
+    
+    // Obtener dimensiones del tooltip
+    const tooltipNode = tooltip.node();
+    const tooltipWidth = tooltipNode.offsetWidth;
+    const tooltipHeight = tooltipNode.offsetHeight;
+    
+    // Calcular posición inteligente cerca del cursor
+    let left = event.pageX + 15; // 15px a la derecha del cursor
+    let top = event.pageY - tooltipHeight - 15; // 15px arriba del cursor
+    
+    // Ajustar si se sale por la derecha
+    if (left + tooltipWidth > window.innerWidth) {
+        left = event.pageX - tooltipWidth - 15; // Mover a la izquierda
+    }
+    
+    // Ajustar si se sale por arriba
+    if (top < window.scrollY) {
+        top = event.pageY + 15; // Mover abajo del cursor
+    }
+    
+    // Ajustar si se sale por abajo
+    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
+        top = window.innerHeight + window.scrollY - tooltipHeight - 10;
+    }
+    
+    // Aplicar posición y mostrar
+    tooltip
+        .style('opacity', 1)
+        .style('left', left + 'px')
+        .style('top', top + 'px')
+        .style('pointer-events', 'none');
+}
+
+function hideTooltip() {
+    d3.select('#tooltip')
+        .style('opacity', 0);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 4. SISTEMA DE PESTAÑAS
+// ═══════════════════════════════════════════════════════════════════
+
 function changeTab(tabName) {
-    // Ocultar todas las pestañas
     const allTabs = document.querySelectorAll('.tab-content');
     allTabs.forEach(tab => tab.classList.remove('active'));
     
-    // Desactivar todos los botones
     const allButtons = document.querySelectorAll('.tab-button');
     allButtons.forEach(btn => btn.classList.remove('active'));
     
-    // Activar la pestaña seleccionada
     const selectedTab = document.getElementById(tabName);
     if (selectedTab) {
         selectedTab.classList.add('active');
     }
     
-    // Activar el botón correspondiente
     const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
     if (selectedButton) {
         selectedButton.classList.add('active');
     }
     
-    // Ejecutar las funciones de dibujo específicas de cada pestaña
     switch(tabName) {
         case 'overview':
-            // Dibujar gráficas de la pestaña Overview
             updateOverviewCharts();
             break;
         case 'volatilidad':
-            // Dibujar gráficas de la pestaña Volatilidad
             updateVolatilityCharts();
             break;
         case 'detalle':
-            // Dibujar gráficas de la pestaña Detalle
             updateDetailCharts();
             break;
-        // PARA AGREGAR NUEVA PESTAÑA, añade un nuevo case:
-        // case 'mi-nueva-pestana':
-        //     updateMiNuevaPestanaCharts();
-        //     break;
     }
     
     console.log(`✅ Pestaña cambiada a: ${tabName}`);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. FUNCIONES DE INICIALIZACIÓN
+// 5. FUNCIONES DE INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * INICIALIZACIÓN AL CARGAR LA PÁGINA
- * Esta función se ejecuta automáticamente cuando el DOM está listo
- */
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Dashboard inicializando...');
-    
-    // Generar datos sintéticos para series temporales
     generateTimeSeriesData();
-    
-    // Dibujar las gráficas de la pestaña activa (Overview por defecto)
     updateOverviewCharts();
-    
-    // Configurar resize responsivo
     setupResponsiveResize();
-    
     console.log('✅ Dashboard inicializado correctamente');
 });
 
-/**
- * GENERAR DATOS DE SERIES TEMPORALES
- * Genera datos sintéticos para volatilidad, returns y scatter
- * Se ejecuta una sola vez al cargar la página
- */
 function generateTimeSeriesData() {
     const startDate = new Date('2020-10-11');
     const endDate = new Date('2025-10-11');
@@ -309,7 +270,6 @@ function generateTimeSeriesData() {
     Object.keys(cryptoColors).forEach(crypto => {
         let baseVol, volRange;
         
-        // Configurar parámetros según la crypto
         switch (crypto) {
             case 'BTC-USD':
                 baseVol = 55;
@@ -333,7 +293,6 @@ function generateTimeSeriesData() {
                 break;
         }
 
-        // Generar datos semanales
         for (let i = 0; i < daysDiff; i += 7) {
             const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
             const volatility = baseVol + (Math.random() - 0.5) * volRange;
@@ -362,56 +321,36 @@ function generateTimeSeriesData() {
     console.log('✅ Datos de series temporales generados');
 }
 
-/**
- * CONFIGURAR RESIZE RESPONSIVO
- * Redibuja las gráficas cuando cambia el tamaño de la ventana
- */
 function setupResponsiveResize() {
     let resizeTimer;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function() {
-            // Obtener la pestaña activa
             const activeTab = document.querySelector('.tab-content.active');
             if (activeTab) {
                 const tabId = activeTab.id;
-                changeTab(tabId); // Redibujar la pestaña activa
+                changeTab(tabId);
             }
         }, 250);
     });
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 5. FUNCIONES DE ACTUALIZACIÓN POR PESTAÑA
+// 6. FUNCIONES DE ACTUALIZACIÓN POR PESTAÑA
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * ACTUALIZAR GRÁFICAS DE LA PESTAÑA OVERVIEW
- * Llama a todas las funciones de dibujo de esta pestaña
- * 
- * PARA AGREGAR UNA NUEVA GRÁFICA:
- * 1. Crear la función draw___ abajo
- * 2. Llamarla aquí
- */
 function updateOverviewCharts() {
     drawWorldMap();
     drawTopCountriesChart();
     drawRegionalDistribution();
 }
 
-/**
- * ACTUALIZAR GRÁFICAS DE LA PESTAÑA VOLATILIDAD
- */
 function updateVolatilityCharts() {
     drawVolatilityComparison();
     drawCorrelationChart();
     drawScatterChart();
 }
 
-/**
- * ACTUALIZAR GRÁFICAS DE LA PESTAÑA DETALLE
- * Se llama cuando se cambia la criptomoneda en el selector
- */
 function updateDetailCharts() {
     const crypto = document.getElementById('crypto-selector').value;
     drawRegimeChart(crypto);
@@ -421,92 +360,124 @@ function updateDetailCharts() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 6. FUNCIONES DE DIBUJO - PESTAÑA OVERVIEW
+// 7. FUNCIONES DE DIBUJO - PESTAÑA OVERVIEW
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * DIBUJAR MAPA MUNDIAL
- * Visualiza el engagement por país usando TopoJSON
- * 
- * IMPORTANTE: Requiere D3.js y TopoJSON
- */
 function drawWorldMap() {
     const container = d3.select('#world-map-chart');
     container.html('');
     
-    const margin = { top: 20, right: 30, bottom: 20, left: 30 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block');
+    
+    const g = svg.append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
-    // Crear mapa de engagement por ID numérico
     const engagementMap = new Map();
     worldMapData.countries.forEach(d => {
         const numericId = iso3ToId[d.code];
         if (numericId) {
+            engagementMap.set(numericId, d);
             engagementMap.set(numericId.toString(), d);
+            engagementMap.set(String(numericId), d);
         }
     });
     
-    // Escala de colores
     const maxEngagement = d3.max(worldMapData.countries, d => d.engagement);
     const colorScale = d3.scaleLinear()
         .domain([0, maxEngagement])
         .range(['#fef3c7', '#a855f7']);
     
-    // Proyección del mapa
     const projection = d3.geoMercator()
-        .scale(width / 6.5)
-        .translate([width / 2, height / 1.5]);
+        .scale(width / 7.5)
+        .center([0, 20])
+        .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
     
-    // Cargar TopoJSON y dibujar
+    const zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .translateExtent([[0, 0], [width, height]])
+        .on('zoom', (event) => {
+            g.attr('transform', event.transform);
+        });
+    
+    svg.call(zoom);
+    
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
         .then(world => {
             const countries = topojson.feature(world, world.objects.countries);
             
-            // Dibujar países
-            svg.selectAll('path')
+            g.selectAll('path')
                 .data(countries.features)
                 .enter()
                 .append('path')
                 .attr('d', path)
                 .attr('fill', d => {
-                    const countryData = engagementMap.get(d.id);
+                    let countryData = engagementMap.get(parseInt(d.id)) || 
+                                     engagementMap.get(d.id) || 
+                                     engagementMap.get(String(d.id));
                     return countryData ? colorScale(countryData.engagement) : '#e5e7eb';
                 })
                 .attr('stroke', '#ffffff')
                 .attr('stroke-width', 0.5)
                 .attr('class', 'country')
+                .style('cursor', 'pointer')
                 .on('mouseover', function(event, d) {
-                    const countryData = engagementMap.get(d.id);
+                    let countryData = engagementMap.get(parseInt(d.id)) || 
+                                     engagementMap.get(d.id) || 
+                                     engagementMap.get(String(d.id));
+                    
+                    d3.select(this)
+                        .attr('stroke', '#000')
+                        .attr('stroke-width', 2)
+                        .style('filter', 'brightness(1.2)');
+                    
                     if (countryData) {
-                        d3.select(this).attr('stroke', '#000').attr('stroke-width', 2);
-                        showTooltip(event, `<strong>${countryData.name}</strong><br/>Engagement: ${countryData.engagement.toLocaleString()}`);
+                        showTooltip(event, `
+                            <strong>${countryData.name}</strong><br/>
+                            Código: ${countryData.code}<br/>
+                            Engagement: <span style="color: #a855f7; font-weight: bold;">${countryData.engagement.toLocaleString()}</span>
+                        `);
+                    }
+                })
+                .on('mousemove', function(event) {
+                    let countryData = engagementMap.get(parseInt(d3.select(this).datum().id));
+                    if (countryData) {
+                        showTooltip(event, `
+                            <strong>${countryData.name}</strong><br/>
+                            Código: ${countryData.code}<br/>
+                            Engagement: <span style="color: #a855f7; font-weight: bold;">${countryData.engagement.toLocaleString()}</span>
+                        `);
                     }
                 })
                 .on('mouseout', function() {
-                    d3.select(this).attr('stroke', '#ffffff').attr('stroke-width', 0.5);
+                    d3.select(this)
+                        .attr('stroke', '#ffffff')
+                        .attr('stroke-width', 0.5)
+                        .style('filter', 'none');
                     hideTooltip();
                 });
             
-            // Etiquetas de países
             worldMapData.countries.forEach(country => {
                 const numericId = iso3ToId[country.code];
-                const feature = countries.features.find(f => f.id === numericId.toString());
+                const feature = countries.features.find(f => parseInt(f.id) === numericId);
                 
                 if (feature) {
                     const centroid = d3.geoCentroid(feature);
                     const projected = projection(centroid);
                     
                     if (projected && !isNaN(projected[0]) && !isNaN(projected[1])) {
-                        svg.append('text')
+                        g.append('text')
                             .attr('x', projected[0])
                             .attr('y', projected[1])
                             .attr('text-anchor', 'middle')
@@ -523,18 +494,24 @@ function drawWorldMap() {
                 }
             });
             
-            // Leyenda
-            addMapLegend(svg, colorScale, width, height);
+            addMapLegend(g, colorScale, width, height);
+            
+            svg.append('text')
+                .attr('x', margin.left + 10)
+                .attr('y', margin.top + 20)
+                .attr('fill', '#666')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold')
+                .style('pointer-events', 'none')
+                .text('💡 Usa la rueda del mouse para zoom | Arrastra para mover');
+            
             console.log('✅ Mapa mundial dibujado');
         })
         .catch(error => {
-            console.error('Error cargando mapa:', error);
+            console.error('❌ Error cargando mapa:', error);
         });
 }
 
-/**
- * AGREGAR LEYENDA AL MAPA
- */
 function addMapLegend(svg, colorScale, width, height) {
     const legendWidth = 200;
     const legendHeight = 10;
@@ -577,25 +554,24 @@ function addMapLegend(svg, colorScale, width, height) {
         .text('High');
 }
 
-/**
- * DIBUJAR TOP 10 PAÍSES
- * Gráfica de barras con los países de mayor engagement
- */
 function drawTopCountriesChart() {
     const container = d3.select('#top-countries-chart');
     container.html('');
     
-    const margin = { top: 20, right: 30, bottom: 60, left: 100 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const margin = { top: 20, right: 30, bottom: 40, left: 100 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
-    // Ordenar países por engagement
     const sortedCountries = [...worldMapData.countries].sort((a, b) => b.engagement - a.engagement);
     
     const x = d3.scaleLinear()
@@ -607,7 +583,6 @@ function drawTopCountriesChart() {
         .range([0, height])
         .padding(0.2);
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -617,7 +592,6 @@ function drawTopCountriesChart() {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Barras
     svg.selectAll('rect')
         .data(sortedCountries)
         .enter()
@@ -633,12 +607,14 @@ function drawTopCountriesChart() {
             d3.select(this).attr('opacity', 1);
             showTooltip(event, `<strong>${d.name}</strong><br/>Engagement: ${d.engagement.toLocaleString()}`);
         })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>${d.name}</strong><br/>Engagement: ${d.engagement.toLocaleString()}`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.8);
             hideTooltip();
         });
     
-    // Etiquetas de valor
     svg.selectAll('.label')
         .data(sortedCountries)
         .enter()
@@ -654,25 +630,22 @@ function drawTopCountriesChart() {
     console.log('✅ Top países dibujado');
 }
 
-/**
- * DIBUJAR DISTRIBUCIÓN REGIONAL
- * Gráfica de pie/donut mostrando distribución por región
- */
 function drawRegionalDistribution() {
     const container = d3.select('#regional-distribution-chart');
     container.html('');
     
-    const width = container.node().getBoundingClientRect().width;
-    const height = 350;
-    const radius = Math.min(width, height) / 2 - 40;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const radius = Math.min(containerWidth, containerHeight) / 2 - 40;
     
     const svg = container.append('svg')
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
-        .attr('transform', `translate(${width / 2},${height / 2})`);
+        .attr('transform', `translate(${containerWidth / 2},${containerHeight / 2})`);
     
-    // Agrupar por región (simplificado)
     const regionData = [
         { region: 'Asia', value: 48000 },
         { region: 'América', value: 30200 },
@@ -708,12 +681,15 @@ function drawRegionalDistribution() {
             const percentage = ((d.data.value / d3.sum(regionData, d => d.value)) * 100).toFixed(1);
             showTooltip(event, `<strong>${d.data.region}</strong><br/>Valor: ${d.data.value.toLocaleString()}<br/>Porcentaje: ${percentage}%`);
         })
+        .on('mousemove', function(event, d) {
+            const percentage = ((d.data.value / d3.sum(regionData, d => d.value)) * 100).toFixed(1);
+            showTooltip(event, `<strong>${d.data.region}</strong><br/>Valor: ${d.data.value.toLocaleString()}<br/>Porcentaje: ${percentage}%`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.8);
             hideTooltip();
         });
     
-    // Etiquetas
     arcs.append('text')
         .attr('transform', d => `translate(${arc.centroid(d)})`)
         .attr('text-anchor', 'middle')
@@ -726,24 +702,24 @@ function drawRegionalDistribution() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 7. FUNCIONES DE DIBUJO - PESTAÑA VOLATILIDAD
+// 8. FUNCIONES DE DIBUJO - PESTAÑA VOLATILIDAD
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * DIBUJAR COMPARACIÓN DE VOLATILIDAD
- * Gráfica de barras horizontales
- */
 function drawVolatilityComparison() {
     const container = d3.select('#volatility-comparison-chart');
     container.html('');
     
-    const margin = { top: 20, right: 30, bottom: 60, left: 100 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const margin = { top: 20, right: 30, bottom: 40, left: 100 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -756,12 +732,10 @@ function drawVolatilityComparison() {
         .range([0, height])
         .padding(0.3);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -771,7 +745,6 @@ function drawVolatilityComparison() {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Barras
     svg.selectAll('rect')
         .data(volatilityData)
         .enter()
@@ -787,12 +760,14 @@ function drawVolatilityComparison() {
             d3.select(this).attr('opacity', 1);
             showTooltip(event, `<strong>${d.asset}</strong><br/>Volatilidad: ${d.volatility}%`);
         })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>${d.asset}</strong><br/>Volatilidad: ${d.volatility}%`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.8);
             hideTooltip();
         });
     
-    // Etiquetas
     svg.selectAll('.vol-label')
         .data(volatilityData)
         .enter()
@@ -808,20 +783,21 @@ function drawVolatilityComparison() {
     console.log('✅ Comparación de volatilidad dibujada');
 }
 
-/**
- * DIBUJAR GRÁFICA DE CORRELACIÓN CRUZADA
- */
 function drawCorrelationChart() {
     const container = d3.select('#correlation-chart');
     container.html('');
     
-    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -833,12 +809,10 @@ function drawCorrelationChart() {
         .domain([-0.3, 0.3])
         .range([height, 0]);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -848,7 +822,6 @@ function drawCorrelationChart() {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Líneas de confianza
     svg.append('line')
         .attr('x1', 0).attr('x2', width)
         .attr('y1', y(0.15)).attr('y2', y(0.15))
@@ -869,7 +842,6 @@ function drawCorrelationChart() {
         .attr('stroke', '#6b7280')
         .attr('stroke-width', 1);
     
-    // Línea de correlación
     const line = d3.line()
         .x(d => x(d.lag))
         .y(d => y(d.value))
@@ -882,7 +854,6 @@ function drawCorrelationChart() {
         .attr('stroke-width', 2.5)
         .attr('d', line);
     
-    // Puntos
     svg.selectAll('circle')
         .data(correlationData)
         .enter()
@@ -896,6 +867,9 @@ function drawCorrelationChart() {
             d3.select(this).attr('r', 6).attr('opacity', 1);
             showTooltip(event, `<strong>Lag: ${d.lag} semanas</strong><br/>Correlación: ${d.value.toFixed(3)}`);
         })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>Lag: ${d.lag} semanas</strong><br/>Correlación: ${d.value.toFixed(3)}`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('r', 3).attr('opacity', 0.6);
             hideTooltip();
@@ -904,20 +878,21 @@ function drawCorrelationChart() {
     console.log('✅ Gráfica de correlación dibujada');
 }
 
-/**
- * DIBUJAR SCATTER ENGAGEMENT VS VOLATILIDAD
- */
 function drawScatterChart() {
     const container = d3.select('#scatter-chart');
     container.html('');
     
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
     const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -929,12 +904,10 @@ function drawScatterChart() {
         .domain([94, 101])
         .range([height, 0]);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -944,7 +917,6 @@ function drawScatterChart() {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Etiquetas de ejes
     svg.append('text')
         .attr('x', width / 2)
         .attr('y', height + 50)
@@ -962,7 +934,6 @@ function drawScatterChart() {
         .attr('fill', '#666')
         .text('Preferencia por Volatilidad (%)');
     
-    // Burbujas
     const colors = ['#f97316', '#a855f7', '#8b5cf6', '#eab308', '#ef4444', 
                     '#22c55e', '#06b6d4', '#3b82f6', '#ec4899', '#14b8a6'];
     
@@ -979,6 +950,9 @@ function drawScatterChart() {
             d3.select(this).attr('opacity', 1).attr('stroke', '#000').attr('stroke-width', 2);
             showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement}<br/>Preferencia: ${d.preference}%`);
         })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement}<br/>Preferencia: ${d.preference}%`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.7).attr('stroke', 'none');
             hideTooltip();
@@ -988,26 +962,24 @@ function drawScatterChart() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 8. FUNCIONES DE DIBUJO - PESTAÑA DETALLE
+// 9. FUNCIONES DE DIBUJO - PESTAÑA DETALLE
 // ═══════════════════════════════════════════════════════════════════
 
-/**
- * DIBUJAR GRÁFICA DE REGÍMENES DE VOLATILIDAD
- * Muestra la volatilidad clasificada en tres regímenes
- * 
- * @param {string} crypto - Símbolo de la criptomoneda (ej: 'BTC-USD')
- */
 function drawRegimeChart(crypto) {
     const container = d3.select('#regime-chart');
     container.html('');
     
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
     const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -1022,12 +994,10 @@ function drawRegimeChart(crypto) {
         .domain([0, d3.max(cryptoData, d => d.volatility)])
         .range([height, 0]);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -1042,7 +1012,6 @@ function drawRegimeChart(crypto) {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Zonas de régimen
     svg.append('rect')
         .attr('x', 0).attr('y', y(p33))
         .attr('width', width).attr('height', height - y(p33))
@@ -1061,7 +1030,6 @@ function drawRegimeChart(crypto) {
         .attr('fill', regimeColors['Alto'])
         .attr('opacity', 0.2);
     
-    // Líneas de umbral
     svg.append('line')
         .attr('x1', 0).attr('x2', width)
         .attr('y1', y(p33)).attr('y2', y(p33))
@@ -1076,7 +1044,6 @@ function drawRegimeChart(crypto) {
         .attr('stroke-width', 2)
         .attr('stroke-dasharray', '5,5');
     
-    // Puntos de datos
     svg.selectAll('circle')
         .data(cryptoData)
         .enter()
@@ -1095,12 +1062,15 @@ function drawRegimeChart(crypto) {
             const regime = d.volatility < p33 ? 'Bajo' : d.volatility < p67 ? 'Medio' : 'Alto';
             showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%<br/>Régimen: ${regime}`);
         })
+        .on('mousemove', function(event, d) {
+            const regime = d.volatility < p33 ? 'Bajo' : d.volatility < p67 ? 'Medio' : 'Alto';
+            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%<br/>Régimen: ${regime}`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('r', 3).attr('opacity', 0.7);
             hideTooltip();
         });
     
-    // Leyenda
     const legend = [
         { label: 'Bajo', color: regimeColors['Bajo'] },
         { label: 'Medio', color: regimeColors['Medio'] },
@@ -1127,23 +1097,21 @@ function drawRegimeChart(crypto) {
     console.log('✅ Gráfica de regímenes dibujada para ' + crypto);
 }
 
-/**
- * DIBUJAR FUNCIÓN DE AUTOCORRELACIÓN (ACF)
- * Muestra la persistencia de la volatilidad
- * 
- * @param {string} crypto - Símbolo de la criptomoneda
- */
 function drawACFChart(crypto) {
     const container = d3.select('#acf-chart');
     container.html('');
     
-    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -1163,7 +1131,6 @@ function drawACFChart(crypto) {
     
     const confidenceBound = 1.96 / Math.sqrt(1827);
     
-    // Zona de confianza
     svg.append('rect')
         .attr('x', 0).attr('y', y(confidenceBound))
         .attr('width', width)
@@ -1171,14 +1138,12 @@ function drawACFChart(crypto) {
         .attr('fill', '#e0e0e0')
         .attr('opacity', 0.5);
     
-    // Línea cero
     svg.append('line')
         .attr('x1', 0).attr('x2', width)
         .attr('y1', y(0)).attr('y2', y(0))
         .attr('stroke', '#333')
         .attr('stroke-width', 1);
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -1188,9 +1153,8 @@ function drawACFChart(crypto) {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Etiquetas
     svg.append('text')
-        .attr('x', width / 2).attr('y', height + 50)
+        .attr('x', width / 2).attr('y', height + 45)
         .attr('text-anchor', 'middle')
         .style('font-size', '12px')
         .attr('fill', '#666')
@@ -1204,7 +1168,6 @@ function drawACFChart(crypto) {
         .attr('fill', '#666')
         .text('ACF');
     
-    // Barras
     svg.selectAll('.acf-bar')
         .data(acfData)
         .enter()
@@ -1226,6 +1189,10 @@ function drawACFChart(crypto) {
             const significant = Math.abs(d.value) > confidenceBound ? 'Significativo' : 'No significativo';
             showTooltip(event, `<strong>Lag ${d.lag}</strong><br/>ACF: ${d.value.toFixed(3)}<br/>${significant}`);
         })
+        .on('mousemove', function(event, d) {
+            const significant = Math.abs(d.value) > confidenceBound ? 'Significativo' : 'No significativo';
+            showTooltip(event, `<strong>Lag ${d.lag}</strong><br/>ACF: ${d.value.toFixed(3)}<br/>${significant}`);
+        })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.8);
             hideTooltip();
@@ -1234,23 +1201,21 @@ function drawACFChart(crypto) {
     console.log('✅ Gráfica ACF dibujada para ' + crypto);
 }
 
-/**
- * DIBUJAR RETURNS ABSOLUTOS VS VOLATILIDAD
- * Superpone returns con volatilidad rolling
- * 
- * @param {string} crypto - Símbolo de la criptomoneda
- */
 function drawReturnsVolChart(crypto) {
     const container = d3.select('#returns-vol-chart');
     container.html('');
     
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
     const margin = { top: 20, right: 60, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -1268,12 +1233,10 @@ function drawReturnsVolChart(crypto) {
         .domain([0, d3.max(combinedData, d => d.volatility)])
         .range([height, 0]);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(y1).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -1313,7 +1276,6 @@ function drawReturnsVolChart(crypto) {
         .attr('fill', '#dc3545')
         .text('Volatilidad (%)');
     
-    // Barras de returns
     const barWidth = width / combinedData.length;
     svg.selectAll('.return-bar')
         .data(combinedData)
@@ -1325,9 +1287,19 @@ function drawReturnsVolChart(crypto) {
         .attr('width', barWidth)
         .attr('height', d => height - y1(d.absReturn))
         .attr('fill', cryptoColors[crypto])
-        .attr('opacity', 0.3);
+        .attr('opacity', 0.3)
+        .on('mouseover', function(event, d) {
+            d3.select(this).attr('opacity', 0.6);
+            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
+        })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('opacity', 0.3);
+            hideTooltip();
+        });
     
-    // Línea de volatilidad
     const line = d3.line()
         .x(d => x(d.date))
         .y(d => y2(d.volatility))
@@ -1340,26 +1312,47 @@ function drawReturnsVolChart(crypto) {
         .attr('stroke-width', 2.5)
         .attr('d', line);
     
+    // Agregar puntos en la línea para mejor interacción
+    svg.selectAll('.vol-point')
+        .data(combinedData)
+        .enter()
+        .append('circle')
+        .attr('class', 'vol-point')
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y2(d.volatility))
+        .attr('r', 3)
+        .attr('fill', '#dc3545')
+        .attr('opacity', 0)
+        .on('mouseover', function(event, d) {
+            d3.select(this).attr('opacity', 1).attr('r', 5);
+            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
+        })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('opacity', 0).attr('r', 3);
+            hideTooltip();
+        });
+    
     console.log('✅ Gráfica returns vs volatilidad dibujada para ' + crypto);
 }
 
-/**
- * DIBUJAR SCATTER VOLATILIDAD VS VOLUMEN
- * Analiza la relación entre volumen y volatilidad
- * 
- * @param {string} crypto - Símbolo de la criptomoneda
- */
 function drawScatterVolChart(crypto) {
     const container = d3.select('#scatter-vol-chart');
     container.html('');
     
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
     const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     const svg = container.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block')
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
@@ -1373,7 +1366,6 @@ function drawScatterVolChart(crypto) {
         .domain([0, d3.max(scatterData, d => d.volatility)])
         .range([height, 0]);
     
-    // Grid
     svg.append('g')
         .attr('class', 'grid')
         .attr('transform', `translate(0,${height})`)
@@ -1383,7 +1375,6 @@ function drawScatterVolChart(crypto) {
         .attr('class', 'grid')
         .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
     
-    // Ejes
     svg.append('g')
         .attr('class', 'axis')
         .attr('transform', `translate(0,${height})`)
@@ -1393,7 +1384,6 @@ function drawScatterVolChart(crypto) {
         .attr('class', 'axis')
         .call(d3.axisLeft(y));
     
-    // Etiquetas
     svg.append('text')
         .attr('x', width / 2)
         .attr('y', height + 50)
@@ -1411,7 +1401,6 @@ function drawScatterVolChart(crypto) {
         .attr('fill', '#666')
         .text('Volatilidad (%)');
     
-    // Línea de tendencia
     const xMean = d3.mean(scatterData, d => d.volume);
     const yMean = d3.mean(scatterData, d => d.volatility);
     const xSum = d3.sum(scatterData, d => (d.volume - xMean) * (d.volatility - yMean));
@@ -1435,7 +1424,6 @@ function drawScatterVolChart(crypto) {
     
     const correlation = realData[crypto].correlation;
     
-    // Puntos
     svg.selectAll('circle')
         .data(scatterData)
         .enter()
@@ -1446,15 +1434,17 @@ function drawScatterVolChart(crypto) {
         .attr('fill', cryptoColors[crypto])
         .attr('opacity', 0.6)
         .on('mouseover', function(event, d) {
-            d3.select(this).attr('r', 6).attr('opacity', 1);
-            showTooltip(event, `Volumen: ${(d.volume / 1000000).toFixed(1)}M<br/>Volatilidad: ${d.volatility.toFixed(1)}%`);
+            d3.select(this).attr('r', 7).attr('opacity', 1).attr('stroke', '#000').attr('stroke-width', 2);
+            showTooltip(event, `<strong>Volumen: ${(d.volume / 1000000).toFixed(1)}M</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%`);
+        })
+        .on('mousemove', function(event, d) {
+            showTooltip(event, `<strong>Volumen: ${(d.volume / 1000000).toFixed(1)}M</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%`);
         })
         .on('mouseout', function() {
-            d3.select(this).attr('r', 4).attr('opacity', 0.6);
+            d3.select(this).attr('r', 4).attr('opacity', 0.6).attr('stroke', 'none');
             hideTooltip();
         });
     
-    // Mostrar correlación
     svg.append('text')
         .attr('x', width - 10)
         .attr('y', 20)
@@ -1466,188 +1456,5 @@ function drawScatterVolChart(crypto) {
     
     console.log('✅ Scatter volatilidad vs volumen dibujada para ' + crypto);
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// 9. FUNCIONES AUXILIARES - TOOLTIP
-// ═══════════════════════════════════════════════════════════════════
-
-/**
- * MOSTRAR TOOLTIP
- * Función auxiliar para mostrar el tooltip con contenido HTML
- * 
- * @param {Event} event - Evento del mouse
- * @param {string} html - Contenido HTML del tooltip
- */
-function showTooltip(event, html) {
-    const tooltip = d3.select('#tooltip');
-    tooltip.style('opacity', 1)
-        .html(html)
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 10) + 'px');
-}
-
-/**
- * OCULTAR TOOLTIP
- * Función auxiliar para ocultar el tooltip
- */
-function hideTooltip() {
-    d3.select('#tooltip').style('opacity', 0);
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// 10. FUNCIONES AUXILIARES - UTILIDADES
-// ═══════════════════════════════════════════════════════════════════
-
-/**
- * FUNCIÓN PARA OBTENER COLOR DE ENGAGEMENT
- * Útil para escalar colores basados en valores
- * 
- * @param {number} value - Valor de engagement
- * @returns {string} - Color hexadecimal
- */
-function getEngagementColor(value) {
-    const colors = {
-        low: '#fef3c7',
-        mediumLow: '#fcd34d',
-        medium: '#fb923c',
-        mediumHigh: '#f472b6',
-        high: '#a855f7'
-    };
-    
-    if (value < 7000) return colors.low;
-    if (value < 9000) return colors.mediumLow;
-    if (value < 10000) return colors.medium;
-    if (value < 12000) return colors.mediumHigh;
-    return colors.high;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// FIN DEL ARCHIVO
-// ═══════════════════════════════════════════════════════════════════
-
-/**
- * ═══════════════════════════════════════════════════════════════════
- * GUÍA RÁPIDA PARA AGREGAR NUEVAS GRÁFICAS
- * ═══════════════════════════════════════════════════════════════════
- * 
- * PASO 1: AGREGAR DATOS
- * - Crear un nuevo objeto de datos en la sección 2
- * - Ejemplo:
- *   const miNuevosDatos = [
- *     { categoria: 'A', valor: 100 },
- *     { categoria: 'B', valor: 200 }
- *   ];
- * 
- * PASO 2: CREAR FUNCIÓN DE DIBUJO
- * - Copiar una función draw___ existente como plantilla
- * - Renombrar la función (ej: drawMiNuevaGrafica)
- * - Modificar el selector del container
- * - Ajustar escalas, ejes y elementos visuales según tus datos
- * 
- * PASO 3: AGREGAR AL HTML
- * - En dashboard.html, agregar un <div id="mi-nueva-grafica"></div>
- * - Envolver en un .chart-container con título y descripción
- * 
- * PASO 4: LLAMAR LA FUNCIÓN
- * - En la función update___Charts() correspondiente
- * - Agregar: drawMiNuevaGrafica();
- * 
- * PASO 5 (OPCIONAL): NUEVA PESTAÑA
- * - Agregar botón en HTML: <button data-tab="mi-tab" onclick="changeTab('mi-tab')">
- * - Agregar sección: <div id="mi-tab" class="tab-content">
- * - Agregar case en changeTab() switch
- * - Crear función updateMiTabCharts()
- * 
- * ═══════════════════════════════════════════════════════════════════
- * GUÍA RÁPIDA PARA ELIMINAR GRÁFICAS
- * ═══════════════════════════════════════════════════════════════════
- * 
- * PASO 1: ELIMINAR DEL HTML
- * - Borrar el bloque .chart-container completo
- * 
- * PASO 2: ELIMINAR FUNCIÓN DE DIBUJO
- * - Borrar la función draw___ correspondiente
- * 
- * PASO 3: ELIMINAR LLAMADA
- * - En update___Charts(), eliminar la línea que llama a la función
- * 
- * PASO 4: LIMPIAR DATOS (OPCIONAL)
- * - Si los datos ya no se usan, eliminarlos de la sección 2
- * 
- * ═══════════════════════════════════════════════════════════════════
- * EJEMPLO COMPLETO: AGREGAR GRÁFICA DE LÍNEA SIMPLE
- * ═══════════════════════════════════════════════════════════════════
- * 
- * // 1. DATOS (agregar en sección 2)
- * const misDatos = [
- *   { fecha: new Date('2024-01'), valor: 50 },
- *   { fecha: new Date('2024-02'), valor: 75 },
- *   { fecha: new Date('2024-03'), valor: 60 }
- * ];
- * 
- * // 2. FUNCIÓN DE DIBUJO (agregar en sección apropiada)
- * function drawMiGrafica() {
- *   const container = d3.select('#mi-grafica');
- *   container.html(''); // Limpiar contenido previo
- *   
- *   // Configurar dimensiones
- *   const margin = { top: 20, right: 30, bottom: 60, left: 60 };
- *   const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
- *   const height = 350 - margin.top - margin.bottom;
- *   
- *   // Crear SVG
- *   const svg = container.append('svg')
- *     .attr('width', width + margin.left + margin.right)
- *     .attr('height', height + margin.top + margin.bottom)
- *     .append('g')
- *     .attr('transform', `translate(${margin.left},${margin.top})`);
- *   
- *   // Escalas
- *   const x = d3.scaleTime()
- *     .domain(d3.extent(misDatos, d => d.fecha))
- *     .range([0, width]);
- *   
- *   const y = d3.scaleLinear()
- *     .domain([0, d3.max(misDatos, d => d.valor)])
- *     .range([height, 0]);
- *   
- *   // Ejes
- *   svg.append('g')
- *     .attr('transform', `translate(0,${height})`)
- *     .call(d3.axisBottom(x));
- *   
- *   svg.append('g')
- *     .call(d3.axisLeft(y));
- *   
- *   // Línea
- *   const line = d3.line()
- *     .x(d => x(d.fecha))
- *     .y(d => y(d.valor));
- *   
- *   svg.append('path')
- *     .datum(misDatos)
- *     .attr('fill', 'none')
- *     .attr('stroke', '#667eea')
- *     .attr('stroke-width', 2)
- *     .attr('d', line);
- *   
- *   console.log('✅ Mi gráfica dibujada');
- * }
- * 
- * // 3. HTML (agregar en dashboard.html)
- * // <div class="chart-container">
- * //   <div class="chart-title">Mi Gráfica</div>
- * //   <div class="chart-description">Descripción...</div>
- * //   <div id="mi-grafica"></div>
- * // </div>
- * 
- * // 4. LLAMAR (agregar en función update correspondiente)
- * // function updateOverviewCharts() {
- * //   drawWorldMap();
- * //   drawMiGrafica(); // <- Agregar esta línea
- * // }
- * 
- * ═══════════════════════════════════════════════════════════════════
- */
 
 console.log('📦 Dashboard JavaScript cargado completamente');

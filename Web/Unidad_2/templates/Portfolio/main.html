@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
     
-    <!-- CSS - YOUR ORIGINAL FILE -->
+    <!-- CSS -->
     <link rel="stylesheet" href="/unidad2/portafolio/css/index.css">
     
     <!-- Tabler Icons -->
@@ -28,58 +28,29 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <!-- Back button -->
-            <button class="back-to-home-btn" onclick="goToHome()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Back to Home</span>
-            </button>
-
-            <!-- Theme toggle button -->
-            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
-                <span class="theme-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-                    </svg>
-                </span>
-                <span class="theme-text">Light Mode</span>
-            </button>
-
             <div class="header-content">
-                <div class="header-icon">
-                    <i class="ti ti-chart-line"></i>
-                </div>
-                <h1>📊 Visualization Tools IX</h1>
-                <p class="subtitle">Data Visualization and Analysis Tools</p>
+                <h1>Unit 2: Statistical Analysis</h1>
                 
-                <!-- Team Members Pills -->
+                <!-- Back button -->
+                <button class="back-to-home-btn" onclick="goToHome()">
+                    <i class="ti ti-arrow-left"></i>
+                    <span>Back to Home</span>
+                </button>
+                
+                <!-- Team Members -->
                 <div class="team-members">
-                    <span class="member-pill">Sergio Barrera</span>
-                    <span class="member-pill">Ariel Buenfil</span>
-                    <span class="member-pill">Damaris Dzul</span>
-                    <span class="member-pill">Paulina Chiquete</span>
-                    <span class="member-pill">Diego Monroy</span>
-                    <span class="member-pill">Alan Valbuena</span>
-                </div>
-                
-                <!-- Progress Indicator -->
-                <div class="progress-indicator">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 33%"></div>
-                    </div>
-                    <span class="progress-text">1 of 3 checkpoints completed</span>
+                    <span class="member-name">Sergio Barrera</span>
+                    <span class="member-name">Ariel Buenfil</span>
+                    <span class="member-name">Damaris Dzul</span>
+                    <span class="member-name">Paulina Chiquete</span>
+                    <span class="member-name">Diego Monroy</span>
+                    <span class="member-name">Alan Valbuena</span>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="checkpoints-intro">
-                <h2>Unit 2: Statistical Analysis</h2>
-                <p>Statistical methods applied to visualization and analysis of complex datasets. Track your progress through each checkpoint with practical exercises and reflections.</p>
-            </div>
-
             <div class="checkpoints-container" id="checkpointsContainer">
                 <!-- Checkpoints will be generated dynamically by JS -->
             </div>
@@ -93,11 +64,11 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Portfolio Unit 2 - <span id="current-year"></span> - Visualization Tools IX</p>
+            <p>Portfolio Unit 2 - <span id="current-year"></span></p>
         </footer>
     </div>
 
-    <!-- JavaScript - YOUR ORIGINAL FILE -->
+    <!-- JavaScript -->
     <script src="/unidad2/portafolio/js/index.js"></script>
 
     <!-- Initialization Script -->
