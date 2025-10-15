@@ -33,16 +33,16 @@ const regimeColors = {
 
 const worldMapData = {
     countries: [
-        { name: 'United States', code: 'USA', engagement: 9200 },
-        { name: 'China', code: 'CHN', engagement: 9900 },
-        { name: 'Japan', code: 'JPN', engagement: 15000 },
-        { name: 'Brazil', code: 'BRA', engagement: 11000 },
-        { name: 'Germany', code: 'DEU', engagement: 10000 },
-        { name: 'Mexico', code: 'MEX', engagement: 10000 },
-        { name: 'India', code: 'IND', engagement: 6000 },
-        { name: 'South Korea', code: 'KOR', engagement: 11000 },
-        { name: 'Singapore', code: 'SGP', engagement: 7000 },
-        { name: 'United Kingdom', code: 'GBR', engagement: 9000 }
+        { name: 'United States', code: 'USA', engagement: 9054 },
+        { name: 'China', code: 'CHN', engagement: 8909 },
+        { name: 'Japan', code: 'JPN', engagement: 14565 },
+        { name: 'Brazil', code: 'BRA', engagement: 10906 },
+        { name: 'Germany', code: 'DEU', engagement: 10261 },
+        { name: 'Mexico', code: 'MEX', engagement: 10182 },
+        { name: 'India', code: 'IND', engagement: 6081 },
+        { name: 'South Korea', code: 'KOR', engagement: 10948 },
+        { name: 'Singapore', code: 'SGP', engagement: 6973 },
+        { name: 'United Kingdom', code: 'GBR', engagement: 8758 }
     ]
 };
 
