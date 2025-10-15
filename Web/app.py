@@ -154,6 +154,19 @@ def checkpoint3_unit2():
         app.logger.error(f"Error cargando checkpoint 3 unidad 2: {e}")
         return f"Ocurrió un error al cargar el checkpoint 3 de la unidad 2: <pre>{error}</pre>", 500
 
+# =============== RUTAS PARA CHECKPOINT1 ===============
+@app.route('/static/Portfolio/css/checkpoint1/<path:filename>')
+def checkpoint1_css(filename):
+    """Servir CSS de Checkpoint 1"""
+    static_dir = os.path.join(os.path.dirname(__file__), 'Unidad_2', 'static', 'Portfolio', 'css', 'checkpoint1')
+    return send_from_directory(static_dir, filename)
+
+@app.route('/static/Portfolio/js/checkpoint1/<path:filename>')
+def checkpoint1_js(filename):
+    """Servir JS de Checkpoint 1"""
+    static_dir = os.path.join(os.path.dirname(__file__), 'Unidad_2', 'static', 'Portfolio', 'js', 'checkpoint1')
+    return send_from_directory(static_dir, filename)
+
 # Ejecutar la aplicación solo si este archivo se ejecuta directamente
 if __name__ == '__main__':
     print("\n=== FLASK INICIADO CORRECTAMENTE ===")

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Unit 2 - Checkpoints</title>
+    <title>Portfolio Unit 2 - Statistical Analysis</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <!-- Favicon - Statistical Chart Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='M18 17V9'/><path d='M13 17v-6'/><path d='M8 17v-3'/></svg>">
     
-    <!-- CSS - Ruta corregida según app.py -->
+    <!-- CSS -->
     <link rel="stylesheet" href="/unidad2/portafolio/css/index.css">
     
     <!-- Tabler Icons -->
@@ -28,48 +28,37 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <!-- Back button -->
-            <button class="back-to-home-btn" onclick="goToHome()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Back to Home</span>
-            </button>
-
-            <!-- Theme toggle button -->
-            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
-                <span class="theme-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-                    </svg>
-                </span>
-                <span class="theme-text">Light Mode</span>
-            </button>
-
             <div class="header-content">
-                <div class="header-icon">
-                    <i class="ti ti-notebook"></i>
-                </div>
-                <h1>Portfolio - Unit 2</h1>
-                <p class="subtitle">Statistical Analysis & Advanced Visualization</p>
-                <div class="progress-indicator">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 33%"></div>
+                <!-- Back button -->
+                <button class="back-to-home-btn" onclick="goToHome()">
+                    <i class="ti ti-arrow-left"></i>
+                    <span>Back to Home</span>
+                </button>
+                
+                <!-- Icon and Title - Inline -->
+                <div class="header-title-wrapper">
+                    <div class="header-icon">
+                        <i class="ti ti-chart-line"></i>
                     </div>
-                    <span class="progress-text">1 of 3 checkpoints completed</span>
+                    <h1>Unit 2: Statistical Analysis</h1>
+                </div>
+                
+                <!-- Team Members -->
+                <div class="team-members">
+                    <span class="member-name">Sergio Barrera</span>
+                    <span class="member-name">Ariel Buenfil</span>
+                    <span class="member-name">Damaris Dzul</span>
+                    <span class="member-name">Paulina Chiquete</span>
+                    <span class="member-name">Diego Monroy</span>
+                    <span class="member-name">Alan Valbuena</span>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="checkpoints-intro">
-                <h2>Learning Journey</h2>
-                <p>Track your progress through each checkpoint. Each section contains practical exercises, reflections, and evidence of learning.</p>
-            </div>
-
             <div class="checkpoints-container" id="checkpointsContainer">
-                <!-- Checkpoints will be generated dynamically -->
+                <!-- Checkpoints will be generated dynamically by JS -->
             </div>
 
             <!-- Loading indicator -->
@@ -81,11 +70,11 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Portfolio Unit 2 - <span id="current-year"></span> - Visualization Tools IX</p>
+            <p>Portfolio Unit 2 - <span id="current-year"></span></p>
         </footer>
     </div>
 
-    <!-- JavaScript - Ruta corregida según app.py -->
+    <!-- JavaScript -->
     <script src="/unidad2/portafolio/js/index.js"></script>
 
     <!-- Initialization Script -->

@@ -3,277 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptocurrency Spatio-Temporal Dashboard</title>
+    <title>Crypto Analytics Dashboard</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     
-    <!-- CSS Styles -->
-    <link rel="stylesheet" href="/unidad2/portafolio/css/checkpoint1/main.css">
-    
     <!-- D3.js -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
     <!-- Tabler Icons -->
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" as="style">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    
+    <!-- CSS - Relative path from templates to static -->
+    <link rel="stylesheet" href="../../../static/Portfolio/css/checkpoint1/main.css">
 </head>
 <body>
-    <div class="container">
+
+
+    <div class="dashboard">
         <!-- Header -->
-        <header class="header">
-            <button class="back-to-portfolio-btn" onclick="goToPortfolio()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Back to Portfolio</span>
+        <div class="header">
+            <h1>Cryptocurrency Analytics</h1>
+            <p>Advanced Volatility & Engagement Analysis</p>
+            
+            <!-- Back Button dentro del header -->
+            <button class="back-button" onclick="window.history.back()">
+                <i class="ti ti-arrow-left"></i>
+                <span>Back</span>
             </button>
+        </div>
 
-            <button class="theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
-                <span class="theme-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-                    </svg>
-                </span>
-                <span class="theme-text">Light Mode</span>
+        <!-- Tab System -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="overview" onclick="changeTab('overview')">
+                <i class="ti ti-world"></i>
+                <span>Global Overview</span>
             </button>
+            <button class="tab-button" data-tab="volatilidad" onclick="changeTab('volatilidad')">
+                <i class="ti ti-chart-line"></i>
+                <span>Volatility Analysis</span>
+            </button>
+            <button class="tab-button" data-tab="detalle" onclick="changeTab('detalle')">
+                <i class="ti ti-chart-bar"></i>
+                <span>Crypto Details</span>
+            </button>
+        </div>
 
-            <div class="header-content">
-                <div class="checkpoint-badge">
-                    <span class="badge-number">
-                        <i class="ti ti-currency-bitcoin"></i>
-                    </span>
-                    <span class="badge-text">Crypto Dashboard</span>
+        <!-- Tab 1: Global Overview -->
+        <div id="overview" class="tab-content active">
+            
+            <!-- World Map Container -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-map-2"></i>
+                    Global Engagement Map
                 </div>
-                <h1>Cryptocurrency Spatio-Temporal Analysis</h1>
-                <p class="subtitle">Interactive visualization of global cryptocurrency market dynamics</p>
-                
-                <div class="checkpoint-meta">
-                    <div class="meta-item">
-                        <i class="ti ti-world"></i>
-                        <span>Global Coverage</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="ti ti-chart-line"></i>
-                        <span>Real-time Data</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="ti ti-database"></i>
-                        <span id="data-count">0 Cryptocurrencies</span>
-                    </div>
+                <div class="chart-description">
+                    This interactive map visualizes the <strong>geographic distribution</strong> of cryptocurrency 
+                    engagement worldwide. Color intensity represents relative interest level in each country. 
+                    <strong>Japan</strong> leads with 15,000 engagement points, followed by Brazil and South Korea. 
+                    Hover over each country to see detailed metrics.
                 </div>
-            </div>
-        </header>
-
-        <!-- Main content -->
-        <main class="main-content dashboard-main">
-            <!-- Control Panel -->
-            <div class="control-panel">
-                <div class="control-group">
-                    <label for="crypto-select">Select Cryptocurrency:</label>
-                    <select id="crypto-select">
-                        <option value="all">All Cryptocurrencies</option>
-                        <option value="bitcoin">Bitcoin (BTC)</option>
-                        <option value="ethereum">Ethereum (ETH)</option>
-                        <option value="ripple">Ripple (XRP)</option>
-                        <option value="litecoin">Litecoin (LTC)</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="time-range">Time Range:</label>
-                    <select id="time-range">
-                        <option value="7d">Last 7 Days</option>
-                        <option value="30d">Last 30 Days</option>
-                        <option value="90d">Last 90 Days</option>
-                        <option value="1y">Last Year</option>
-                    </select>
-                </div>
-
-                <button class="refresh-btn" onclick="refreshData()">
-                    <i class="ti ti-refresh"></i>
-                    Refresh Data
-                </button>
+                <div id="world-map-chart"></div>
             </div>
 
-            <!-- Sections container -->
-            <div class="dashboard-grid">
-                <!-- KPI Cards -->
-                <section class="dashboard-section full-width">
-                    <h2 class="section-title">Key Performance Indicators</h2>
-                    <div class="kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-icon">
-                                <i class="ti ti-coin"></i>
-                            </div>
-                            <div class="kpi-content">
-                                <p class="kpi-label">Total Market Cap</p>
-                                <p class="kpi-value" id="market-cap">$2.15T</p>
-                                <p class="kpi-change positive">
-                                    <i class="ti ti-trending-up"></i>
-                                    +12.5%
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-icon">
-                                <i class="ti ti-chart-candle"></i>
-                            </div>
-                            <div class="kpi-content">
-                                <p class="kpi-label">24h Trading Volume</p>
-                                <p class="kpi-value" id="volume-24h">$98.2B</p>
-                                <p class="kpi-change positive">
-                                    <i class="ti ti-trending-up"></i>
-                                    +8.3%
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-icon">
-                                <i class="ti ti-world"></i>
-                            </div>
-                            <div class="kpi-content">
-                                <p class="kpi-label">Dominant Currency</p>
-                                <p class="kpi-value" id="dominant-currency">Bitcoin</p>
-                                <p class="kpi-change">
-                                    <i class="ti ti-info-circle"></i>
-                                    42% Market Share
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="kpi-card">
-                            <div class="kpi-icon">
-                                <i class="ti ti-users"></i>
-                            </div>
-                            <div class="kpi-content">
-                                <p class="kpi-label">Active Wallets</p>
-                                <p class="kpi-value" id="active-wallets">42.3M</p>
-                                <p class="kpi-change positive">
-                                    <i class="ti ti-trending-up"></i>
-                                    +2.1%
-                                </p>
-                            </div>
-                        </div>
+            <!-- Chart Grid -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-trophy"></i>
+                        Top 10 Countries by Engagement
                     </div>
-                </section>
-
-                <!-- World Map -->
-                <section class="dashboard-section full-width">
-                    <h2 class="section-title">
-                        <i class="ti ti-world"></i>
-                        Global Cryptocurrency Distribution
-                    </h2>
-                    <div id="world-map-container" class="map-container">
-                        <svg id="world-map"></svg>
+                    <div class="chart-description">
+                        Ranking of the 10 countries with highest engagement in the crypto ecosystem.
                     </div>
-                    <div class="map-legend">
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: #fee5d9;"></span>
-                            <span>Low Activity</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: #fcae91;"></span>
-                            <span>Medium Activity</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: #fb6a4a;"></span>
-                            <span>High Activity</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: #cb181d;"></span>
-                            <span>Very High Activity</span>
-                        </div>
-                    </div>
-                </section>
+                    <div id="top-countries-chart"></div>
+                </div>
 
-                <!-- Price Trend Chart -->
-                <section class="dashboard-section half-width">
-                    <h2 class="section-title">
-                        <i class="ti ti-chart-line"></i>
-                        Price Trends (30 Days)
-                    </h2>
-                    <div class="chart-container">
-                        <canvas id="price-chart"></canvas>
-                    </div>
-                </section>
-
-                <!-- Market Share Pie Chart -->
-                <section class="dashboard-section half-width">
-                    <h2 class="section-title">
+                <div class="chart-container">
+                    <div class="chart-title">
                         <i class="ti ti-chart-pie"></i>
-                        Market Share Distribution
-                    </h2>
-                    <div class="chart-container">
-                        <canvas id="market-share-chart"></canvas>
+                        Regional Distribution
                     </div>
-                </section>
-
-                <!-- Volume Analysis -->
-                <section class="dashboard-section half-width">
-                    <h2 class="section-title">
-                        <i class="ti ti-chart-histogram"></i>
-                        Trading Volume by Region
-                    </h2>
-                    <div class="chart-container">
-                        <canvas id="volume-chart"></canvas>
+                    <div class="chart-description">
+                        Analysis of engagement distribution by continental regions.
                     </div>
-                </section>
-
-                <!-- Volatility Heatmap -->
-                <section class="dashboard-section half-width">
-                    <h2 class="section-title">
-                        <i class="ti ti-flame"></i>
-                        Market Volatility
-                    </h2>
-                    <div id="volatility-heatmap" class="heatmap-container"></div>
-                </section>
-
-                <!-- Top Cryptocurrencies Table -->
-                <section class="dashboard-section full-width">
-                    <h2 class="section-title">
-                        <i class="ti ti-table"></i>
-                        Top 10 Cryptocurrencies by Market Cap
-                    </h2>
-                    <div class="table-responsive">
-                        <table id="crypto-table" class="crypto-table">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Name</th>
-                                    <th>Symbol</th>
-                                    <th>Price</th>
-                                    <th>Market Cap</th>
-                                    <th>24h Change</th>
-                                    <th>Volume</th>
-                                </tr>
-                            </thead>
-                            <tbody id="crypto-table-body">
-                                <!-- Data populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                    <div id="regional-distribution-chart"></div>
+                </div>
             </div>
-        </main>
+        </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>
-                Cryptocurrency Spatio-Temporal Dashboard - 
-                <span id="current-year"></span> - 
-                Data Updated: <span id="last-update">Just now</span>
-            </p>
-        </footer>
+        <!-- Tab 2: Volatility Analysis -->
+        <div id="volatilidad" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-activity"></i>
+                    30-Day Volatility Comparison
+                </div>
+                <div class="chart-description">
+                    Comparison of <strong>30-day rolling volatility</strong> across major cryptocurrencies. 
+                    DOGE-USD leads with 6.53%, while USDT-USD maintains expected stability at 0.04%. 
+                    This metric is crucial for assessing the <strong>risk</strong> of each asset.
+                </div>
+                <div id="volatility-comparison-chart"></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-arrows-cross"></i>
+                        Cross-Correlation Analysis
+                    </div>
+                    <div class="chart-description">
+                        <strong>Cross-correlation</strong> analysis between search interest and market volatility 
+                        in a ±52 week window. Significant peaks at -16 and +20 weeks suggest that public interest 
+                        both predicts and follows volatility events.
+                    </div>
+                    <div id="correlation-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-chart-dots"></i>
+                        Engagement vs Volatility
+                    </div>
+                    <div class="chart-description">
+                        Relationship between <strong>total engagement</strong> and <strong>volatility preference</strong> 
+                        by country. Bubble size represents relative market importance.
+                    </div>
+                    <div id="scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Crypto Details -->
+        <div id="detalle" class="tab-content">
+            <!-- Cryptocurrency Selector -->
+            <div class="selector-container">
+                <label for="crypto-selector">
+                    <i class="ti ti-coin-bitcoin"></i>
+                    Select Cryptocurrency:
+                </label>
+                <select id="crypto-selector" onchange="updateDetailCharts()">
+                    <option value="BTC-USD">Bitcoin (BTC)</option>
+                    <option value="ETH-USD">Ethereum (ETH)</option>
+                    <option value="DOGE-USD">Dogecoin (DOGE)</option>
+                    <option value="SOL-USD">Solana (SOL)</option>
+                    <option value="USDT-USD">Tether (USDT)</option>
+                </select>
+            </div>
+
+            <!-- Chart Grid -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-wave-square"></i>
+                        Volatility with Regimes
+                    </div>
+                    <div class="chart-description">
+                        Temporal evolution of <strong>realized volatility</strong> classified into three regimes: 
+                        <span style="color: #28a745;">Low</span>, <span style="color: #ffc107;">Medium</span>, 
+                        and <span style="color: #dc3545;">High</span>. Thresholds are calculated using 33rd and 67th percentiles.
+                    </div>
+                    <div id="regime-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-chart-histogram"></i>
+                        Volatility ACF
+                    </div>
+                    <div class="chart-description">
+                        The <strong>Autocorrelation Function (ACF)</strong> measures volatility persistence. 
+                        Bars outside the gray zone indicate <strong>significant autocorrelation</strong> 
+                        (volatility clustering).
+                    </div>
+                    <div id="acf-chart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-candlestick"></i>
+                    Absolute Returns vs Rolling Volatility
+                </div>
+                <div class="chart-description">
+                    Overlay of <strong>absolute returns</strong> (bars) with <strong>rolling volatility</strong> 
+                    (red line). Enables identification of market events that generated extreme movements.
+                </div>
+                <div id="returns-vol-chart"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-bubble"></i>
+                    Volatility vs Transaction Volume
+                </div>
+                <div class="chart-description">
+                    <strong>Scatter plot</strong> examining the relationship between trading volume and volatility. 
+                    The ρ coefficient quantifies this relationship. Useful for understanding 
+                    <strong>market microstructure</strong>.
+                </div>
+                <div id="scatter-vol-chart"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- JavaScript Files -->
-    <script src="/unidad2/portafolio/js/checkpoint1/main.js"></script>
+    <!-- Global Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <!-- JavaScript - Relative path from templates to static -->
+    <script src="../../../static/Portfolio/js/checkpoint1/main.js"></script>
 </body>
 </html>
