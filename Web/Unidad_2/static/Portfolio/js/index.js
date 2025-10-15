@@ -189,10 +189,13 @@ function createCheckpointCard(checkpoint, index) {
     
     // Add click event to entire card
     card.addEventListener('click', (e) => {
-        // Don't navigate if clicking the button (it has its own handler)
-        if (!e.target.closest('.view-btn')) {
-            navigateToCheckpoint(checkpoint.number);
+        // Only block navigation if clicking footer elements
+        if (e.target.closest('.checkpoint-footer') || 
+            e.target.closest('.checkpoint-meta')) {
+            return; // Don't navigate
         }
+        // Navigate when clicking anywhere else on the card
+        navigateToCheckpoint(checkpoint.number);
     });
     
     return card;

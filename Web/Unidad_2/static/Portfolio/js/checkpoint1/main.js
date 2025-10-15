@@ -177,33 +177,40 @@ function showTooltip(event, html) {
     // Actualizar contenido
     tooltip.html(html);
     
+    // Hacer visible primero para obtener dimensiones correctas
+    tooltip.style('opacity', 1);
+    
     // Obtener dimensiones del tooltip
     const tooltipNode = tooltip.node();
     const tooltipWidth = tooltipNode.offsetWidth;
     const tooltipHeight = tooltipNode.offsetHeight;
     
-    // Calcular posición inteligente cerca del cursor
-    let left = event.pageX + 15; // 15px a la derecha del cursor
-    let top = event.pageY - tooltipHeight - 15; // 15px arriba del cursor
+    // Usar clientX/clientY en lugar de pageX/pageY para position: fixed
+    let left = event.clientX + 15; // 15px a la derecha del cursor
+    let top = event.clientY - tooltipHeight - 15; // 15px arriba del cursor
     
     // Ajustar si se sale por la derecha
     if (left + tooltipWidth > window.innerWidth) {
-        left = event.pageX - tooltipWidth - 15; // Mover a la izquierda
+        left = event.clientX - tooltipWidth - 15; // Mover a la izquierda
     }
     
     // Ajustar si se sale por arriba
-    if (top < window.scrollY) {
-        top = event.pageY + 15; // Mover abajo del cursor
+    if (top < 0) {
+        top = event.clientY + 15; // Mover abajo del cursor
     }
     
     // Ajustar si se sale por abajo
-    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
-        top = window.innerHeight + window.scrollY - tooltipHeight - 10;
+    if (top + tooltipHeight > window.innerHeight) {
+        top = window.innerHeight - tooltipHeight - 10;
     }
     
-    // Aplicar posición y mostrar
+    // Ajustar si se sale por la izquierda
+    if (left < 0) {
+        left = 10;
+    }
+    
+    // Aplicar posición
     tooltip
-        .style('opacity', 1)
         .style('left', left + 'px')
         .style('top', top + 'px')
         .style('pointer-events', 'none');

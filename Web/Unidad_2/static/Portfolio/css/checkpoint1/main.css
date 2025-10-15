@@ -362,18 +362,18 @@ body {
    ═══════════════════════════════════════════════════════════════════ */
 
 .tooltip {
-    position: fixed;
+    position: fixed;  /* ← Debe ser fixed, NO absolute */
     background: rgba(0, 0, 0, 0.92);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     color: white;
     padding: 12px 16px;
     border-radius: var(--radius-sm);
-    pointer-events: none;
+    pointer-events: none;  /* ← Importante para que no interfiera */
     opacity: 0;
     transition: opacity var(--transition);
     font-size: 14px;
-    z-index: 10000;
+    z-index: 10000;  /* ← Debe estar muy arriba */
     box-shadow: var(--shadow-lg);
     max-width: 300px;
     line-height: 1.5;
