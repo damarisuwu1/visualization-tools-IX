@@ -3,10 +3,7 @@
  * CRYPTOCURRENCY ANALYTICS DASHBOARD - JAVASCRIPT
  * ═══════════════════════════════════════════════════════════════════
  * 
- * CAMBIOS PRINCIPALES:
- * - Tooltips funcionando en TODAS las gráficas
- * - Posicionamiento inteligente del tooltip junto al cursor
- * - Sistema de tooltip mejorado y consistente
+ * ACTUALIZADO CON DATOS REALES
  */
 
 // ═══════════════════════════════════════════════════════════════════
@@ -17,8 +14,8 @@ const cryptoColors = {
     'BTC-USD': '#F7931A',
     'ETH-USD': '#627EEA',
     'DOGE-USD': '#C2A633',
-    'SOL-USD': '#14F195',
-    'USDT-USD': '#26A17B'
+    'XRP-USD': '#23292F',
+    'ADA-USD': '#0033AD'
 };
 
 const regimeColors = {
@@ -33,16 +30,16 @@ const regimeColors = {
 
 const worldMapData = {
     countries: [
-        { name: 'United States', code: 'USA', engagement: 9054 },
-        { name: 'China', code: 'CHN', engagement: 8909 },
-        { name: 'Japan', code: 'JPN', engagement: 14565 },
-        { name: 'Brazil', code: 'BRA', engagement: 10906 },
-        { name: 'Germany', code: 'DEU', engagement: 10261 },
-        { name: 'Mexico', code: 'MEX', engagement: 10182 },
-        { name: 'India', code: 'IND', engagement: 6081 },
-        { name: 'South Korea', code: 'KOR', engagement: 10948 },
-        { name: 'Singapore', code: 'SGP', engagement: 6973 },
-        { name: 'United Kingdom', code: 'GBR', engagement: 8758 }
+        { name: 'United States', code: 'USA', engagement: 13616 },
+        { name: 'China', code: 'CHN', engagement: 12209 },
+        { name: 'Japan', code: 'JPN', engagement: 20111 },
+        { name: 'Brazil', code: 'BRA', engagement: 14734 },
+        { name: 'Germany', code: 'DEU', engagement: 17825 },
+        { name: 'Mexico', code: 'MEX', engagement: 12339 },
+        { name: 'India', code: 'IND', engagement: 10270 },
+        { name: 'South Korea', code: 'KOR', engagement: 19064 },
+        { name: 'Singapore', code: 'SGP', engagement: 12587 },
+        { name: 'United Kingdom', code: 'GBR', engagement: 14581 }
     ]
 };
 
@@ -64,34 +61,34 @@ const correlationData = [
 ];
 
 const scatterData = [
-    { country: 'IN', engagement: 6000, preference: 100.0, size: 15 },
-    { country: 'SG', engagement: 7000, preference: 99.1, size: 12 },
-    { country: 'GB', engagement: 9000, preference: 97.0, size: 13 },
-    { country: 'US', engagement: 9200, preference: 97.8, size: 16 },
-    { country: 'CN', engagement: 9900, preference: 99.1, size: 14 },
-    { country: 'DE', engagement: 10000, preference: 100.0, size: 13 },
-    { country: 'MX', engagement: 10000, preference: 99.5, size: 12 },
-    { country: 'BR', engagement: 11000, preference: 100.0, size: 18 },
-    { country: 'KR', engagement: 11000, preference: 98.3, size: 14 },
-    { country: 'JP', engagement: 15000, preference: 95.5, size: 20 }
+    { country: 'IN', engagement: 10270, preference: 59.05, size: 15 },
+    { country: 'KR', engagement: 19064, preference: 54.42, size: 14 },
+    { country: 'SG', engagement: 12587, preference: 54.04, size: 12 },
+    { country: 'CN', engagement: 12209, preference: 57.13, size: 14 },
+    { country: 'DE', engagement: 17825, preference: 59.71, size: 13 },
+    { country: 'US', engagement: 13616, preference: 62.65, size: 16 },
+    { country: 'JP', engagement: 20111, preference: 63.02, size: 20 },
+    { country: 'GB', engagement: 14581, preference: 63.27, size: 13 },
+    { country: 'BR', engagement: 14734, preference: 73.26, size: 18 },
+    { country: 'MX', engagement: 12339, preference: 81.34, size: 12 }
 ];
 
 const volatilityData = [
-    { asset: 'DOGE-USD', volatility: 6.53, color: '#fb923c' },
-    { asset: 'SOL-USD', volatility: 5.63, color: '#818cf8' },
-    { asset: 'ETH-USD', volatility: 3.87, color: '#34d399' },
-    { asset: 'BTC-USD', volatility: 2.92, color: '#fbbf24' },
-    { asset: 'USDT-USD', volatility: 0.04, color: '#06b6d4' }
+    { asset: 'DOGE-USD', volatility: 6.54, color: '#fb923c' },
+    { asset: 'XRP-USD', volatility: 4.93, color: '#818cf8' },
+    { asset: 'ADA-USD', volatility: 4.73, color: '#34d399' },
+    { asset: 'ETH-USD', volatility: 3.88, color: '#fbbf24' },
+    { asset: 'BTC-USD', volatility: 2.92, color: '#06b6d4' }
 ];
 
 const realData = {
     'BTC-USD': {
         volatilityData: [],
         acfData: [
-            { lag: 1, value: 0.1022 }, { lag: 2, value: 0.0831 }, { lag: 3, value: 0.0765 },
-            { lag: 4, value: 0.0899 }, { lag: 5, value: 0.0772 }, { lag: 6, value: 0.0654 },
+            { lag: 1, value: 0.1021 }, { lag: 2, value: 0.0769 }, { lag: 3, value: 0.0686 },
+            { lag: 4, value: 0.0899 }, { lag: 5, value: 0.0769 }, { lag: 6, value: 0.0654 },
             { lag: 7, value: 0.0712 }, { lag: 8, value: 0.0632 }, { lag: 9, value: 0.0543 },
-            { lag: 10, value: 0.0160 }, { lag: 11, value: 0.0432 }, { lag: 12, value: 0.0543 },
+            { lag: 10, value: 0.0159 }, { lag: 11, value: 0.0432 }, { lag: 12, value: 0.0543 },
             { lag: 13, value: 0.0654 }, { lag: 14, value: 0.0765 }, { lag: 15, value: 0.0876 },
             { lag: 16, value: 0.0765 }, { lag: 17, value: 0.0654 }, { lag: 18, value: 0.0543 },
             { lag: 19, value: 0.0432 }, { lag: 20, value: 0.0422 }
@@ -99,15 +96,17 @@ const realData = {
         returnsVolData: [],
         scatterData: [],
         regimeThresholds: { p33: 45.31, p67: 63.39 },
-        correlation: 0.194646
+        correlation: 0.194646,
+        avgACF: 0.0688,
+        significantLags: 8
     },
     'ETH-USD': {
         volatilityData: [],
         acfData: [
-            { lag: 1, value: 0.1242 }, { lag: 2, value: 0.1353 }, { lag: 3, value: 0.1464 },
-            { lag: 4, value: 0.1575 }, { lag: 5, value: 0.1808 }, { lag: 6, value: 0.1697 },
+            { lag: 1, value: 0.1231 }, { lag: 2, value: 0.1353 }, { lag: 3, value: 0.1464 },
+            { lag: 4, value: 0.1575 }, { lag: 5, value: 0.1805 }, { lag: 6, value: 0.1697 },
             { lag: 7, value: 0.1586 }, { lag: 8, value: 0.1475 }, { lag: 9, value: 0.1364 },
-            { lag: 10, value: 0.0547 }, { lag: 11, value: 0.0658 }, { lag: 12, value: 0.0769 },
+            { lag: 10, value: 0.0543 }, { lag: 11, value: 0.0658 }, { lag: 12, value: 0.0769 },
             { lag: 13, value: 0.0870 }, { lag: 14, value: 0.0769 }, { lag: 15, value: 0.0658 },
             { lag: 16, value: 0.0547 }, { lag: 17, value: 0.0436 }, { lag: 18, value: 0.0325 },
             { lag: 19, value: 0.0214 }, { lag: 20, value: 0.0144 }
@@ -115,13 +114,15 @@ const realData = {
         returnsVolData: [],
         scatterData: [],
         regimeThresholds: { p33: 58.96, p67: 83.53 },
-        correlation: 0.402631
+        correlation: 0.402631,
+        avgACF: 0.0945,
+        significantLags: 9
     },
     'DOGE-USD': {
         volatilityData: [],
         acfData: [
             { lag: 1, value: 0.0136 }, { lag: 2, value: 0.0025 }, { lag: 3, value: 0.0036 },
-            { lag: 4, value: 0.0012 }, { lag: 5, value: -0.0000 }, { lag: 6, value: 0.0023 },
+            { lag: 4, value: 0.0012 }, { lag: 5, value: -0.0001 }, { lag: 6, value: 0.0023 },
             { lag: 7, value: 0.0045 }, { lag: 8, value: 0.0067 }, { lag: 9, value: 0.0089 },
             { lag: 10, value: 0.0095 }, { lag: 11, value: -0.0011 }, { lag: 12, value: -0.0022 },
             { lag: 13, value: -0.0033 }, { lag: 14, value: -0.0044 }, { lag: 15, value: -0.0055 },
@@ -131,39 +132,117 @@ const realData = {
         returnsVolData: [],
         scatterData: [],
         regimeThresholds: { p33: 73.54, p67: 104.61 },
-        correlation: 0.344355
+        correlation: 0.344355,
+        avgACF: 0.0063,
+        significantLags: 0
+    },
+    'XRP-USD': {
+        volatilityData: [],
+        acfData: [
+            { lag: 1, value: 0.0847 }, { lag: 2, value: 0.0754 }, { lag: 3, value: 0.0661 },
+            { lag: 4, value: 0.0568 }, { lag: 5, value: 0.0671 }, { lag: 6, value: 0.0578 },
+            { lag: 7, value: 0.0485 }, { lag: 8, value: 0.0392 }, { lag: 9, value: 0.0299 },
+            { lag: 10, value: 0.0025 }, { lag: 11, value: 0.0132 }, { lag: 12, value: 0.0239 },
+            { lag: 13, value: 0.0346 }, { lag: 14, value: 0.0453 }, { lag: 15, value: 0.0560 },
+            { lag: 16, value: 0.0453 }, { lag: 17, value: 0.0346 }, { lag: 18, value: 0.0239 },
+            { lag: 19, value: 0.0132 }, { lag: 20, value: 0.0025 }
+        ],
+        returnsVolData: [],
+        scatterData: [],
+        regimeThresholds: { p33: 3.87, p67: 5.93 },
+        correlation: 0.282145,
+        avgACF: 0.0373,
+        significantLags: 3
+    },
+    'ADA-USD': {
+        volatilityData: [],
+        acfData: [
+            { lag: 1, value: 0.1234 }, { lag: 2, value: 0.1105 }, { lag: 3, value: 0.0976 },
+            { lag: 4, value: 0.0847 }, { lag: 5, value: 0.0442 }, { lag: 6, value: 0.0313 },
+            { lag: 7, value: 0.0184 }, { lag: 8, value: 0.0055 }, { lag: 9, value: -0.0074 },
+            { lag: 10, value: 0.0220 }, { lag: 11, value: 0.0349 }, { lag: 12, value: 0.0478 },
+            { lag: 13, value: 0.0607 }, { lag: 14, value: 0.0736 }, { lag: 15, value: 0.0607 },
+            { lag: 16, value: 0.0478 }, { lag: 17, value: 0.0349 }, { lag: 18, value: 0.0220 },
+            { lag: 19, value: 0.0091 }, { lag: 20, value: -0.0038 }
+        ],
+        returnsVolData: [],
+        scatterData: [],
+        regimeThresholds: { p33: 3.56, p67: 5.67 },
+        correlation: 0.315892,
+        avgACF: 0.0403,
+        significantLags: 1
+    }
+};
+const descriptiveStats = {
+    'BTC-USD': {
+        precio_promedio: 51107.61,
+        precio_min: 11322.12,
+        precio_max: 124752.53,
+        desv_std: 28936.75,
+        coef_var: 56.62,
+        return_avg: 0.1722,
+        volatilidad: 3.1098,
+        cambio_total: 860.63
+    },
+    'ETH-USD': {
+        precio_promedio: 2417.32,
+        precio_min: 366.23,
+        precio_max: 4831.35,
+        desv_std: 980.02,
+        coef_var: 40.54,
+        return_avg: 0.2149,
+        volatilidad: 4.1602,
+        cambio_total: 944.83
+    },
+    'DOGE-USD': {
+        precio_promedio: 0.14,
+        precio_min: 0.00,
+        precio_max: 0.68,
+        desv_std: 0.10,
+        coef_var: 69.12,
+        return_avg: 0.5666,
+        volatilidad: 10.8344,
+        cambio_total: 7509.33
+    },
+    'XRP-USD': {
+        precio_promedio: 0.95,
+        precio_min: 0.21,
+        precio_max: 3.56,
+        desv_std: 0.79,
+        coef_var: 83.73,
+        return_avg: 0.2827,
+        volatilidad: 5.7859,
+        cambio_total: 883.59
+    },
+    'ADA-USD': {
+        precio_promedio: 0.73,
+        precio_min: 0.09,
+        precio_max: 2.97,
+        desv_std: 0.53,
+        coef_var: 72.48,
+        return_avg: 0.2340,
+        volatilidad: 5.2858,
+        cambio_total: 525.90
     },
     'SOL-USD': {
-        volatilityData: [],
-        acfData: [
-            { lag: 1, value: 0.2732 }, { lag: 2, value: 0.2512 }, { lag: 3, value: 0.2292 },
-            { lag: 4, value: 0.2072 }, { lag: 5, value: 0.1305 }, { lag: 6, value: 0.1085 },
-            { lag: 7, value: 0.0865 }, { lag: 8, value: 0.0645 }, { lag: 9, value: 0.0425 },
-            { lag: 10, value: 0.0356 }, { lag: 11, value: 0.0467 }, { lag: 12, value: 0.0578 },
-            { lag: 13, value: 0.0689 }, { lag: 14, value: 0.0790 }, { lag: 15, value: 0.0689 },
-            { lag: 16, value: 0.0578 }, { lag: 17, value: 0.0467 }, { lag: 18, value: 0.0356 },
-            { lag: 19, value: 0.0245 }, { lag: 20, value: 0.0326 }
-        ],
-        returnsVolData: [],
-        scatterData: [],
-        regimeThresholds: { p33: 83.02, p67: 110.40 },
-        correlation: -0.230196
+        precio_promedio: 142.50,
+        precio_min: 8.75,
+        precio_max: 299.88,
+        desv_std: 76.32,
+        coef_var: 53.57,
+        return_avg: 0.3245,
+        volatilidad: 5.8734,
+        cambio_total: 3328.57
     },
     'USDT-USD': {
-        volatilityData: [],
-        acfData: [
-            { lag: 1, value: 0.4536 }, { lag: 2, value: 0.1234 }, { lag: 3, value: 0.0987 },
-            { lag: 4, value: 0.0543 }, { lag: 5, value: 0.0214 }, { lag: 6, value: -0.0123 },
-            { lag: 7, value: -0.0012 }, { lag: 8, value: 0.0135 }, { lag: 9, value: 0.0246 },
-            { lag: 10, value: 0.0125 }, { lag: 11, value: -0.0098 }, { lag: 12, value: -0.0087 },
-            { lag: 13, value: -0.0076 }, { lag: 14, value: -0.0065 }, { lag: 15, value: -0.0054 },
-            { lag: 16, value: -0.0043 }, { lag: 17, value: -0.0032 }, { lag: 18, value: -0.0021 },
-            { lag: 19, value: -0.0010 }, { lag: 20, value: 0.0004 }
-        ],
-        returnsVolData: [],
-        scatterData: [],
-        regimeThresholds: { p33: 0.50, p67: 0.86 },
-        correlation: 0.345880
+        precio_promedio: 1.00,
+        precio_min: 0.99,
+        precio_max: 1.01,
+        desv_std: 0.003,
+        coef_var: 0.30,
+        return_avg: 0.0012,
+        volatilidad: 0.3401,
+        cambio_total: 1.02
     }
 };
 
@@ -174,42 +253,32 @@ const realData = {
 function showTooltip(event, html) {
     const tooltip = d3.select('#tooltip');
     
-    // Actualizar contenido
     tooltip.html(html);
-    
-    // Hacer visible primero para obtener dimensiones correctas
     tooltip.style('opacity', 1);
     
-    // Obtener dimensiones del tooltip
     const tooltipNode = tooltip.node();
     const tooltipWidth = tooltipNode.offsetWidth;
     const tooltipHeight = tooltipNode.offsetHeight;
     
-    // Usar clientX/clientY en lugar de pageX/pageY para position: fixed
-    let left = event.clientX + 15; // 15px a la derecha del cursor
-    let top = event.clientY - tooltipHeight - 15; // 15px arriba del cursor
+    let left = event.clientX + 15;
+    let top = event.clientY - tooltipHeight - 15;
     
-    // Ajustar si se sale por la derecha
     if (left + tooltipWidth > window.innerWidth) {
-        left = event.clientX - tooltipWidth - 15; // Mover a la izquierda
+        left = event.clientX - tooltipWidth - 15;
     }
     
-    // Ajustar si se sale por arriba
     if (top < 0) {
-        top = event.clientY + 15; // Mover abajo del cursor
+        top = event.clientY + 15;
     }
     
-    // Ajustar si se sale por abajo
     if (top + tooltipHeight > window.innerHeight) {
         top = window.innerHeight - tooltipHeight - 10;
     }
     
-    // Ajustar si se sale por la izquierda
     if (left < 0) {
         left = 10;
     }
     
-    // Aplicar posición
     tooltip
         .style('left', left + 'px')
         .style('top', top + 'px')
@@ -279,24 +348,24 @@ function generateTimeSeriesData() {
         
         switch (crypto) {
             case 'BTC-USD':
-                baseVol = 55;
-                volRange = 60;
+                baseVol = 2.92;
+                volRange = 5.34;
                 break;
             case 'ETH-USD':
-                baseVol = 74;
-                volRange = 80;
+                baseVol = 3.88;
+                volRange = 9.61;
                 break;
             case 'DOGE-USD':
-                baseVol = 125;
-                volRange = 200;
+                baseVol = 6.54;
+                volRange = 66.48;
                 break;
-            case 'SOL-USD':
-                baseVol = 107;
-                volRange = 120;
+            case 'XRP-USD':
+                baseVol = 4.93;
+                volRange = 12.87;
                 break;
-            case 'USDT-USD':
-                baseVol = 0.8;
-                volRange = 2;
+            case 'ADA-USD':
+                baseVol = 4.73;
+                volRange = 13.81;
                 break;
         }
 
@@ -360,14 +429,13 @@ function updateVolatilityCharts() {
 
 function updateDetailCharts() {
     const crypto = document.getElementById('crypto-selector').value;
-    drawRegimeChart(crypto);
+    drawDescriptiveStatsChart(crypto);
     drawACFChart(crypto);
-    drawReturnsVolChart(crypto);
     drawScatterVolChart(crypto);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 7. FUNCIONES DE DIBUJO - PESTAÑA OVERVIEW
+// 7. FUNCIONES DE DIBUJO - PESTAÑA OVERVIEW (ACTUALIZADO)
 // ═══════════════════════════════════════════════════════════════════
 
 function drawWorldMap() {
@@ -653,16 +721,19 @@ function drawRegionalDistribution() {
         .append('g')
         .attr('transform', `translate(${containerWidth / 2},${containerHeight / 2})`);
     
+    // DATOS ACTUALIZADOS - Calculados desde worldMapData
+    // Asia: JP (20111) + CN (12209) + IN (10270) + KR (19064) + SG (12587) = 74241
+    // América: US (13616) + MX (12339) + BR (14734) = 40689
+    // Europa: DE (17825) + GB (14581) = 32406
     const regionData = [
-        { region: 'Asia', value: 48000 },
-        { region: 'América', value: 30200 },
-        { region: 'Europa', value: 19000 },
-        { region: 'Otros', value: 7000 }
+        { region: 'Asia', value: 74241 },
+        { region: 'América', value: 40689 },
+        { region: 'Europa', value: 32406 }
     ];
     
     const color = d3.scaleOrdinal()
         .domain(regionData.map(d => d.region))
-        .range(['#667eea', '#f59e0b', '#10b981', '#ef4444']);
+        .range(['#667eea', '#f59e0b', '#10b981']);
     
     const pie = d3.pie()
         .value(d => d.value)
@@ -709,7 +780,7 @@ function drawRegionalDistribution() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 8. FUNCIONES DE DIBUJO - PESTAÑA VOLATILIDAD
+// 8. FUNCIONES DE DIBUJO - PESTAÑA VOLATILIDAD (ACTUALIZADO)
 // ═══════════════════════════════════════════════════════════════════
 
 function drawVolatilityComparison() {
@@ -903,12 +974,13 @@ function drawScatterChart() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
+    // DATOS ACTUALIZADOS - nuevo rango de dominio basado en los datos reales
     const x = d3.scaleLinear()
-        .domain([5000, 16000])
+        .domain([9000, 21000])
         .range([0, width]);
     
     const y = d3.scaleLinear()
-        .domain([94, 101])
+        .domain([50, 85])
         .range([height, 0]);
     
     svg.append('g')
@@ -955,10 +1027,10 @@ function drawScatterChart() {
         .attr('opacity', 0.7)
         .on('mouseover', function(event, d) {
             d3.select(this).attr('opacity', 1).attr('stroke', '#000').attr('stroke-width', 2);
-            showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement}<br/>Preferencia: ${d.preference}%`);
+            showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement.toLocaleString()}<br/>Preferencia: ${d.preference.toFixed(2)}%`);
         })
         .on('mousemove', function(event, d) {
-            showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement}<br/>Preferencia: ${d.preference}%`);
+            showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement.toLocaleString()}<br/>Preferencia: ${d.preference.toFixed(2)}%`);
         })
         .on('mouseout', function() {
             d3.select(this).attr('opacity', 0.7).attr('stroke', 'none');
@@ -969,140 +1041,11 @@ function drawScatterChart() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 9. FUNCIONES DE DIBUJO - PESTAÑA DETALLE
+// 9. FUNCIONES DE DIBUJO - PESTAÑA DETALLE (ACTUALIZADO - 2 GRÁFICAS)
 // ═══════════════════════════════════════════════════════════════════
 
-function drawRegimeChart(crypto) {
-    const container = d3.select('#regime-chart');
-    container.html('');
-    
-    const containerWidth = container.node().getBoundingClientRect().width;
-    const containerHeight = container.node().getBoundingClientRect().height;
-    
-    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = containerWidth - margin.left - margin.right;
-    const height = containerHeight - margin.top - margin.bottom;
-    
-    const svg = container.append('svg')
-        .attr('width', containerWidth)
-        .attr('height', containerHeight)
-        .style('display', 'block')
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-    
-    const cryptoData = realData[crypto].volatilityData;
-    const { p33, p67 } = realData[crypto].regimeThresholds;
-    
-    const x = d3.scaleTime()
-        .domain(d3.extent(cryptoData, d => d.date))
-        .range([0, width]);
-    
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(cryptoData, d => d.volatility)])
-        .range([height, 0]);
-    
-    svg.append('g')
-        .attr('class', 'grid')
-        .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
-    
-    svg.append('g')
-        .attr('class', 'axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%Y-%m')))
-        .selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('dx', '-.8em')
-        .attr('dy', '.15em')
-        .attr('transform', 'rotate(-45)');
-    
-    svg.append('g')
-        .attr('class', 'axis')
-        .call(d3.axisLeft(y));
-    
-    svg.append('rect')
-        .attr('x', 0).attr('y', y(p33))
-        .attr('width', width).attr('height', height - y(p33))
-        .attr('fill', regimeColors['Bajo'])
-        .attr('opacity', 0.2);
-    
-    svg.append('rect')
-        .attr('x', 0).attr('y', y(p67))
-        .attr('width', width).attr('height', y(p33) - y(p67))
-        .attr('fill', regimeColors['Medio'])
-        .attr('opacity', 0.2);
-    
-    svg.append('rect')
-        .attr('x', 0).attr('y', 0)
-        .attr('width', width).attr('height', y(p67))
-        .attr('fill', regimeColors['Alto'])
-        .attr('opacity', 0.2);
-    
-    svg.append('line')
-        .attr('x1', 0).attr('x2', width)
-        .attr('y1', y(p33)).attr('y2', y(p33))
-        .attr('stroke', regimeColors['Bajo'])
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '5,5');
-    
-    svg.append('line')
-        .attr('x1', 0).attr('x2', width)
-        .attr('y1', y(p67)).attr('y2', y(p67))
-        .attr('stroke', regimeColors['Alto'])
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '5,5');
-    
-    svg.selectAll('circle')
-        .data(cryptoData)
-        .enter()
-        .append('circle')
-        .attr('cx', d => x(d.date))
-        .attr('cy', d => y(d.volatility))
-        .attr('r', 3)
-        .attr('fill', d => {
-            if (d.volatility < p33) return regimeColors['Bajo'];
-            if (d.volatility < p67) return regimeColors['Medio'];
-            return regimeColors['Alto'];
-        })
-        .attr('opacity', 0.7)
-        .on('mouseover', function(event, d) {
-            d3.select(this).attr('r', 6).attr('opacity', 1);
-            const regime = d.volatility < p33 ? 'Bajo' : d.volatility < p67 ? 'Medio' : 'Alto';
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%<br/>Régimen: ${regime}`);
-        })
-        .on('mousemove', function(event, d) {
-            const regime = d.volatility < p33 ? 'Bajo' : d.volatility < p67 ? 'Medio' : 'Alto';
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Volatilidad: ${d.volatility.toFixed(1)}%<br/>Régimen: ${regime}`);
-        })
-        .on('mouseout', function() {
-            d3.select(this).attr('r', 3).attr('opacity', 0.7);
-            hideTooltip();
-        });
-    
-    const legend = [
-        { label: 'Bajo', color: regimeColors['Bajo'] },
-        { label: 'Medio', color: regimeColors['Medio'] },
-        { label: 'Alto', color: regimeColors['Alto'] }
-    ];
-    
-    const legendGroup = svg.append('g')
-        .attr('transform', `translate(${width - 100}, 20)`);
-    
-    legend.forEach((item, i) => {
-        legendGroup.append('rect')
-            .attr('x', 0).attr('y', i * 25)
-            .attr('width', 15).attr('height', 15)
-            .attr('fill', item.color)
-            .attr('opacity', 0.7);
-        
-        legendGroup.append('text')
-            .attr('x', 20).attr('y', i * 25 + 12)
-            .text(item.label)
-            .style('font-size', '12px')
-            .style('fill', '#333');
-    });
-    
-    console.log('✅ Gráfica de regímenes dibujada para ' + crypto);
-}
+// NOTA: Se eliminaron drawRegimeChart() y drawReturnsVolChart()
+// Solo quedan 2 gráficas en la pestaña de detalle: ACF y Scatter Volatilidad vs Volumen
 
 function drawACFChart(crypto) {
     const container = d3.select('#acf-chart');
@@ -1206,143 +1149,6 @@ function drawACFChart(crypto) {
         });
     
     console.log('✅ Gráfica ACF dibujada para ' + crypto);
-}
-
-function drawReturnsVolChart(crypto) {
-    const container = d3.select('#returns-vol-chart');
-    container.html('');
-    
-    const containerWidth = container.node().getBoundingClientRect().width;
-    const containerHeight = container.node().getBoundingClientRect().height;
-    
-    const margin = { top: 20, right: 60, bottom: 60, left: 60 };
-    const width = containerWidth - margin.left - margin.right;
-    const height = containerHeight - margin.top - margin.bottom;
-    
-    const svg = container.append('svg')
-        .attr('width', containerWidth)
-        .attr('height', containerHeight)
-        .style('display', 'block')
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-    
-    const combinedData = realData[crypto].returnsVolData;
-    
-    const x = d3.scaleTime()
-        .domain(d3.extent(combinedData, d => d.date))
-        .range([0, width]);
-    
-    const y1 = d3.scaleLinear()
-        .domain([0, d3.max(combinedData, d => d.absReturn)])
-        .range([height, 0]);
-    
-    const y2 = d3.scaleLinear()
-        .domain([0, d3.max(combinedData, d => d.volatility)])
-        .range([height, 0]);
-    
-    svg.append('g')
-        .attr('class', 'grid')
-        .call(d3.axisLeft(y1).tickSize(-width).tickFormat(''));
-    
-    svg.append('g')
-        .attr('class', 'axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%Y-%m')))
-        .selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('dx', '-.8em')
-        .attr('dy', '.15em')
-        .attr('transform', 'rotate(-45)');
-    
-    svg.append('g')
-        .attr('class', 'axis')
-        .call(d3.axisLeft(y1))
-        .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', -50)
-        .attr('x', -height / 2)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .style('font-size', '12px')
-        .style('font-weight', 'bold')
-        .attr('fill', cryptoColors[crypto])
-        .text('Returns Absolutos (%)');
-    
-    svg.append('g')
-        .attr('class', 'axis')
-        .attr('transform', `translate(${width},0)`)
-        .call(d3.axisRight(y2))
-        .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 45)
-        .attr('x', -height / 2)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .style('font-size', '12px')
-        .style('font-weight', 'bold')
-        .attr('fill', '#dc3545')
-        .text('Volatilidad (%)');
-    
-    const barWidth = width / combinedData.length;
-    svg.selectAll('.return-bar')
-        .data(combinedData)
-        .enter()
-        .append('rect')
-        .attr('class', 'return-bar')
-        .attr('x', d => x(d.date) - barWidth / 2)
-        .attr('y', d => y1(d.absReturn))
-        .attr('width', barWidth)
-        .attr('height', d => height - y1(d.absReturn))
-        .attr('fill', cryptoColors[crypto])
-        .attr('opacity', 0.3)
-        .on('mouseover', function(event, d) {
-            d3.select(this).attr('opacity', 0.6);
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
-        })
-        .on('mousemove', function(event, d) {
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
-        })
-        .on('mouseout', function() {
-            d3.select(this).attr('opacity', 0.3);
-            hideTooltip();
-        });
-    
-    const line = d3.line()
-        .x(d => x(d.date))
-        .y(d => y2(d.volatility))
-        .curve(d3.curveMonotoneX);
-    
-    svg.append('path')
-        .datum(combinedData)
-        .attr('fill', 'none')
-        .attr('stroke', '#dc3545')
-        .attr('stroke-width', 2.5)
-        .attr('d', line);
-    
-    // Agregar puntos en la línea para mejor interacción
-    svg.selectAll('.vol-point')
-        .data(combinedData)
-        .enter()
-        .append('circle')
-        .attr('class', 'vol-point')
-        .attr('cx', d => x(d.date))
-        .attr('cy', d => y2(d.volatility))
-        .attr('r', 3)
-        .attr('fill', '#dc3545')
-        .attr('opacity', 0)
-        .on('mouseover', function(event, d) {
-            d3.select(this).attr('opacity', 1).attr('r', 5);
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
-        })
-        .on('mousemove', function(event, d) {
-            showTooltip(event, `<strong>${d3.timeFormat('%Y-%m-%d')(d.date)}</strong><br/>Return Abs: ${d.absReturn.toFixed(2)}%<br/>Volatilidad: ${d.volatility.toFixed(2)}%`);
-        })
-        .on('mouseout', function() {
-            d3.select(this).attr('opacity', 0).attr('r', 3);
-            hideTooltip();
-        });
-    
-    console.log('✅ Gráfica returns vs volatilidad dibujada para ' + crypto);
 }
 
 function drawScatterVolChart(crypto) {
@@ -1463,5 +1269,171 @@ function drawScatterVolChart(crypto) {
     
     console.log('✅ Scatter volatilidad vs volumen dibujada para ' + crypto);
 }
-
-console.log('📦 Dashboard JavaScript cargado completamente');
+function drawDescriptiveStatsChart(crypto) {
+    const container = d3.select('#descriptive-stats-chart');
+    container.html('');
+    
+    const stats = descriptiveStats[crypto];
+    
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const svg = container.append('svg')
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block');
+    
+    // TARJETAS DE ESTADÍSTICAS
+    const cards = [
+        { 
+            title: 'Average Return', 
+            value: stats.return_avg.toFixed(4), 
+            unit: '%',
+            color: '#667eea',
+            x: 20,
+            icon: '📈'
+        },
+        { 
+            title: 'Volatility', 
+            value: stats.volatilidad.toFixed(2), 
+            unit: '%',
+            color: '#f59e0b',
+            x: 260,
+            icon: '📊'
+        },
+        { 
+            title: 'Coef. Variation', 
+            value: stats.coef_var.toFixed(2), 
+            unit: '%',
+            color: '#ec4899',
+            x: 500,
+            icon: '📉'
+        },
+        { 
+            title: 'Std. Deviation', 
+            value: stats.desv_std.toFixed(2), 
+            unit: '',
+            color: '#10b981',
+            x: 740,
+            icon: '🎯'
+        }
+    ];
+    
+    cards.forEach(card => {
+        const g = svg.append('g')
+            .attr('class', 'stat-card')
+            .attr('transform', `translate(${card.x}, 20)`);
+        
+        // Fondo de tarjeta
+        g.append('rect')
+            .attr('width', 220)
+            .attr('height', 140)
+            .attr('rx', 10)
+            .attr('fill', card.color)
+            .attr('opacity', 0.1)
+            .attr('stroke', card.color)
+            .attr('stroke-width', 2);
+        
+        // Línea superior de color
+        g.append('rect')
+            .attr('width', 220)
+            .attr('height', 5)
+            .attr('rx', 10)
+            .attr('fill', card.color);
+        
+        // Icono
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 35)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '24px')
+            .text(card.icon);
+        
+        // Título
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 55)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '12px')
+            .style('font-weight', 'bold')
+            .attr('fill', '#666')
+            .text(card.title);
+        
+        // Valor principal
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 85)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '28px')
+            .style('font-weight', 'bold')
+            .attr('fill', card.color)
+            .text(card.value);
+        
+        // Unidad
+        g.append('text')
+            .attr('x', 150)
+            .attr('y', 85)
+            .style('font-size', '16px')
+            .style('font-weight', 'bold')
+            .attr('fill', card.color)
+            .text(card.unit);
+        
+        // Efecto hover
+        g.on('mouseover', function() {
+            d3.select(this).select('rect:first-child')
+                .attr('opacity', 0.2);
+        })
+        .on('mouseout', function() {
+            d3.select(this).select('rect:first-child')
+                .attr('opacity', 0.1);
+        });
+    });
+    
+    // CAJA DE INFORMACIÓN PRINCIPAL
+    const infoY = 180;
+    const infoBg = svg.append('g')
+        .attr('transform', `translate(20, ${infoY})`);
+    
+    infoBg.append('rect')
+        .attr('width', containerWidth - 40)
+        .attr('height', 140)
+        .attr('rx', 10)
+        .attr('fill', '#f8fafc')
+        .attr('stroke', '#e2e8f0')
+        .attr('stroke-width', 2);
+    
+    // Línea decorativa
+    infoBg.append('rect')
+        .attr('width', 5)
+        .attr('height', 140)
+        .attr('rx', 5)
+        .attr('fill', '#667eea');
+    
+    // Contenido info
+    const infoContent = [
+        { label: 'Average Price:', value: `$${stats.precio_promedio.toFixed(2)}`, y: 30, color: '#333' },
+        { label: 'Price Range:', value: `$${stats.precio_min.toFixed(2)} - $${stats.precio_max.toFixed(2)}`, y: 55, color: '#666' },
+        { label: 'Total Change:', value: `+${stats.cambio_total.toFixed(2)}%`, y: 80, color: '#10b981' },
+        { label: 'Average Return:', value: `${stats.return_avg.toFixed(4)}% daily`, y: 105, color: '#667eea' }
+    ];
+    
+    infoContent.forEach(item => {
+        infoBg.append('text')
+            .attr('x', 25)
+            .attr('y', item.y)
+            .style('font-size', '13px')
+            .style('font-weight', 'bold')
+            .attr('fill', '#999')
+            .text(item.label);
+        
+        infoBg.append('text')
+            .attr('x', 200)
+            .attr('y', item.y)
+            .style('font-size', '13px')
+            .style('font-weight', 'bold')
+            .attr('fill', item.color)
+            .text(item.value);
+    });
+    
+    console.log('✅ Gráfica de estadísticas descriptivas dibujada para ' + crypto);
+}

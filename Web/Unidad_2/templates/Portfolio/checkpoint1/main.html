@@ -150,26 +150,25 @@
                     <option value="BTC-USD">Bitcoin (BTC)</option>
                     <option value="ETH-USD">Ethereum (ETH)</option>
                     <option value="DOGE-USD">Dogecoin (DOGE)</option>
-                    <option value="SOL-USD">Solana (SOL)</option>
-                    <option value="USDT-USD">Tether (USDT)</option>
+                    <option value="XRP-USD">Ripple (XRP)</option>
+                    <option value="ADA-USD">Cardano (ADA)</option>
                 </select>
             </div>
 
             <!-- Chart Grid -->
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <div class="chart-title">
-                        <i class="ti ti-wave-square"></i>
-                        Volatility with Regimes
-                    </div>
-                    <div class="chart-description">
-                        Temporal evolution of <strong>realized volatility</strong> classified into three regimes: 
-                        <span style="color: #28a745;">Low</span>, <span style="color: #ffc107;">Medium</span>, 
-                        and <span style="color: #dc3545;">High</span>. Thresholds are calculated using 33rd and 67th percentiles.
-                    </div>
-                    <div id="regime-chart"></div>
+             <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-bar"></i>
+                    Descriptive Statistics
                 </div>
-
+                <div class="chart-description">
+                    <strong>Key metrics</strong> showing average return, volatility, coefficient of variation, 
+                    and standard deviation. The info box displays price range and total change percentage.
+                </div>
+                <div id="descriptive-stats-chart" style="width: 100%; height: 400px;"></div>
+            </div>
+            
+            <div class="chart-grid"> 
                 <div class="chart-container">
                     <div class="chart-title">
                         <i class="ti ti-chart-histogram"></i>
@@ -182,18 +181,6 @@
                     </div>
                     <div id="acf-chart"></div>
                 </div>
-            </div>
-
-            <div class="chart-container">
-                <div class="chart-title">
-                    <i class="ti ti-chart-candlestick"></i>
-                    Absolute Returns vs Rolling Volatility
-                </div>
-                <div class="chart-description">
-                    Overlay of <strong>absolute returns</strong> (bars) with <strong>rolling volatility</strong> 
-                    (red line). Enables identification of market events that generated extreme movements.
-                </div>
-                <div id="returns-vol-chart"></div>
             </div>
 
             <div class="chart-container">
