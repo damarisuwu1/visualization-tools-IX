@@ -150,12 +150,24 @@
                     <option value="BTC-USD">Bitcoin (BTC)</option>
                     <option value="ETH-USD">Ethereum (ETH)</option>
                     <option value="DOGE-USD">Dogecoin (DOGE)</option>
-                    <option value="SOL-USD">Solana (SOL)</option>
-                    <option value="USDT-USD">Tether (USDT)</option>
+                    <option value="XRP-USD">Ripple (XRP)</option>
+                    <option value="ADA-USD">Cardano (ADA)</option>
                 </select>
             </div>
 
             <!-- Chart Grid -->
+             <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-bar"></i>
+                    Descriptive Statistics
+                </div>
+                <div class="chart-description">
+                    <strong>Key metrics</strong> showing average return, volatility, coefficient of variation, 
+                    and standard deviation. The info box displays price range and total change percentage.
+                </div>
+                <div id="descriptive-stats-chart" style="width: 100%; height: 400px;"></div>
+            </div>
+            
             <div class="chart-grid"> 
                 <div class="chart-container">
                     <div class="chart-title">

@@ -173,6 +173,78 @@ const realData = {
         significantLags: 1
     }
 };
+const descriptiveStats = {
+    'BTC-USD': {
+        precio_promedio: 51107.61,
+        precio_min: 11322.12,
+        precio_max: 124752.53,
+        desv_std: 28936.75,
+        coef_var: 56.62,
+        return_avg: 0.1722,
+        volatilidad: 3.1098,
+        cambio_total: 860.63
+    },
+    'ETH-USD': {
+        precio_promedio: 2417.32,
+        precio_min: 366.23,
+        precio_max: 4831.35,
+        desv_std: 980.02,
+        coef_var: 40.54,
+        return_avg: 0.2149,
+        volatilidad: 4.1602,
+        cambio_total: 944.83
+    },
+    'DOGE-USD': {
+        precio_promedio: 0.14,
+        precio_min: 0.00,
+        precio_max: 0.68,
+        desv_std: 0.10,
+        coef_var: 69.12,
+        return_avg: 0.5666,
+        volatilidad: 10.8344,
+        cambio_total: 7509.33
+    },
+    'XRP-USD': {
+        precio_promedio: 0.95,
+        precio_min: 0.21,
+        precio_max: 3.56,
+        desv_std: 0.79,
+        coef_var: 83.73,
+        return_avg: 0.2827,
+        volatilidad: 5.7859,
+        cambio_total: 883.59
+    },
+    'ADA-USD': {
+        precio_promedio: 0.73,
+        precio_min: 0.09,
+        precio_max: 2.97,
+        desv_std: 0.53,
+        coef_var: 72.48,
+        return_avg: 0.2340,
+        volatilidad: 5.2858,
+        cambio_total: 525.90
+    },
+    'SOL-USD': {
+        precio_promedio: 142.50,
+        precio_min: 8.75,
+        precio_max: 299.88,
+        desv_std: 76.32,
+        coef_var: 53.57,
+        return_avg: 0.3245,
+        volatilidad: 5.8734,
+        cambio_total: 3328.57
+    },
+    'USDT-USD': {
+        precio_promedio: 1.00,
+        precio_min: 0.99,
+        precio_max: 1.01,
+        desv_std: 0.003,
+        coef_var: 0.30,
+        return_avg: 0.0012,
+        volatilidad: 0.3401,
+        cambio_total: 1.02
+    }
+};
 
 // ═══════════════════════════════════════════════════════════════════
 // 3. SISTEMA DE TOOLTIPS MEJORADO
@@ -357,6 +429,7 @@ function updateVolatilityCharts() {
 
 function updateDetailCharts() {
     const crypto = document.getElementById('crypto-selector').value;
+    drawDescriptiveStatsChart(crypto);
     drawACFChart(crypto);
     drawScatterVolChart(crypto);
 }
@@ -1195,4 +1268,172 @@ function drawScatterVolChart(crypto) {
         .text(`ρ = ${correlation.toFixed(3)}`);
     
     console.log('✅ Scatter volatilidad vs volumen dibujada para ' + crypto);
+}
+function drawDescriptiveStatsChart(crypto) {
+    const container = d3.select('#descriptive-stats-chart');
+    container.html('');
+    
+    const stats = descriptiveStats[crypto];
+    
+    const containerWidth = container.node().getBoundingClientRect().width;
+    const containerHeight = container.node().getBoundingClientRect().height;
+    
+    const svg = container.append('svg')
+        .attr('width', containerWidth)
+        .attr('height', containerHeight)
+        .style('display', 'block');
+    
+    // TARJETAS DE ESTADÍSTICAS
+    const cards = [
+        { 
+            title: 'Average Return', 
+            value: stats.return_avg.toFixed(4), 
+            unit: '%',
+            color: '#667eea',
+            x: 20,
+            icon: '📈'
+        },
+        { 
+            title: 'Volatility', 
+            value: stats.volatilidad.toFixed(2), 
+            unit: '%',
+            color: '#f59e0b',
+            x: 260,
+            icon: '📊'
+        },
+        { 
+            title: 'Coef. Variation', 
+            value: stats.coef_var.toFixed(2), 
+            unit: '%',
+            color: '#ec4899',
+            x: 500,
+            icon: '📉'
+        },
+        { 
+            title: 'Std. Deviation', 
+            value: stats.desv_std.toFixed(2), 
+            unit: '',
+            color: '#10b981',
+            x: 740,
+            icon: '🎯'
+        }
+    ];
+    
+    cards.forEach(card => {
+        const g = svg.append('g')
+            .attr('class', 'stat-card')
+            .attr('transform', `translate(${card.x}, 20)`);
+        
+        // Fondo de tarjeta
+        g.append('rect')
+            .attr('width', 220)
+            .attr('height', 140)
+            .attr('rx', 10)
+            .attr('fill', card.color)
+            .attr('opacity', 0.1)
+            .attr('stroke', card.color)
+            .attr('stroke-width', 2);
+        
+        // Línea superior de color
+        g.append('rect')
+            .attr('width', 220)
+            .attr('height', 5)
+            .attr('rx', 10)
+            .attr('fill', card.color);
+        
+        // Icono
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 35)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '24px')
+            .text(card.icon);
+        
+        // Título
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 55)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '12px')
+            .style('font-weight', 'bold')
+            .attr('fill', '#666')
+            .text(card.title);
+        
+        // Valor principal
+        g.append('text')
+            .attr('x', 110)
+            .attr('y', 85)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '28px')
+            .style('font-weight', 'bold')
+            .attr('fill', card.color)
+            .text(card.value);
+        
+        // Unidad
+        g.append('text')
+            .attr('x', 150)
+            .attr('y', 85)
+            .style('font-size', '16px')
+            .style('font-weight', 'bold')
+            .attr('fill', card.color)
+            .text(card.unit);
+        
+        // Efecto hover
+        g.on('mouseover', function() {
+            d3.select(this).select('rect:first-child')
+                .attr('opacity', 0.2);
+        })
+        .on('mouseout', function() {
+            d3.select(this).select('rect:first-child')
+                .attr('opacity', 0.1);
+        });
+    });
+    
+    // CAJA DE INFORMACIÓN PRINCIPAL
+    const infoY = 180;
+    const infoBg = svg.append('g')
+        .attr('transform', `translate(20, ${infoY})`);
+    
+    infoBg.append('rect')
+        .attr('width', containerWidth - 40)
+        .attr('height', 140)
+        .attr('rx', 10)
+        .attr('fill', '#f8fafc')
+        .attr('stroke', '#e2e8f0')
+        .attr('stroke-width', 2);
+    
+    // Línea decorativa
+    infoBg.append('rect')
+        .attr('width', 5)
+        .attr('height', 140)
+        .attr('rx', 5)
+        .attr('fill', '#667eea');
+    
+    // Contenido info
+    const infoContent = [
+        { label: 'Average Price:', value: `$${stats.precio_promedio.toFixed(2)}`, y: 30, color: '#333' },
+        { label: 'Price Range:', value: `$${stats.precio_min.toFixed(2)} - $${stats.precio_max.toFixed(2)}`, y: 55, color: '#666' },
+        { label: 'Total Change:', value: `+${stats.cambio_total.toFixed(2)}%`, y: 80, color: '#10b981' },
+        { label: 'Average Return:', value: `${stats.return_avg.toFixed(4)}% daily`, y: 105, color: '#667eea' }
+    ];
+    
+    infoContent.forEach(item => {
+        infoBg.append('text')
+            .attr('x', 25)
+            .attr('y', item.y)
+            .style('font-size', '13px')
+            .style('font-weight', 'bold')
+            .attr('fill', '#999')
+            .text(item.label);
+        
+        infoBg.append('text')
+            .attr('x', 200)
+            .attr('y', item.y)
+            .style('font-size', '13px')
+            .style('font-weight', 'bold')
+            .attr('fill', item.color)
+            .text(item.value);
+    });
+    
+    console.log('✅ Gráfica de estadísticas descriptivas dibujada para ' + crypto);
 }
