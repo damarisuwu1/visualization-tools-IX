@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Analytics Dashboard</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    
+    <!-- D3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    
+    <!-- Tabler Icons -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" as="style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    
+    <!-- CSS - Relative path from templates to static -->
+    <link rel="stylesheet" href="../../../static/Portfolio/css/checkpoint1/main.css">
+</head>
+<body>
+
+
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>Cryptocurrency Analytics</h1>
+            <p>Advanced Volatility & Engagement Analysis</p>
+            
+            <!-- Back Button dentro del header -->
+            <button class="back-button" onclick="window.history.back()">
+                <i class="ti ti-arrow-left"></i>
+                <span>Back</span>
+            </button>
+        </div>
+
+        <!-- Tab System -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="overview" onclick="changeTab('overview')">
+                <i class="ti ti-world"></i>
+                <span>Global Overview</span>
+            </button>
+            <button class="tab-button" data-tab="volatilidad" onclick="changeTab('volatilidad')">
+                <i class="ti ti-chart-line"></i>
+                <span>Volatility Analysis</span>
+            </button>
+            <button class="tab-button" data-tab="detalle" onclick="changeTab('detalle')">
+                <i class="ti ti-chart-bar"></i>
+                <span>Crypto Details</span>
+            </button>
+        </div>
+
+        <!-- Tab 1: Global Overview -->
+        <div id="overview" class="tab-content active">
+            
+            <!-- World Map Container -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-map-2"></i>
+                    Global Engagement Map
+                </div>
+                <div class="chart-description">
+                    This interactive map visualizes the <strong>geographic distribution</strong> of cryptocurrency 
+                    engagement worldwide. Color intensity represents relative interest level in each country. 
+                    <strong>Japan</strong> leads with 15,000 engagement points, followed by Brazil and South Korea. 
+                    Hover over each country to see detailed metrics.
+                </div>
+                <div id="world-map-chart"></div>
+            </div>
+
+            <!-- Chart Grid -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-trophy"></i>
+                        Top 10 Countries by Engagement
+                    </div>
+                    <div class="chart-description">
+                        Ranking of the 10 countries with highest engagement in the crypto ecosystem.
+                    </div>
+                    <div id="top-countries-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-chart-pie"></i>
+                        Regional Distribution
+                    </div>
+                    <div class="chart-description">
+                        Analysis of engagement distribution by continental regions.
+                    </div>
+                    <div id="regional-distribution-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Volatility Analysis -->
+        <div id="volatilidad" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-activity"></i>
+                    30-Day Volatility Comparison
+                </div>
+                <div class="chart-description">
+                    Comparison of <strong>30-day rolling volatility</strong> across major cryptocurrencies. 
+                    DOGE-USD leads with 6.53%, while USDT-USD maintains expected stability at 0.04%. 
+                    This metric is crucial for assessing the <strong>risk</strong> of each asset.
+                </div>
+                <div id="volatility-comparison-chart"></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-arrows-cross"></i>
+                        Cross-Correlation Analysis
+                    </div>
+                    <div class="chart-description">
+                        <strong>Cross-correlation</strong> analysis between search interest and market volatility 
+                        in a ±52 week window. Significant peaks at -16 and +20 weeks suggest that public interest 
+                        both predicts and follows volatility events.
+                    </div>
+                    <div id="correlation-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-chart-dots"></i>
+                        Engagement vs Volatility
+                    </div>
+                    <div class="chart-description">
+                        Relationship between <strong>total engagement</strong> and <strong>volatility preference</strong> 
+                        by country. Bubble size represents relative market importance.
+                    </div>
+                    <div id="scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Crypto Details -->
+        <div id="detalle" class="tab-content">
+            <!-- Cryptocurrency Selector -->
+            <div class="selector-container">
+                <label for="crypto-selector">
+                    <i class="ti ti-coin-bitcoin"></i>
+                    Select Cryptocurrency:
+                </label>
+                <select id="crypto-selector" onchange="updateDetailCharts()">
+                    <option value="BTC-USD">Bitcoin (BTC)</option>
+                    <option value="ETH-USD">Ethereum (ETH)</option>
+                    <option value="DOGE-USD">Dogecoin (DOGE)</option>
+                    <option value="XRP-USD">Ripple (XRP)</option>
+                    <option value="ADA-USD">Cardano (ADA)</option>
+                </select>
+            </div>
+
+            <!-- Chart Grid -->
+             <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-bar"></i>
+                    Descriptive Statistics
+                </div>
+                <div class="chart-description">
+                    <strong>Key metrics</strong> showing average return, volatility, coefficient of variation, 
+                    and standard deviation. The info box displays price range and total change percentage.
+                </div>
+                <div id="descriptive-stats-chart" style="width: 100%; height: 400px;"></div>
+            </div>
+            
+            <div class="chart-grid"> 
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i class="ti ti-chart-histogram"></i>
+                        Volatility ACF
+                    </div>
+                    <div class="chart-description">
+                        The <strong>Autocorrelation Function (ACF)</strong> measures volatility persistence. 
+                        Bars outside the gray zone indicate <strong>significant autocorrelation</strong> 
+                        (volatility clustering).
+                    </div>
+                    <div id="acf-chart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="ti ti-chart-bubble"></i>
+                    Volatility vs Transaction Volume
+                </div>
+                <div class="chart-description">
+                    <strong>Scatter plot</strong> examining the relationship between trading volume and volatility. 
+                    The ρ coefficient quantifies this relationship. Useful for understanding 
+                    <strong>market microstructure</strong>.
+                </div>
+                <div id="scatter-vol-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <!-- JavaScript - Relative path from templates to static -->
+    <script src="../../../static/Portfolio/js/checkpoint1/main.js"></script>
+</body>
+</html>

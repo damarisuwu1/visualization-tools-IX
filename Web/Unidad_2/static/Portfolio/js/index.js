@@ -17,13 +17,13 @@ const checkpointsData = [
     },
     {
         number: 2,
-        title: "*****",
-        description: "****",
+        title: "Hierarchical Data Visualization",
+        description: "Develop skills in creating and analyzing hierarchical visualizations using Python, applying different techniques such as Treemaps, Dendrograms, Sunburst Charts, and Circular Treemaps to represent multilevel data structures and understand when to use each type of visualization.",
         status: "in-progress",
         completionDate: null,
-        exercises: 6,
+        exercises: 5,
         duration: "1 week",
-        topics: ["****"]
+        topics: ["Treemap Analysis", "Dendrograms", "Sunburst Charts", "Circular Treemaps", "Comparative Analysis"]
     },
     {
         number: 3,
