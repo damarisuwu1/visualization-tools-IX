@@ -469,7 +469,7 @@ function drawWorldMap() {
     
     const maxEngagement = d3.max(worldMapData.countries, d => d.engagement);
     const colorScale = d3.scaleLinear()
-        .domain([0, maxEngagement])
+        .domain([10000, maxEngagement])
         .range(['#fef3c7', '#a855f7']);
     
     const projection = d3.geoMercator()
