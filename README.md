@@ -15,7 +15,7 @@
 | Section | Description |
 | :--- | :--- |
 | **[🚀 Project 1](#Project-1)** | Unit 1 project. |
-| **[💼 Portfolio 2](#Portfolio-2)** | Unit 2 portfolio . |
+| **[💼 Portfolio 2](#Portfolio-2)** | Unit 2 portfolio. |
 
 ---
 
