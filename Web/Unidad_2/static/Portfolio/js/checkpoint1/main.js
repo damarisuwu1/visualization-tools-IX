@@ -61,16 +61,16 @@ const correlationData = [
 ];
 
 const scatterData = [
-    { country: 'IN', engagement: 10270, preference: 59.05, size: 15 },
-    { country: 'KR', engagement: 19064, preference: 54.42, size: 14 },
-    { country: 'SG', engagement: 12587, preference: 54.04, size: 12 },
-    { country: 'CN', engagement: 12209, preference: 57.13, size: 14 },
-    { country: 'DE', engagement: 17825, preference: 59.71, size: 13 },
-    { country: 'US', engagement: 13616, preference: 62.65, size: 16 },
-    { country: 'JP', engagement: 20111, preference: 63.02, size: 20 },
-    { country: 'GB', engagement: 14581, preference: 63.27, size: 13 },
-    { country: 'BR', engagement: 14734, preference: 73.26, size: 18 },
-    { country: 'MX', engagement: 12339, preference: 81.34, size: 12 }
+    { country: 'IN', engagement: 10270, preference: 59.05 },
+    { country: 'KR', engagement: 19064, preference: 54.42 },
+    { country: 'SG', engagement: 12587, preference: 54.04 },
+    { country: 'CN', engagement: 12209, preference: 57.13 },
+    { country: 'DE', engagement: 17825, preference: 59.71 },
+    { country: 'US', engagement: 13616, preference: 62.65 },
+    { country: 'JP', engagement: 20111, preference: 63.02 },
+    { country: 'GB', engagement: 14581, preference: 63.27 },
+    { country: 'BR', engagement: 14734, preference: 73.26 },
+    { country: 'MX', engagement: 12339, preference: 81.34 }
 ];
 
 const volatilityData = [
@@ -974,7 +974,14 @@ function drawScatterChart() {
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     
-    // DATOS ACTUALIZADOS - nuevo rango de dominio basado en los datos reales
+    // ESCALA DE TAMAÑO BASADA EN ENGAGEMENT (no en size arbitrario)
+    const sizeScale = d3.scaleLinear()
+        .domain([
+            d3.min(scatterData, d => d.engagement),  // 10270
+            d3.max(scatterData, d => d.engagement)   // 20111
+        ])
+        .range([12, 20]);  // radio mín: 12px, radio máx: 20px - más proporcional
+    
     const x = d3.scaleLinear()
         .domain([9000, 21000])
         .range([0, width]);
@@ -1016,28 +1023,37 @@ function drawScatterChart() {
     const colors = ['#f97316', '#a855f7', '#8b5cf6', '#eab308', '#ef4444', 
                     '#22c55e', '#06b6d4', '#3b82f6', '#ec4899', '#14b8a6'];
     
+    // DIBUJA LOS CÍRCULOS CON TAMAÑO BASADO EN ENGAGEMENT
     svg.selectAll('circle')
         .data(scatterData)
         .enter()
         .append('circle')
         .attr('cx', d => x(d.engagement))
         .attr('cy', d => y(d.preference))
-        .attr('r', d => d.size)
+        .attr('r', d => sizeScale(d.engagement))  // ✅ Basado en engagement
         .attr('fill', (d, i) => colors[i])
         .attr('opacity', 0.7)
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
         .on('mouseover', function(event, d) {
-            d3.select(this).attr('opacity', 1).attr('stroke', '#000').attr('stroke-width', 2);
+            d3.select(this)
+                .attr('opacity', 1)
+                .attr('stroke', '#000')
+                .attr('stroke-width', 2);
             showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement.toLocaleString()}<br/>Preferencia: ${d.preference.toFixed(2)}%`);
         })
         .on('mousemove', function(event, d) {
             showTooltip(event, `<strong>${d.country}</strong><br/>Engagement: ${d.engagement.toLocaleString()}<br/>Preferencia: ${d.preference.toFixed(2)}%`);
         })
         .on('mouseout', function() {
-            d3.select(this).attr('opacity', 0.7).attr('stroke', 'none');
+            d3.select(this)
+                .attr('opacity', 0.7)
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 1.5);
             hideTooltip();
         });
     
-    console.log('✅ Scatter chart dibujado');
+    console.log('✅ Scatter chart dibujado - tamaño basado en engagement');
 }
 
 // ═══════════════════════════════════════════════════════════════════
