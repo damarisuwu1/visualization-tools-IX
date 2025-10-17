@@ -1,5 +1,28 @@
 # visualization-tools-IX
 
+<div align="center">
+
+# Visual Modeling for Information projects and portfolios
+
+<p>
+  Repository that gathers all the projects and portfolios created for the subject Visual Modeling for Information, part of the Universidad Politécnica de Yucatán curriculum.
+</p>
+
+---
+
+### 📚 Table of Contents
+
+| Section | Description |
+| :--- | :--- |
+| **[🚀 Project 1](#-Project-1)** | Unit 1 project. |
+| **[💼 Portfolio 2](#-Portfolio-2)** | Unit 2 portfolio . |
+
+---
+
+</div>
+
+## Project-1
+
 ## Objective
 To design, implement, and deploy a multi-service data engineering solution that analyzes simulated video streaming data and presents key insights via an interactive dashboard, fulfilling all project and portfolio requirements for the "Visual Modeling" course.
 
@@ -279,6 +302,8 @@ To execute from the **docker-compose.yml**, you must be located in the `/visuali
 | `docker compose up --build` | Build and run all microservices. Use `-d` as an aditional param to run docker in background. |
 | `docker compose down`       | Stops the containers. |
 | `docker compose down -v`    | Stop the containers and removes the data volumes. |
+
+## Portfolio-2
 
 ## Autor(es)
 * [Alan Valbuena](https://github.com/AlanVAal)
