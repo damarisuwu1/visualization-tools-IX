@@ -305,6 +305,20 @@ To execute from the **docker-compose.yml**, you must be located in the `/visuali
 
 ## Portfolio-2
 
+## Checkpoint 1
+The first checkpoint showcases the practical application of visualization concepts covered in the course. It includes curated examples that reflect the design decisions, frameworks, and storytelling strategies developed throughout the project. This section is intended to demonstrate how theoretical insights—such as those documented in big_ideas_document.md, design_rationale.md, and who_what_how_framework.md—translate into compelling visual narratives.
+
+## Execution
+To launch the interactive web application:
+- Navigate to the Web folder in your terminal.
+- Run the following command:
+``` bash
+python app.py
+```
+This will start a Flask local server and it will allow you to explore the visualizations through your browser.
+In the UI, select the Portfolio button.
+
+
 ## Autor(es)
 * [Alan Valbuena](https://github.com/AlanVAal)
 * [Ariel Buenfil](https://github.com/areo-17)
