@@ -1,4 +1,4 @@
-# visualization-tools-IX
+# Visual-Modeling-for-Information-IX
 
 <div align="center">
 
